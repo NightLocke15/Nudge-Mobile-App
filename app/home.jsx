@@ -1,18 +1,23 @@
-import { UserContext } from "@/Contexts/UserContext";
-import { Link } from "expo-router";
+import { UserContext } from "@/AppContexts/UserContext";
+import { useRouter } from "expo-router";
 import { useContext } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+import { Pressable } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function Home() {
-    const { authenticated } = useContext(UserContext);
+    //Accesses user context in order to determine if the user has logged in or not
+    const { authenticated, logout } = useContext(UserContext);
+
+    //Router that allows the user to navigate to the different pages in the app
+    const router = useRouter();
 
     return (
         <SafeAreaView style={styles.container}>
             {authenticated ? 
             <View>
                 <Text>NUDGE</Text>
-                <Pressable>
+                <Pressable onPress={() => router.navigate('/to-do-list/to-do-list')}>
                     <Text>To-Do</Text>
                 </Pressable>
                 <Pressable>
@@ -30,24 +35,24 @@ function Home() {
                 <Pressable>
                     <Text>Emergency</Text>
                 </Pressable>
+                <Pressable onPress={logout}>
+                    <Text>LogOut</Text>
+                </Pressable>
             </View> : 
             <View>
                 <Text>Welcome to Nudge</Text>
-                <Link href={"/account/login"}>
-                    <Pressable>
-                        <Text>Log In</Text>
-                    </Pressable>
-                </Link>                
-                <Link href={"/account/createAccount"}>
-                    <Pressable>
-                        <Text>Create Account</Text>
-                    </Pressable>
-                </Link>
+                <Pressable onPress={() => router.navigate('/account/login')}>
+                    <Text>Log In</Text>
+                </Pressable>                
+                <Pressable  onPress={() => router.navigate('/account/createAccount')}>
+                    <Text>Create Account</Text>
+                </Pressable>
             </View>}
         </SafeAreaView>
     )
 }
 
+//Styles for this page
 const styles = StyleSheet.create({
     container: {
         flex: 1,
