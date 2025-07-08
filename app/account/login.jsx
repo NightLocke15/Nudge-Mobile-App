@@ -1,4 +1,5 @@
 import { UserContext } from "@/AppContexts/UserContext";
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from "expo-router";
 import { useContext, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -36,34 +37,196 @@ function Login() {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View>
-                <Text>Welcome Back!</Text>
-                {message ? <Text>You're Email or Password is incorrect.</Text> : <Text></Text>}
-                <View>
-                    <Text>Email Address</Text>
-                    <TextInput placeholder="Email Address..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setEmail(e)}/>
-                </View>
-                <View>
-                    <Text>Password</Text>
-                    <TextInput placeholder="Password..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setPassword(e)}/>
+        <SafeAreaView style={stylesLight.container}>
+            <LinearGradient style={stylesLight.contentContainer} colors={["#ffffff", "#aaaaaa"]}>
+                <View style={stylesLight.headerContainer}>
+                    <Text style={stylesLight.header}>WELCOME BACK!</Text>
                 </View>                
-                <Pressable onPress={() => handleLogin(email, password)}>
-                    <Text>Log In</Text>
-                </Pressable>
-                <Text>No Account Yet?</Text>
-                <Pressable onPress={() => router.navigate('/account/createAccount')}>
-                    <Text>Create Account</Text>
-                </Pressable>
-            </View>
+                {message ? <Text style={stylesLight.message}>You're Email or Password is incorrect.</Text> : <Text style={stylesLight.message}></Text>}
+                <View style={stylesLight.formContainer}>
+                    <View>
+                        <Text style={stylesLight.label}>Email Address</Text>
+                        <TextInput style={stylesLight.input} placeholder="Email Address..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setEmail(e)}/>
+                    </View>
+                    <View>
+                        <Text style={stylesLight.label}>Password</Text>
+                        <TextInput style={stylesLight.input} placeholder="Password..." placeholderTextColor="#9e9e9e" secureTextEntry={true} onChangeText={(e) => setPassword(e)}/>
+                    </View> 
+                </View>                      
+                <View style={stylesLight.accountContainer}>
+                    <Pressable style={stylesLight.clickable} onPress={() => handleLogin(email, password)}>
+                        <Text style={stylesLight.clickableText}>Log In</Text>
+                    </Pressable>
+                    <Text style={stylesLight.createLabel}>No Account Yet?</Text>
+                    <Pressable onPress={() => router.navigate('/account/createAccount')}>
+                        <Text style={stylesLight.createLink}>Create Account</Text>
+                    </Pressable>                  
+                </View>                    
+            </LinearGradient>
         </SafeAreaView>        
     )
 }
 
-const styles = StyleSheet.create({
+const stylesLight = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    contentContainer: {
+        flex: 1
+    },
+    headerContainer: {
+        marginLeft: "auto",
+        marginRight: "auto",
+        marginTop: 200,
+        marginBottom: 25
+    },
+    header: {
+        fontFamily: "Economica-Bold",
+        fontSize: 65
+    },
+    formContainer: {
+        flex: "20%",
+        marginLeft: 30,
+        marginRight: 30,
+    },
+    label: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 18
+    },
+    input: {
+        border: "1px solid #4d4d4d",
+        borderRadius: 10,
+        height: 40,
+        padding: 5,
+        width: "100%",
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+        marginBottom: 25,
         backgroundColor: "#fff"
+    },
+    accountContainer: {
+        flex: "40%",
+        marginLeft: "auto",
+        marginRight: "auto",
+    },
+    clickable: {
+        backgroundColor: "#f0f0f0",
+        padding: 15,
+        borderRadius: 25,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+        marginBottom: 20
+    },
+    clickableText: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 20,
+        textAlign: "center"
+    },
+    createLabel: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 18
+    },
+    createLink: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 18,
+        color: "#1966ff",
+        textDecorationLine: "underline",
+        textAlign: "center"
+    },
+    message: {
+        flex: "3%",
+        fontFamily: "Sunflower-Medium",
+        fontSize: 17,
+        margin: "auto",
+        marginBottom: 15,
+        color: "#e70000"
+    }
+});
+
+const stylesDark = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+    contentContainer: {
+        flex: 1
+    },
+    headerContainer: {
+        marginLeft: "auto",
+        marginRight: "auto",
+        marginTop: 200,
+        marginBottom: 25
+    },
+    header: {
+        fontFamily: "Economica-Bold",
+        fontSize: 65,
+        color: "#fff"
+    },
+    formContainer: {
+        flex: "20%",
+        marginLeft: 30,
+        marginRight: 30,
+    },
+    label: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 18,
+        color: "#fff"
+    },
+    input: {
+        border: "1px solid #000000",
+        borderRadius: 10,
+        height: 40,
+        padding: 5,
+        width: "100%",
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+        marginBottom: 25,
+        backgroundColor: "#323232"
+    },
+    accountContainer: {
+        flex: "40%",
+        marginLeft: "auto",
+        marginRight: "auto",
+    },
+    clickable: {
+        backgroundColor: "#3b3b3b",
+        padding: 15,
+        borderRadius: 25,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+        marginBottom: 20
+    },
+    clickableText: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 20,
+        textAlign: "center",
+        color: "#fff"
+    },
+    createLabel: {
+        color: "#fff",
+        fontFamily: "Sunflower-Light",
+        fontSize: 18
+    },
+    createLink: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 18,
+        color: "#1966ff",
+        textDecorationLine: "underline"
+    },
+    message: {
+        flex: "3%",
+        fontFamily: "Sunflower-Medium",
+        fontSize: 17,
+        margin: "auto",
+        marginBottom: 15,
+        color: "#e70000"
     }
 });
 

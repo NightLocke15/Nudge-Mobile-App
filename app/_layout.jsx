@@ -10,9 +10,10 @@ SplashScreen.preventAutoHideAsync();
 
 function RootLayout() {
     const [loaded, error] = useFonts({
-        'Amiko-Bold': require('../assets/fonts/Amiko-Bold.ttf'),
-        'Amiko-SemiBold': require('../assets/fonts/Amiko-SemiBold.ttf'),
-        'Amiko-Regular': require('../assets/fonts/Amiko-Regular.ttf'),
+        'Economica-Bold': require('../assets/fonts/Economica-Bold.ttf'),
+        'Economica-Regular': require('../assets/fonts/Economica-Regular.ttf'),
+        'Economica-Italic': require('../assets/fonts/Economica-Italic.ttf'),
+        'Economica-BoldItalic': require('../assets/fonts/Economica-BoldItalic.ttf'),
         'Sunflower-Bold': require('../assets/fonts/Sunflower-Bold.ttf'),
         'Sunflower-Light': require('../assets/fonts/Sunflower-Light.ttf'),
         'Sunflower-Medium': require('../assets/fonts/Sunflower-Medium.ttf'),
@@ -32,8 +33,8 @@ function RootLayout() {
         <GestureHandlerRootView>
             <SafeAreaProvider>
                 <UserProvider>
-                    <Stack screenOptions={{ headerTitle: "NUDGE", headerStyle: {backgroundColor: "#fff"}, headerShadowVisible: false}}>
-                        <Stack.Screen name="index" options={{ headerShown: false }}/>
+                    <Stack screenOptions={{ headerShown: false, headerTitle: "NUDGE", headerStyle: {backgroundColor: "#fff"}, headerShadowVisible: false}}>
+                        <Stack.Screen name="index" />
                         <Stack.Screen name="home" />
                         <Stack.Screen name="account/login" />
                         <Stack.Screen name="to-do-list/to-do-list" />

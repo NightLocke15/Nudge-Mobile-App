@@ -1,4 +1,5 @@
 import { UserContext } from "@/AppContexts/UserContext";
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from "expo-router";
 import { useContext, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -74,35 +75,220 @@ function CreateAccount() {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View>
-                <Text>Welcome!</Text>
-                <View>
-                    <Text>Username</Text>
-                    <TextInput placeholder="Username..." placeholderTextColor="#9e9e9e" onChangeText={(e) => checkUsername(e)}/>
-                </View>
-                <View>
-                    <Text>Email Address</Text>
-                    <TextInput placeholder="Email Address..." placeholderTextColor="#9e9e9e" onChangeText={(e) => checkEmail(e)}/>
-                    <Text>{emailMessage}</Text>
-                </View>
-                <View>
-                    <Text>Password</Text>
-                    <TextInput placeholder="Password..." placeholderTextColor="#9e9e9e" onChangeText={(e) => checkPasssword(e)}/>
-                    <Text>{passwordMessage}</Text>
-                </View>
-                <Pressable onPress={() => createAccount(chosenUsername, chosenPassword, chosenEmail)}>
-                    <Text>Create Account</Text>
-                </Pressable>
-            </View>
+        <SafeAreaView style={stylesLight.container}>
+            <LinearGradient style={stylesLight.contentContainer} colors={["#ffffff", "#aaaaaa"]}>
+                <View style={stylesLight.headerContainer}>
+                    <Text style={stylesLight.header}>WELCOME!</Text>
+                </View>                
+                <View style={stylesLight.formContainer}>
+                    <View>
+                        <Text style={stylesLight.label}>Username</Text>
+                        <TextInput style={stylesLight.input} placeholder="Username..." placeholderTextColor="#9e9e9e" onChangeText={(e) => checkUsername(e)}/>
+                    </View>
+                    <View>
+                        <Text style={stylesLight.label}>Email Address</Text>
+                        <TextInput style={stylesLight.input} placeholder="Email Address..." placeholderTextColor="#9e9e9e" onChangeText={(e) => checkEmail(e)}/>
+                        <Text style={stylesLight.message}>{emailMessage}</Text>
+                    </View>
+                    <View>
+                        <Text style={stylesLight.label}>Password</Text>
+                        <TextInput style={stylesLight.input} placeholder="Password..." placeholderTextColor="#9e9e9e" onChangeText={(e) => checkPasssword(e)}/>
+                        <Text style={stylesLight.passwordMessage}>Password should contain at least 8 characters, 1 number and 1 special character.</Text>
+                        <Text style={stylesLight.message}>{passwordMessage}</Text>
+                    </View>
+                </View>     
+                <View style={stylesLight.accountContainer}>
+                    <Pressable style={stylesLight.clickable} onPress={() => createAccount(chosenUsername, chosenPassword, chosenEmail)}>
+                        <Text style={stylesLight.clickableText}>Create Account</Text>
+                    </Pressable>
+                    <Text style={stylesLight.loginLabel}>Already have an Account?</Text>
+                    <Pressable onPress={() => router.navigate('/account/login')}>
+                        <Text style={stylesLight.loginLink}>Log In</Text>
+                    </Pressable>
+                </View>                     
+            </LinearGradient>
         </SafeAreaView>        
     )
 }
 
-const styles = StyleSheet.create({
+const stylesLight = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    contentContainer: {
+        flex: 1,
+    },
+    headerContainer: {
+        marginLeft: "auto",
+        marginRight: "auto",
+        marginTop: 160,
+        marginBottom: 30
+    },
+    header: {
+        fontFamily: "Economica-Bold",
+        fontSize: 90
+    },
+    formContainer: {
+        flex: "20%",
+        marginLeft: 30,
+        marginRight: 30,
+    },
+    label: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 18,
+        marginTop: 20
+    },
+    input: {
+        border: "1px solid #4d4d4d",
+        borderRadius: 10,
+        height: 40,
+        padding: 5,
+        width: "100%",
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
         backgroundColor: "#fff"
+    },
+    message: {
+        flex: "3%",
+        fontFamily: "Sunflower-Medium",
+        fontSize: 15,
+        marginLeft: "auto",
+        marginRight: "auto",
+        marginTop: 8,
+        color: "#e70000"
+    },
+    passwordMessage: {
+        fontFamily: "Sunflower-Medium",
+        fontSize: 12,
+        marginLeft: "auto",
+        marginRight: "auto",
+    },
+    accountContainer: {
+        flex: "20%",
+        marginLeft: "auto",
+        marginRight: "auto",
+        marginTop: 40
+    },
+    clickable: {
+        backgroundColor: "#f0f0f0",
+        padding: 15,
+        borderRadius: 25,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+        marginBottom: 15
+    },
+    clickableText: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 18,
+        textAlign: "center"
+    },
+    loginLabel: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 18
+    },
+    loginLink: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 18,
+        color: "#1966ff",
+        textDecorationLine: "underline",
+        textAlign: "center"
+    }
+});
+
+const stylesDark = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+    contentContainer: {
+        flex: 1,
+    },
+    headerContainer: {
+        marginLeft: "auto",
+        marginRight: "auto",
+        marginTop: 160,
+        marginBottom: 30
+    },
+    header: {
+        fontFamily: "Economica-Bold",
+        fontSize: 90,
+        color: "#fff"
+    },
+    formContainer: {
+        flex: "20%",
+        marginLeft: 30,
+        marginRight: 30,
+    },
+    label: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 18,
+        marginTop: 20,
+        color: "#fff"
+    },
+    input: {
+        border: "1px solid #000000",
+        borderRadius: 10,
+        height: 40,
+        padding: 5,
+        width: "100%",
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+        backgroundColor: "#323232"
+    },
+    message: {
+        flex: "3%",
+        fontFamily: "Sunflower-Medium",
+        fontSize: 15,
+        marginLeft: "auto",
+        marginRight: "auto",
+        marginTop: 8,
+        color: "#e70000"
+    },
+    passwordMessage: {
+        fontFamily: "Sunflower-Medium",
+        fontSize: 12,
+        marginLeft: "auto",
+        marginRight: "auto",
+        color: "#fff"
+    },
+    accountContainer: {
+        flex: "20%",
+        marginLeft: "auto",
+        marginRight: "auto",
+        marginTop: 40
+    },
+    clickable: {
+        backgroundColor: "#3b3b3b",
+        padding: 15,
+        borderRadius: 25,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+        marginBottom: 15
+    },
+    clickableText: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 18,
+        textAlign: "center",
+        color: "#fff"
+    },
+    loginLabel: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 18,
+        color: "#fff"
+    },
+    loginLink: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 18,
+        color: "#1966ff",
+        textDecorationLine: "underline",
+        textAlign: "center"
     }
 });
 
