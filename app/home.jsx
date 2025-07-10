@@ -13,32 +13,41 @@ function Home() {
     //Router that allows the user to navigate to the different pages in the app
     const router = useRouter();
 
+    function logoutHome() {
+        logout();
+        router.navigate('/');
+    }
+
     return (
         <SafeAreaView style={stylesLight.container}>
-            {authenticated ? 
+            {JSON.parse(authenticated) ? 
             (<LinearGradient style={stylesLight.contentContainer} colors={["#ffffff", "#aaaaaa"]}>
-                <Text>NUDGE</Text>
-                <Pressable onPress={() => router.navigate('/to-do-list/to-do-list')}>
-                    <Text>To-Do</Text>
-                </Pressable>
-                <Pressable>
-                    <Text>Calendar</Text>
-                </Pressable>
-                <Pressable>
-                    <Text>Diary</Text>
-                </Pressable>
-                <Pressable>
-                    <Text>People</Text>
-                </Pressable>
-                <Pressable>
-                    <Text>Medication</Text>
-                </Pressable>
-                <Pressable>
-                    <Text>Emergency</Text>
-                </Pressable>
-                <Pressable onPress={logout}>
-                    <Text>LogOut</Text>
-                </Pressable>
+                <View style={stylesLight.homeHeaderContainer}>
+                    <Text style={stylesLight.homeHeader}>NUDGE</Text>
+                </View>
+                <View style={stylesLight.menuContainer}>
+                    <Pressable style={stylesLight.button} onPress={() => router.navigate('/to-do-list/to-do-list')}>
+                        <Text style={stylesLight.buttonText}>To-Do</Text>
+                    </Pressable>
+                    <Pressable style={stylesLight.button}>
+                        <Text style={stylesLight.buttonText}>Calendar</Text>
+                    </Pressable>
+                    <Pressable style={stylesLight.button}>
+                        <Text style={stylesLight.buttonText}>Diary</Text>
+                    </Pressable>
+                    <Pressable style={stylesLight.button}>
+                        <Text style={stylesLight.buttonText}>People</Text>
+                    </Pressable>
+                    <Pressable style={stylesLight.button}>
+                        <Text style={stylesLight.buttonText}>Medication</Text>
+                    </Pressable>
+                    <Pressable style={stylesLight.button}>
+                        <Text style={stylesLight.buttonText}>Emergency</Text>
+                    </Pressable>
+                    <Pressable onPress={logoutHome}>
+                        <Text>LogOut</Text>
+                    </Pressable>
+                </View>                
             </LinearGradient>) : 
             (<LinearGradient style={stylesLight.contentContainer} colors={["#ffffff", "#aaaaaa"]}>
                 <View style={stylesLight.headerContainer}>
@@ -49,8 +58,6 @@ function Home() {
                     <Pressable  style={stylesLight.clickableAccount} onPress={() => router.navigate('/account/login')}>
                         <Text style={stylesLight.clickableAccountText}>Log In</Text>
                     </Pressable> 
-                </View>
-                <View style={stylesLight.createContainer}>
                     <Pressable  style={stylesLight.clickableAccount} onPress={() => router.navigate('/account/createAccount')}>
                         <Text style={stylesLight.clickableAccountText}>Create Account</Text>
                     </Pressable>
@@ -62,6 +69,7 @@ function Home() {
 
 //Styles for this page
 const stylesLight = StyleSheet.create({
+    //Home before login
     container: {
         flex: 1,
     },
@@ -69,7 +77,7 @@ const stylesLight = StyleSheet.create({
         flex: 1
     },
     headerContainer: {
-        marginTop: 300,
+        marginTop: 150,
         marginRight:"auto",
         marginLeft: "auto",
         marginBottom: 10,
@@ -89,38 +97,58 @@ const stylesLight = StyleSheet.create({
         marginRight:"auto",
         marginLeft: "auto",
         flex: 1,
-    },
-    createContainer: {
-        marginRight:"auto",
-        marginLeft: "auto",
-        marginBottom: 180,
-        flex: 2,
+        marginBottom: 50,
     },
     clickableAccount: {
         backgroundColor: "#f0f0f0",
         padding: 15,
         borderRadius: 25,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 5,
+        elevation: 5,
+        marginBottom: 10
     },
     clickableAccountText: {
         fontFamily: "Sunflower-Light",
         fontSize: 20,
+        textAlign: "center"
+    },
+    
+    //Home after login
+    homeHeaderContainer: {
+        marginLeft: "auto",
+        marginRight: "auto",
+        marginTop: 20
+    },
+    homeHeader: {
+        fontFamily: "Economica-Bold",
+        fontSize: 40
+    },
+    menuContainer: {
+        marginLeft: 30,
+        marginRight: 30
+    },
+    button: {
+        backgroundColor: "#f0f0f0",
+        marginTop: 30,
+        padding: 20,
+        borderRadius: 10,
+        elevation: 5
+    },
+    buttonText: {
+        fontFamily: "Economica-Bold",
+        fontSize: 30,
+        textAlign: "center"
     }
 });
 
 const stylesDark = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#323232"
     },
     contentContainer: {
         flex: 1
     },
     headerContainer: {
-        marginTop: 300,
+        marginTop: 150,
         marginRight:"auto",
         marginLeft: "auto",
         marginBottom: 10,
@@ -142,21 +170,14 @@ const stylesDark = StyleSheet.create({
         marginRight:"auto",
         marginLeft: "auto",
         flex: 1,
-    },
-    createContainer: {
-        marginRight:"auto",
-        marginLeft: "auto",
-        marginBottom: 180,
-        flex: 2,
+        marginBottom: 50
     },
     clickableAccount: {
         backgroundColor: "#3b3b3b",
         padding: 15,
         borderRadius: 25,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 5,
+        elevation: 5,
+        marginBottom: 10
     },
     clickableAccountText: {
         fontFamily: "Sunflower-Light",

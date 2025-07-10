@@ -57,10 +57,7 @@ const stylesLight = StyleSheet.create({
         backgroundColor: "#f0f0f0",
         padding: 15,
         borderRadius: 25,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 5,
+        elevation: 5,
     },
     getStartedText: {
         color: "#000",
@@ -96,10 +93,7 @@ const stylesDark = StyleSheet.create({
         backgroundColor: "#3b3b3b",
         padding: 15,
         borderRadius: 25,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 5,
+        elevation: 5,
     },
     getStartedText: {
         color: "#fff",

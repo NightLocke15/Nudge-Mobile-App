@@ -23,7 +23,7 @@ function Login() {
     //Checks whether the data that the user provided matches the data that has been saved before it logs them in
     function handleLogin(email, password) {        
         for (let i = 0; i < users.length; i++) {
-            if (users[i].email === email && users[i].password === password) {
+            if (users[i].email === email && users[i].password === password && email !== "" && password !== "") {
                 login(true);
                 setMessage(false);      
                 setLocalUser(users[i].idnum);  
@@ -75,17 +75,17 @@ const stylesLight = StyleSheet.create({
         flex: 1
     },
     headerContainer: {
+        flex: "20%",
         marginLeft: "auto",
         marginRight: "auto",
-        marginTop: 200,
-        marginBottom: 25
+        marginTop: 180,
     },
     header: {
         fontFamily: "Economica-Bold",
         fontSize: 65
     },
     formContainer: {
-        flex: "20%",
+        flex: "40%",
         marginLeft: 30,
         marginRight: 30,
     },
@@ -94,15 +94,13 @@ const stylesLight = StyleSheet.create({
         fontSize: 18
     },
     input: {
-        border: "1px solid #4d4d4d",
+        borderWidth: 0.5,
+        borderColor: "#4d4d4d",
         borderRadius: 10,
         height: 40,
         padding: 5,
         width: "100%",
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 5,
+        elevation: 5,
         marginBottom: 25,
         backgroundColor: "#fff"
     },
@@ -110,15 +108,13 @@ const stylesLight = StyleSheet.create({
         flex: "40%",
         marginLeft: "auto",
         marginRight: "auto",
+        marginBottom: 150
     },
     clickable: {
         backgroundColor: "#f0f0f0",
         padding: 15,
         borderRadius: 25,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 5,
+        elevation: 5,
         marginBottom: 20
     },
     clickableText: {
@@ -155,10 +151,10 @@ const stylesDark = StyleSheet.create({
         flex: 1
     },
     headerContainer: {
+        flex: "20%",
         marginLeft: "auto",
         marginRight: "auto",
-        marginTop: 200,
-        marginBottom: 25
+        marginTop: 180,
     },
     header: {
         fontFamily: "Economica-Bold",
@@ -166,7 +162,7 @@ const stylesDark = StyleSheet.create({
         color: "#fff"
     },
     formContainer: {
-        flex: "20%",
+        flex: "40%",
         marginLeft: 30,
         marginRight: 30,
     },
@@ -176,15 +172,13 @@ const stylesDark = StyleSheet.create({
         color: "#fff"
     },
     input: {
-        border: "1px solid #000000",
+        borderWidth: 0.5,
+        borderColor: "#000000",
         borderRadius: 10,
         height: 40,
         padding: 5,
         width: "100%",
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 5,
+        elevation: 5,
         marginBottom: 25,
         backgroundColor: "#323232"
     },
@@ -192,15 +186,13 @@ const stylesDark = StyleSheet.create({
         flex: "40%",
         marginLeft: "auto",
         marginRight: "auto",
+        marginBottom: 150
     },
     clickable: {
         backgroundColor: "#3b3b3b",
         padding: 15,
         borderRadius: 25,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 5,
+        elevation: 5,
         marginBottom: 20
     },
     clickableText: {

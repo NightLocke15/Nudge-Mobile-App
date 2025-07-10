@@ -24,7 +24,7 @@ function CreateAccount() {
 
     //Function called when user creates account. Checks whether all the messages are clear and the data is valid before creating the account
     function createAccount(username, password, email) {
-        if (emailMessage === "" && passwordMessage === "") {
+        if (emailMessage === "" && passwordMessage === "" && chosenEmail !== "" && chosenUsername !== "" && chosenPassword !== "") {
             const idNum = createID(); //create an ID
             if (users.some((user) => user.idnum === idNum)) { //check if ID is unique
                 createAccount(username, password, email)
@@ -76,7 +76,7 @@ function CreateAccount() {
 
     return (
         <SafeAreaView style={stylesLight.container}>
-            <LinearGradient style={stylesLight.contentContainer} colors={["#ffffff", "#aaaaaa"]}>
+            <LinearGradient style={stylesLight.contentContainer} colors={["#ffffff", "#aaaaaa"]}>                
                 <View style={stylesLight.headerContainer}>
                     <Text style={stylesLight.header}>WELCOME!</Text>
                 </View>                
@@ -105,8 +105,8 @@ function CreateAccount() {
                     <Pressable onPress={() => router.navigate('/account/login')}>
                         <Text style={stylesLight.loginLink}>Log In</Text>
                     </Pressable>
-                </View>                     
-            </LinearGradient>
+                </View>                                     
+            </LinearGradient>            
         </SafeAreaView>        
     )
 }
@@ -121,7 +121,7 @@ const stylesLight = StyleSheet.create({
     headerContainer: {
         marginLeft: "auto",
         marginRight: "auto",
-        marginTop: 160,
+        marginTop: 100,
         marginBottom: 30
     },
     header: {
@@ -139,15 +139,13 @@ const stylesLight = StyleSheet.create({
         marginTop: 20
     },
     input: {
-        border: "1px solid #4d4d4d",
+        border: 0.5,
+        borderColor: "#4d4d4d",
         borderRadius: 10,
         height: 40,
         padding: 5,
         width: "100%",
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 5,
+        elevation: 5,
         backgroundColor: "#fff"
     },
     message: {
@@ -164,6 +162,7 @@ const stylesLight = StyleSheet.create({
         fontSize: 12,
         marginLeft: "auto",
         marginRight: "auto",
+        marginTop: 10
     },
     accountContainer: {
         flex: "20%",
@@ -175,10 +174,7 @@ const stylesLight = StyleSheet.create({
         backgroundColor: "#f0f0f0",
         padding: 15,
         borderRadius: 25,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 5,
+        elevation: 5,
         marginBottom: 15
     },
     clickableText: {
@@ -209,7 +205,7 @@ const stylesDark = StyleSheet.create({
     headerContainer: {
         marginLeft: "auto",
         marginRight: "auto",
-        marginTop: 160,
+        marginTop: 100,
         marginBottom: 30
     },
     header: {
@@ -229,15 +225,13 @@ const stylesDark = StyleSheet.create({
         color: "#fff"
     },
     input: {
-        border: "1px solid #000000",
+        borderWidth:0.5,
+        borderColor: "#000000",
         borderRadius: 10,
         height: 40,
         padding: 5,
         width: "100%",
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 5,
+        elevation: 5,
         backgroundColor: "#323232"
     },
     message: {
@@ -254,7 +248,8 @@ const stylesDark = StyleSheet.create({
         fontSize: 12,
         marginLeft: "auto",
         marginRight: "auto",
-        color: "#fff"
+        color: "#fff",
+        marginTop: 10
     },
     accountContainer: {
         flex: "20%",
@@ -266,10 +261,7 @@ const stylesDark = StyleSheet.create({
         backgroundColor: "#3b3b3b",
         padding: 15,
         borderRadius: 25,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 5,
+        elevation: 5,
         marginBottom: 15
     },
     clickableText: {
