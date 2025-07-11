@@ -133,7 +133,7 @@ function ToDoList() {
                 </View>                 
                 {chooseList ? (
                 <View style={stylesLight.addListContainer}>
-                    <TextInput placeholder="Name your list..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setNewListName(e)} style={stylesLight.input} />
+                    <TextInput placeholder="Name your list..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setNewListName(e)} maxLength={15} style={stylesLight.input} />
                     <Pressable onPress={newList} style={stylesLight.done}>
                         <Text style={stylesLight.doneText}>Done</Text>
                     </Pressable>
@@ -161,8 +161,7 @@ const stylesLight = StyleSheet.create({
     back: {
         position: "absolute",
         left: "5%",
-        top: "30%"
-        
+        top: "30%"        
     },
     backText: {
         fontFamily: "Economica-Bold",
@@ -225,14 +224,11 @@ const stylesLight = StyleSheet.create({
         padding: 10,
         paddingTop: 15,
         paddingBottom: 15,
-        width: "95%",
+        width: "100%",
         marginLeft: "auto",
         marginRight: "auto",
-        marginTop: 5,
         borderBottomWidth: 1,
-        borderBottomColor: "#9e9e9e",
-        borderRadius: 10,    
-        elevation: 2,   
+        borderBottomColor: "#9e9e9e",   
     },
     listItem: {
         flexDirection: "row",
@@ -249,7 +245,7 @@ const stylesLight = StyleSheet.create({
         marginRight: 5
     },
     headings: {
-        width: "95%",
+        width: "100%",
         marginRight: "auto",
         marginLeft: "auto",
         flexDirection: "row",
@@ -273,17 +269,152 @@ const stylesLight = StyleSheet.create({
         padding: 10,
         paddingTop: 15,
         paddingBottom: 15,
-        width: "95%",
+        width: "100%",
         marginLeft: "auto",
         marginRight: "auto",
-        marginTop: 5,
-        borderRadius: 10,
-        elevation: 2,
     },
     delete: {
         fontFamily: "Sunflower-Light",
         color: "#fff",
         fontSize: 20,
+    }
+});
+
+const stylesDark = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+    contentContainer: {
+        flex: 1,
+    },
+    back: {
+        position: "absolute",
+        left: "5%",
+        top: "30%",                
+    },
+    backText: {
+        fontFamily: "Economica-Bold",
+        fontSize: 20,  
+        color: "#fff"       
+    },
+    headerContainer: {
+        marginBottom: 20,
+        marginTop: 20,
+    },
+    header: {
+        fontFamily: "Economica-Bold",
+        fontSize: 40,
+        color: "#fff", 
+        marginLeft: "auto",
+        marginRight: "auto"
+    },
+    add: {        
+        position: "absolute",
+        right: "5%",
+        top: "30%"                   
+    },
+    addIcon: {
+        fontFamily: "Economica-Bold",
+        fontSize: 20,   
+        color: "#fff",     
+    },
+    input: {
+        backgroundColor: "#323232",
+        borderWidth: 0.5,
+        borderColor: "#000000",
+        borderRadius: 10,
+        padding: 10,
+        elevation: 5
+    },
+    addListContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "10%",
+        padding: 20,
+        backgroundColor: "#323232",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1
+    },
+    done: {
+        backgroundColor: "#3b3b3b",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    doneText: {
+        textAlign: "center",
+        fontFamily: "Sunflower-Light",
+        fontSize: 18,
+        color: "#fff",
+    },
+    listItemContainer: {
+        backgroundColor: "#323232",
+        padding: 10,
+        paddingTop: 15,
+        paddingBottom: 15,
+        width: "100%",
+        marginLeft: "auto",
+        marginRight: "auto",
+        borderBottomWidth: 1,
+        borderBottomColor: "#9e9e9e",
+    },
+    listItem: {
+        flexDirection: "row",
+        justifyContent: "space-between"
+    },
+    listItemName: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 20,
+        marginLeft: 5,
+        color: "#fff"
+    },
+    listItemType: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 20,
+        marginRight: 5,
+        color: "#fff"
+    },
+    headings: {
+        width: "100%",
+        marginRight: "auto",
+        marginLeft: "auto",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        borderBottomWidth: 0.5,
+        borderBottomColor: "#9e9e9e",
+        padding: 5
+    },
+    headingsTextName: {
+        fontFamily: "Economica-Bold",
+        fontSize: 25,
+        marginLeft: 10,
+        color: "#fff"
+    },
+    headingsTextType: {
+        fontFamily: "Economica-Bold",
+        fontSize: 25,
+        marginRight: 10,
+        color: "#fff"
+    },
+    deleteContainer: {
+        backgroundColor: "#940314",
+        padding: 10,
+        paddingTop: 15,
+        paddingBottom: 15,
+        width: "100%",
+        marginLeft: "auto",
+        marginRight: "auto",
+    },
+    delete: {
+        fontFamily: "Sunflower-Light",
+        color: "#fff",
+        fontSize: 20,
+        color: "#fff"
     }
 });
 
