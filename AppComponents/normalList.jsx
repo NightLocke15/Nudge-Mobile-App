@@ -39,8 +39,6 @@ function NormalList(props) {
         }) 
         setUsers(userListAddision);
         setListItem("");
-        console.log(localUserInfo[0]);
-        console.log(id);
     }
 
     const itemRendered = ({item}) => {

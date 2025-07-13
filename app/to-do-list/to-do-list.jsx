@@ -5,12 +5,13 @@ import { useContext, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { SwipeListView } from 'react-native-swipe-list-view';
+import { SwipeListView } from "react-native-swipe-list-view";
 
 function ToDoList() {
     const { localUser, localUserInfo, users, setUsers } = useContext(UserContext);
     const [chooseList, setChooseList] = useState(false);
     const [newListName, setNewListName] = useState("");
+    const [warning, setWarning] = useState("");
     const router = useRouter();
 
     function newList() {
@@ -46,18 +47,25 @@ function ToDoList() {
             if (user.idnum === localUser) {
                 const newUserLists = user.lists.map((list) => {
                     if (listName === list.name) {
-                        if (list.type === "Normal") {
-                            return {
-                                ...list,
-                                type: "Timed"
+                        if (list.listItems.length === 0) {
+                            if (list.type === "Normal") {
+                                return {
+                                    ...list,
+                                    type: "Timed"
+                                }
+                            }
+                            else if (list.type === "Timed") {
+                                return {
+                                    ...list,
+                                    type: "Normal"
+                                }
                             }
                         }
-                        else if (list.type === "Timed") {
-                            return {
-                                ...list,
-                                type: "Normal"
-                            }
+                        else {
+                            setWarning("List Type can only be changed on lists without list items.");
+                            return list;
                         }
+                        
                     }
                     else {
                         return list;
@@ -124,28 +132,42 @@ function ToDoList() {
                     </Pressable>
                     <Text style={stylesLight.header}>TO-DO LISTS</Text>
                     <Pressable onPress={() => setChooseList(!chooseList)} style={stylesLight.add}>
-                        <Text style={stylesLight.addIcon}>{chooseList ? "Close" : "Add"}</Text>
+                        <Text style={stylesLight.addIcon}>{chooseList ? "" : "Add"}</Text>
                     </Pressable>
                 </View>   
                 <View style={stylesLight.headings}>
                     <Text style={stylesLight.headingsTextName}>Name</Text>
                     <Text style={stylesLight.headingsTextType}>Type</Text>
-                </View>                 
-                {chooseList ? (
-                <View style={stylesLight.addListContainer}>
-                    <TextInput placeholder="Name your list..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setNewListName(e)} maxLength={15} style={stylesLight.input} />
-                    <Pressable onPress={newList} style={stylesLight.done}>
-                        <Text style={stylesLight.doneText}>Done</Text>
-                    </Pressable>
-                </View>
-                ) : (
-                    <View></View>
-                )}    
+                </View>          
                 <SwipeListView data={localUserInfo[0] && localUserInfo[0].lists} 
                 renderItem={itemRendered} 
                 renderHiddenItem={hiddenItemRendered} 
                 leftOpenValue={100} 
-                disableLeftSwipe={true} />
+                disableLeftSwipe={true} />       
+                {chooseList ? (
+                    <View style={stylesLight.overLay}>
+                        <View style={stylesLight.addListContainer}>
+                        <TextInput placeholder="Name your list..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setNewListName(e)} maxLength={15} style={stylesLight.input} />
+                        <Pressable onPress={newList} style={stylesLight.done}>
+                            <Text style={stylesLight.doneText}>Done</Text>
+                        </Pressable>
+                        </View>
+                    </View>                
+                ) : (
+                    <View></View>
+                )}    
+                {warning === "" ? (
+                    <View></View>
+                ) : (
+                    <View style={stylesLight.overLay}>
+                        <View style={stylesLight.warningContainer}>
+                        <Text style={stylesLight.warningText}>{warning}</Text>
+                        <Pressable onPress={() => setWarning("")} style={stylesLight.okay}>
+                            <Text style={stylesLight.okayText}>Okay</Text>
+                        </Pressable>
+                        </View>
+                    </View>                    
+                )}
             </LinearGradient>
         </SafeAreaView>
     )
@@ -205,6 +227,15 @@ const stylesLight = StyleSheet.create({
         borderRadius: 10,
         zIndex: 1
     },
+    overLay: {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        right: 0,
+        left: 0,
+        flex: 1,
+        backgroundColor: "rgba(139, 139, 139, 0.5)"
+    },
     done: {
         backgroundColor: "#f0f0f0",
         marginLeft: "auto",
@@ -215,6 +246,39 @@ const stylesLight = StyleSheet.create({
         borderRadius: 10,
     },
     doneText: {
+        textAlign: "center",
+        fontFamily: "Sunflower-Light",
+        fontSize: 18
+    },
+    warningContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "10%",
+        padding: 20,
+        backgroundColor: "#fff",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1,
+        borderWidth: 1,
+        borderColor: "#940314"
+    },
+    warningText: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 20,
+        color: "#940314",
+        marginBottom: 10
+    },
+    okay: {
+        backgroundColor: "#f0f0f0",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    okayText: {
         textAlign: "center",
         fontFamily: "Sunflower-Light",
         fontSize: 18
@@ -337,6 +401,15 @@ const stylesDark = StyleSheet.create({
         borderRadius: 10,
         zIndex: 1
     },
+    overLay: {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        right: 0,
+        left: 0,
+        flex: 1,
+        backgroundColor: "rgba(139, 139, 139, 0.5)"
+    },
     done: {
         backgroundColor: "#3b3b3b",
         marginLeft: "auto",
@@ -351,6 +424,40 @@ const stylesDark = StyleSheet.create({
         fontFamily: "Sunflower-Light",
         fontSize: 18,
         color: "#fff",
+    },
+    warningContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "10%",
+        padding: 20,
+        backgroundColor: "#323232",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1,
+        borderWidth: 1,
+        borderColor: "#940314"
+    },
+    warningText: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 20,
+        color: "#940314",
+        marginBottom: 10
+    },
+    okay: {
+        backgroundColor: "#3b3b3b",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    okayText: {
+        textAlign: "center",
+        fontFamily: "Sunflower-Light",
+        fontSize: 18,
+        color: "#fff"
     },
     listItemContainer: {
         backgroundColor: "#323232",
