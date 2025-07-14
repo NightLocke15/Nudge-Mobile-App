@@ -173,7 +173,7 @@ function NormalList(props) {
     return (        
         <LinearGradient style={stylesLight.contentContainer} colors={["#ffffff", "#aaaaaa"]}>
             <View style={stylesLight.headerContainer}>
-                <Pressable onPress={() => router.navigate("/to-do-list/to-do-list")} style={stylesLight.back}>
+                <Pressable onPress={() => router.dismissTo("/to-do-list/to-do-list")} style={stylesLight.back}>
                     <Text style={stylesLight.backText}>Lists</Text>
                 </Pressable>
                 <Text style={stylesLight.header}>{localUserInfo[0].lists[id].name}</Text>

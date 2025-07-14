@@ -14,7 +14,13 @@ function TimedList(props) {
     const [editing, setEditing] = useState(false);
     const router = useRouter();
     const [time, setTime] = useState(new Date());
-    
+    const [changeTime, setChangeTime] = useState(false);
+    const [timeAmount, setTimeAmount] = useState("");
+    const [viewItemBox, setViewItemBox] = useState(false);  
+    const [viewItemText, setViewItemText] = useState("");  
+    const [startTimes, setStartTimes] = useState({h: 0, m: 0});
+    const [endTimes, setEndTimes] = useState({h: 0, m: 0});
+    const [changed, setChanged] = useState(false);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -31,7 +37,7 @@ function TimedList(props) {
                     if (list.name === localUserInfo[0].lists[id].name) {
                         return {
                             ...list,
-                            listItems: [...list.listItems, {id: list.listItems.length, item: listItem, completed: false, timeLengthMins: "", startTime: "", endTime: ""}]
+                            listItems: [...list.listItems, {id: list.listItems.length, item: listItem, completed: false, overdue: false, inRange: true, timeLengthMins: 0, startTime: null, endTime: null}]
                         }
                     }
                     else {
@@ -49,23 +55,28 @@ function TimedList(props) {
         }) 
         setUsers(userListAddision);
         setListItem("");
+        console.log(localUserInfo);
     }
 
     const itemRendered = ({item}) => {
         return (
-            <View key={item.id} style={stylesLight.listItemContainer}>
-                <Pressable onLongPress={() => completeListItem(item.id)} style={stylesLight.listItemNameContainer}>
-                    <Text numberOfLines={1} ellipsizeMode="tail" style={item.completed ? stylesLight.listItemNameComplete : stylesLight.listItemNameUncomplete}>{item.item}</Text>
+            <View key={item.id} style={[stylesLight.listItemContainer, (item.endTime && item.endTime.h >= endTimes.h && item.endTime.m > endTimes.m) && stylesLight.listItemContainerOutRange, (item.endTime && time.getTime() >= new Date().setHours(item.endTime.h, item.endTime.m, 0, 0) && item.completed === false) && stylesLight.listItemContainerOverdue]}>
+                <Pressable onLongPress={() => completeListItem(item.id)} onPress={() => viewItem(item)} style={stylesLight.listItemNameContainer}>
+                    <Text numberOfLines={1} ellipsizeMode="tail" style={item && item.completed ? stylesLight.listItemNameComplete : stylesLight.listItemNameUncomplete}>{item.item}</Text>
                 </Pressable>    
                 <View style={stylesLight.listItemTimesContainer}>
-                    <Pressable onPress={() => addTimeAmount(item.id)}>
-                        <Text>0 Mins</Text>
+                    <Pressable onPress={() => addTimeAmount(item)}>
+                        <Text>{item.timeLengthMins} Mins</Text>
                     </Pressable>
-                    <View style={stylesLight.timeToTime}>
-                        <Text></Text>
-                        <Text>to</Text>
-                        <Text></Text>
-                    </View>                    
+                    {item.startTime === null || item.endTime === null ? (
+                        <View></View>
+                    ) : (
+                        <View style={stylesLight.timeToTime}>
+                            <Text>{item.startTime !== null ? `${item.startTime.h}:${item.startTime.m === 0 ? `${item.startTime.m}0` : `${item.startTime.m}`}` : ``}</Text>
+                            <Text> to </Text>
+                            <Text>{item.endTime !== null ? `${item.endTime.h}:${item.endTime.m === 0 ? `${item.endTime.m}0` : item.endTime.m < 10 ? `0${item.endTime.m}` : `${item.endTime.m}`}` : ``}</Text>
+                        </View> 
+                    )}                                       
                 </View>           
             </View>
         )
@@ -109,6 +120,7 @@ function TimedList(props) {
             }
         }) 
         setUsers(userChange);
+        setChanged(true);
     }
 
     const editItem = (item) => {
@@ -151,9 +163,64 @@ function TimedList(props) {
         setEditing(false);
     }
 
-    const addTimeAmount = (itemID) => {
-        
+    const addTimeAmount = (item) => {
+        setChangeTime(true);
+        setlistItemID(item.id);
     } 
+
+    function finishTimeAmount() {
+        const userChange = users.map((user) => {
+            if (user.idnum === localUser) {
+                const newUserLists = user.lists.map((list) => {
+                    if (list.name === localUserInfo[0].lists[id].name) {
+                        const newListItems = list.listItems.map((listObject) => {
+                            if (listObject.id === listItemID) {
+                                return {
+                                    ...listObject,
+                                    timeLengthMins: parseInt(timeAmount),
+                                }
+                            }
+                            else {
+                                
+                                return {
+                                    ...listObject
+                                }
+                            }
+                        })
+                        return {
+                            ...list,
+                            listItems: newListItems
+                        }
+                    }
+                    else {
+                        return list;
+                    }
+                })
+                return {
+                    ...user,
+                    lists: newUserLists
+                }
+            }
+            else {
+                return user;
+            }
+        }) 
+
+        setUsers(userChange);
+        setChangeTime(false);
+        setTimeAmount("");
+        setChanged(true);
+    }
+
+    const viewItem = (item) => {
+        setViewItemBox(true);
+        setViewItemText(item.item);
+    }
+
+    function closeViewBox() {
+        setViewItemText("");
+        setViewItemBox(false);
+    }
 
     function completeListItem(itemID) {
         const userChange = users.map((user) => {
@@ -193,27 +260,141 @@ function TimedList(props) {
         setUsers(userChange);
     }
 
+    function update() {
+        const currentListItems = localUserInfo[0].lists[id].listItems;
+        const newListItems = [];
+        for (let i = 0; i < currentListItems.length; i++) {
+            let starthour;
+            let startmin;
+            let endhour;
+            let endmin;
+            let range;
+
+            if (i !== 0) {
+                starthour = newListItems[i - 1].endTime.h;
+                startmin = newListItems[i - 1].endTime.m + 5;
+
+                if (startmin >= 60) {
+                    let extra = Math.floor(startmin/60);
+                    startmin -= 60*extra;
+                    starthour += extra;
+
+                    endhour = starthour;
+                    endmin = startmin + currentListItems[i].timeLengthMins;
+
+                    if (endmin >= 60) {
+                        let extraToo = Math.floor(endmin/60);
+                        endmin -= 60*extraToo;
+                        endhour += extraToo;
+                    }
+                }
+                else {
+                    starthour = newListItems[i - 1].endTime.h;
+                    startmin = newListItems[i - 1].endTime.m + 5;
+
+                    endhour = starthour;
+                    endmin = startmin + currentListItems[i].timeLengthMins;
+
+                    if (endmin >= 60) {
+                        let extraToo = Math.floor(endmin/60);
+                        endmin -= 60*extraToo;
+                        endhour += extraToo;
+                    }
+                }
+
+                newListItems.push(
+                    {
+                        ...currentListItems[i],
+                        startTime: {h: starthour, m: startmin},
+                        endTime: {h: endhour, m: endmin}
+                    }
+                )
+            }
+            else {
+                starthour = startTimes.h;
+                startmin = startTimes.m;
+
+                endhour = starthour;
+                endmin = startmin + currentListItems[i].timeLengthMins;
+
+                if (endmin >= 60) {
+                    let extraToo = Math.floor(endmin/60);
+                    endmin -= 60*extraToo;
+                    endhour += extraToo;
+                }
+
+                newListItems.push(
+                    {
+                        ...currentListItems[i],
+                        startTime: {h: starthour, m: startmin},
+                        endTime: {h: endhour, m: endmin}
+                    }
+                )
+            } 
+        }
+
+        const userChange = users.map((user) => {
+            if (user.idnum === localUser) {
+                const newUserLists = user.lists.map((list) => {
+                    if (list.name === localUserInfo[0].lists[id].name) {
+                        return {
+                            ...list,
+                            listItems: newListItems
+                        }
+                    }
+                    else {
+                        return list;
+                    }
+                })
+                return {
+                    ...user,
+                    lists: newUserLists
+                }
+            }
+            else {
+                return user;
+            }
+        }) 
+
+        setUsers(userChange);
+        setChanged(false);
+    }
+
+    function changeStartTimes(object) {
+        setChanged(true);
+        setStartTimes(object);
+    }
+
+    function changeEndTimes(object) {
+        setChanged(true);
+        setEndTimes(object);
+    }
+
     return (
         <LinearGradient style={stylesLight.contentContainer} colors={["#ffffff", "#aaaaaa"]}>
             <View style={stylesLight.headerContainer}>
-                <Pressable onPress={() => router.navigate("/to-do-list/to-do-list")} style={stylesLight.back}>
+                <Pressable onPress={() => router.dismissTo("/to-do-list/to-do-list")} style={stylesLight.back}>
                     <Text style={stylesLight.backText}>Lists</Text>
                 </Pressable>
                 <Text style={stylesLight.header}>{localUserInfo[0].lists[id].name}</Text>
-                <Text style={stylesLight.timeText}>{`${time.getHours()}:${time.getMinutes()}`}</Text>
+                <Text style={stylesLight.timeText}>{`${time.getHours()}:${time.getMinutes() < 10 ? `0${time.getMinutes()}` : time.getMinutes()}`}</Text>
             </View>   
             <View style={stylesLight.timeContainer}>
                 <View style={stylesLight.timeTextContainer}>
                     <Text style={stylesLight.textsTime}>Start Time</Text>
                 </View>
                 <View style={stylesLight.timeInputContainer}>
-                    <TextInput placeholder="eg. 14:00" placeholderTextColor="#9e9e9e" style={stylesLight.timeInput} />
+                    <TextInput placeholder="hrs" placeholderTextColor="#9e9e9e" value={startTimes.h === null ? 0 : startTimes.h} onChangeText={(e) => changeStartTimes({...startTimes, h: parseInt(e)})} style={stylesLight.timeInput} />
+                    <Text style={stylesLight.colon}>:</Text>
+                    <TextInput placeholder="mins" placeholderTextColor="#9e9e9e" value={startTimes.m === null ? 0 : startTimes.m}  onChangeText={(e) => changeStartTimes({...startTimes, m: parseInt(e)})} style={stylesLight.timeInput} />
                 </View>
                 <View style={stylesLight.timeTextContainer}>
                     <Text style={stylesLight.textsTime}>End Time</Text>
                 </View>
                 <View style={stylesLight.timeInputContainer}>
-                    <TextInput placeholder="eg. 17:00" placeholderTextColor="#9e9e9e" style={stylesLight.timeInput} />
+                    <TextInput placeholder="hrs" placeholderTextColor="#9e9e9e" value={endTimes.h === null ? 0 : endTimes.h}  onChangeText={(e) => changeEndTimes({...endTimes, h: parseInt(e)})} style={stylesLight.timeInput} />
+                    <Text style={stylesLight.colon}>:</Text>
+                    <TextInput placeholder="mins" placeholderTextColor="#9e9e9e" value={endTimes.m === null ? 0 : endTimes.m}  onChangeText={(e) => changeEndTimes({...endTimes, m: parseInt(e)})} style={stylesLight.timeInput} />
                 </View>               
             </View>
             <View style={stylesLight.addContainer}>
@@ -222,11 +403,44 @@ function TimedList(props) {
                     <Text style={stylesLight.addText}>{editing ? "Done" : "Add"}</Text>
                 </Pressable>
             </View>   
+            {changed ? (
+                <View style={stylesLight.update}>
+                    <Pressable onPress={update} style={stylesLight.updateClickable}>
+                        <Text style={stylesLight.updateText}>Update</Text>
+                    </Pressable>
+                </View>
+            ) : (
+                <View></View>
+            )}
             <SwipeListView data={localUserInfo[0].lists[id] && localUserInfo[0].lists[id].listItems} 
                 renderItem={itemRendered} 
                 renderHiddenItem={hiddenItemRendered} 
                 leftOpenValue={100} 
                 rightOpenValue={-100} />  
+            {changeTime ? (
+                <View style={stylesLight.overLay}>
+                    <View style={stylesLight.container}>
+                        <TextInput keyboardType="numeric" placeholder="Number of Minutes..." onChangeText={(e) => setTimeAmount(parseInt(e))} style={stylesLight.input}/>
+                        <Pressable onPress={finishTimeAmount} style={stylesLight.done}>
+                            <Text style={stylesLight.doneText}>Done</Text>
+                        </Pressable>
+                    </View>
+                </View>                
+            ) : (
+                <View></View>
+            )}
+            {viewItemBox ? (
+                <View style={stylesLight.overLay}>
+                    <View style={stylesLight.container}>
+                        <Text style={stylesLight.listItemText}>{viewItemText}</Text>
+                        <Pressable onPress={closeViewBox} style={stylesLight.done}>
+                            <Text style={stylesLight.doneText}>Done</Text>
+                        </Pressable>
+                    </View>
+                </View>                
+            ) : (
+                <View></View>
+            )}            
         </LinearGradient>
     )
 }
@@ -278,6 +492,7 @@ const stylesLight = StyleSheet.create({
         borderRadius: 10,
         padding: 10,
         elevation: 5,
+        width: 55
     },
     timeTextContainer: {
         flexGrow: 1,
@@ -285,7 +500,23 @@ const stylesLight = StyleSheet.create({
     },
     timeInputContainer: {
         flex: 3,
+        flexDirection: "row",
+        justifyContent: "space-evenly",
         marginRight: 10
+    },
+    update: {
+        margin: 10,
+    },
+    updateClickable: {
+        backgroundColor: "#f0f0f0",
+        padding: 10, 
+        elevation: 5,
+        borderRadius: 10       
+    },
+    updateText: {
+        textAlign: "center",
+        fontFamily: "Sunflower-Light",
+        fontSize: 18
     },
     addContainer: {
         width: "95%",
@@ -293,7 +524,7 @@ const stylesLight = StyleSheet.create({
         marginRight: "auto",
         flexDirection: "row",
         justifyContent: "space-evenly",
-        marginBottom: 10
+        marginBottom: 5
     },
     input: {
         backgroundColor: "#fff",
@@ -331,6 +562,32 @@ const stylesLight = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between"
     },
+    listItemContainerOverdue: {
+        backgroundColor: "#ff7a7aff",
+        padding: 10,
+        paddingTop: 15,
+        paddingBottom: 15,
+        width: "100%",
+        marginLeft: "auto",
+        marginRight: "auto",
+        borderBottomWidth: 1,
+        borderBottomColor: "#9e9e9e",   
+        flexDirection: "row",
+        justifyContent: "space-between"
+    },
+    listItemContainerOutRange: {
+        backgroundColor: "#ffca58ff",
+        padding: 10,
+        paddingTop: 15,
+        paddingBottom: 15,
+        width: "100%",
+        marginLeft: "auto",
+        marginRight: "auto",
+        borderBottomWidth: 1,
+        borderBottomColor: "#9e9e9e",   
+        flexDirection: "row",
+        justifyContent: "space-between"
+    },
     listItemNameContainer: {        
         flexDirection: "row",
         flexGrow: 1,
@@ -356,6 +613,12 @@ const stylesLight = StyleSheet.create({
     },
     timeToTime: {
         flexDirection: "row"
+    },
+    colon: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 20,
+        marginTop: 10,
+
     },
     hiddenContainer: {
         flexDirection: "row",
@@ -387,6 +650,51 @@ const stylesLight = StyleSheet.create({
         color: "#fff",
         fontSize: 15,
         marginLeft: "auto"
+    },
+    overLay: {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        right: 0,
+        left: 0,
+        flex: 1,
+        backgroundColor: "rgba(139, 139, 139, 0.5)"
+    },
+    container: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "10%",
+        padding: 20,
+        backgroundColor: "#fff",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1
+    },
+    done: {
+        backgroundColor: "#f0f0f0",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    doneText: {
+        textAlign: "center",
+        fontFamily: "Sunflower-Light",
+        fontSize: 18
+    },
+    listItemText: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 18,
+        lineHeight: 25
+    },
+    overdue: {
+        backgroundColor: "#ff6a6aff"
+    },
+    outRange: {
+        backgroundColor: "#ffd57aff"
     }
 })
 
