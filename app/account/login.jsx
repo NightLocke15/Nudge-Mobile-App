@@ -26,7 +26,7 @@ function Login() {
             if (users[i].email === email && users[i].password === password && email !== "" && password !== "") {
                 login(true);
                 setMessage(false);      
-                setLocalUser(users[i].idnum);  
+                setLocalUser(users[i].idnum); 
                 router.navigate('/home');
             }
             else {

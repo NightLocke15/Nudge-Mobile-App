@@ -10,7 +10,8 @@ function UserProvider({children}) {
         idnum: "0001",
         email: "user@mail.com",
         password: "password",
-        lists: []
+        lists: [],
+        logs: []
     }]);
     const [authenticated, setAuthenticated] = useState(() => {
         const Auth = AsyncStorage.getItem("isAuthenticated");
@@ -43,7 +44,7 @@ function UserProvider({children}) {
 
     //Create new account and add it to the list of already existing accounts
     function createUserProfile(username, id, password, email) {
-        setUsers([...users, {username: username, idnum: id, password: password, email: email, lists: []}]);
+        setUsers([...users, {username: username, idnum: id, password: password, email: email, lists: [], logs: []}]);
         setAuthenticated(true);
         setLocalUser(id);
     }

@@ -8,7 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 function Home() {
     //Accesses user context in order to determine if the user has logged in or not
-    const { authenticated, logout } = useContext(UserContext);
+    const { authenticated, logout, localUserInfo } = useContext(UserContext);
 
     //Router that allows the user to navigate to the different pages in the app
     const router = useRouter();
@@ -16,6 +16,11 @@ function Home() {
     function logoutHome() {
         logout();
         router.navigate('/');
+    }
+
+    function test() {
+        console.log(localUserInfo);
+        router.navigate('/logs/diaryLogs');
     }
 
     return (
@@ -32,13 +37,13 @@ function Home() {
                     <Pressable style={stylesLight.button}>
                         <Text style={stylesLight.buttonText}>Calendar</Text>
                     </Pressable>
-                    <Pressable style={stylesLight.button}>
+                    <Pressable style={stylesLight.button} onPress={test}>
                         <Text style={stylesLight.buttonText}>Diary</Text>
                     </Pressable>
-                    <Pressable style={stylesLight.button}>
+                    <Pressable style={stylesLight.button} onPress={() => router.navigate('/logs/peopleLogs')}>
                         <Text style={stylesLight.buttonText}>People</Text>
                     </Pressable>
-                    <Pressable style={stylesLight.button}>
+                    <Pressable style={stylesLight.button} onPress={() => router.navigate('/logs/medicationLogs')}>
                         <Text style={stylesLight.buttonText}>Medication</Text>
                     </Pressable>
                     <Pressable style={stylesLight.button}>

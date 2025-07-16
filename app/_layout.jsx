@@ -38,6 +38,9 @@ function RootLayout() {
                         <Stack.Screen name="home" />
                         <Stack.Screen name="account/login" />
                         <Stack.Screen name="to-do-list/to-do-list" />
+                        <Stack.Screen name="logs/diaryLogs" />
+                        <Stack.Screen name="logs/medicationLogs" />
+                        <Stack.Screen name="logs/peopleLogs" />
                     </Stack>
                 </UserProvider>            
             </SafeAreaProvider>
