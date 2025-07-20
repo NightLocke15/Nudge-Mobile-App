@@ -29,7 +29,6 @@ function DiaryLogs() {
         }
         });
         setUsers(usersReVamp);
-        console.log(localUserInfo[0] && localUserInfo[0].logs);
     }
 
     function goToLog(id) {
