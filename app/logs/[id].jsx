@@ -1,5 +1,4 @@
 import Diary from "@/AppComponents/diary";
-import Medication from "@/AppComponents/medication";
 import People from "@/AppComponents/people";
 import { UserContext } from "@/AppContexts/UserContext";
 import { useLocalSearchParams } from "expo-router";
@@ -15,8 +14,6 @@ function MakeLog() {
         <SafeAreaView style = {stylesLight.container}>
             {localUserInfo[0].logs[id].type === "Diary" ? 
             <Diary id={id} /> :
-            localUserInfo[0].logs[id].type === "Medication" ? 
-            <Medication id={id} /> :
             <People id={id} />}
         </SafeAreaView>
     )
