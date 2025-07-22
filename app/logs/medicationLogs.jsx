@@ -347,6 +347,10 @@ function MedicationLogs() {
         setUsers(userChange);
     }
 
+    function removeTime(timeID) {
+        setTimes(times.filter((time) => time.id !== timeID));
+    }
+
     return (
         <SafeAreaView style={stylesLight.container}>
             <LinearGradient colors={["#ffffff", "#aaaaaa"]} style={stylesLight.contentContainer}>
@@ -363,7 +367,7 @@ function MedicationLogs() {
                 renderItem={renderMeds} 
                 renderHiddenItem={hiddenRender}
                 leftOpenValue={100}
-                rightOpenValue={-100}/>
+                disableLeftSwipe={true}/>
                 {createEntry ? (
                     <View style={stylesLight.overLay}>
                         <View style={stylesLight.addMedContainer}>
@@ -384,7 +388,7 @@ function MedicationLogs() {
                             <View style={stylesLight.formFetchDate}>
                                 <View>
                                     <Text style={stylesLight.formHeaders}>Date of First Pick-Up: </Text>
-                                    <Text>{fetchDate.toLocaleDateString()}</Text>
+                                    <Text style={stylesLight.dateStyle}>{fetchDate.toLocaleDateString()}</Text>
                                 </View> 
                                 <View>
                                     <Pressable onPress={showFetchDatePicker}>
@@ -405,7 +409,7 @@ function MedicationLogs() {
                             <View style={stylesLight.formFetchDate}>
                                 <View>
                                     <Text style={stylesLight.formHeaders}>Date of First Dose: </Text>
-                                    <Text>{startDate.toLocaleDateString()}</Text>
+                                    <Text style={stylesLight.dateStyle}>{startDate.toLocaleDateString()}</Text>
                                 </View> 
                                 <View>
                                     <Pressable onPress={showStartDatePicker}>
@@ -423,7 +427,12 @@ function MedicationLogs() {
                                 />
                             </View>                            
                             {times && times.map((time) => (
-                                <Text key={time.id}>{time.time}</Text>
+                                <View key={time.id} style={stylesLight.timeStyleContainer}>
+                                    <Text style={stylesLight.timeStyle}>{time.time}</Text>
+                                    <Pressable onPress={() => removeTime(time.id)}>
+                                        <Text>Remove</Text>
+                                    </Pressable>
+                                </View>                                
                             ))}
                             <View style={stylesLight.formAddTime}>
                                 <TextInput placeholder="Time (eg. 14:00)..." placeholderTextColor="#9e9e9e" value={oneTime} onChangeText={(e) => setOneTime(e)} style={stylesLight.input} />
@@ -432,7 +441,7 @@ function MedicationLogs() {
                                 </Pressable>
                             </View>                            
                             <Pressable onPress={addMedLog}>
-                                <Text style={stylesLight.click}>Done</Text>
+                                <Text style={[stylesLight.click, {marginTop: 5}]}>Done</Text>
                             </Pressable>
                         </View>
                     </View>                    
@@ -638,6 +647,245 @@ const stylesLight = StyleSheet.create({
         marginBottom: 10,
         marginTop: 5
     },
+    timeStyleContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        borderBottomWidth: 0.5,
+        marginBottom:10
+    },
+    timeStyle: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 15
+    },
+    dateStyle: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 15,
+        marginTop: 5 
+    }
+})
+
+const stylesDark = StyleSheet.create({
+    container: {
+        flex: 1
+    },
+    contentContainer: {
+        flex: 1
+    },
+    back: {
+        position: "absolute",
+        left: "5%",
+        top: "30%",       
+    },
+    backText: {
+        fontFamily: "Economica-Bold",
+        fontSize: 20,   
+        color: "#fff"      
+    },
+    headerContainer: {
+        marginBottom: 20,
+        marginTop: 20,
+    },
+    header: {
+        fontFamily: "Economica-Bold",
+        fontSize: 40,
+        marginLeft: "auto",
+        marginRight: "auto",
+        color: "#fff"
+    },
+    add: {        
+        position: "absolute",
+        right: "5%",
+        top: "30%"                   
+    },
+    addIcon: {
+        fontFamily: "Economica-Bold",
+        fontSize: 20,     
+        color: "#fff"   
+    },
+    medicationContainer: {
+        backgroundColor: "#323232",
+        padding: 20,
+        paddingTop: 15,
+        paddingBottom: 15,
+        width: "100%",
+        marginLeft: "auto",
+        marginRight: "auto",
+        borderBottomWidth: 1,
+        borderBottomColor: "#9e9e9e", 
+        height: 135,  
+    },
+    nameDose: {
+        flexDirection: "row",
+        justifyContent: "space-between"
+    },
+    name: {
+        fontFamily: "Economica-Bold",
+        fontSize: 20,
+        marginBottom: 8,
+        color: "#fff"
+    },
+    dosage: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 15,
+        color: "#fff"
+    },
+    fetching: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginTop: 10
+    },
+    nameContainer: {
+        alignSelf: "flex-start"
+    },
+    doseContainer: {
+        flexDirection: "row",
+    },
+    nextDose: {
+        alignItems: "center",
+        marginRight: 40
+    },
+    clickable: {
+        backgroundColor: "#3b3b3b",
+        padding: 10,
+        elevation: 5,
+        borderRadius: 10,
+        fontFamily: "Sunflower-Light",
+        fontSize: 15,
+        color: "#fff"
+    },
+    nextDoseText: {
+        fontFamily: "Economica-Bold",
+        fontSize: 20,
+        color: "#fff"
+    },
+    nextFetchText: {
+        fontFamily: "Economica-Bold",
+        fontSize: 20,
+        color: "#fff"
+    },
+    nextFetchTime: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 15,
+        marginTop: 8,
+        color: "#fff"
+    },
+    pillImage: {
+        width: 50,
+        height: 50
+    },
+    hiddenItems: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        height: 135,
+    },
+    deleteContainer: {
+        backgroundColor: "#940314",
+        width: "50%",
+    },
+    deleteText: {
+        fontFamily: "Sunflower-Light",
+        color: "#fff",
+        fontSize: 20,
+        marginLeft: 10,
+        marginTop: 50
+    },
+    editContainer: {
+        backgroundColor: "#039464ff",
+        width: "50%",
+    },
+    editText: {
+        fontFamily: "Sunflower-Light",
+        color: "#fff",
+        fontSize: 20,
+        textAlign: "right",
+        marginRight: 10,
+        marginTop: 50
+    },
+    input: {
+        backgroundColor: "#323232",
+        borderWidth: 0.5,
+        borderColor: "#000000",
+        borderRadius: 10,
+        padding: 10,
+        elevation: 5,
+        marginBottom: 5,
+    },
+    addMedContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "10%",
+        padding: 20,
+        backgroundColor: "#323232",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1,
+    },
+    overLay: {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        right: 0,
+        left: 0,
+        flex: 1,
+        backgroundColor: "rgba(139, 139, 139, 0.5)"
+    },
+    click: {
+        backgroundColor: "#3b3b3b",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        borderRadius: 10,
+        textAlign: "center",
+        fontFamily: "Sunflower-Light",
+        fontSize: 15,
+        color: "#fff"
+    },
+    formHeaders: {
+        fontFamily: "Economica-Bold",
+        fontSize: 20,
+        textAlign: "center",
+        color: "#fff"
+    },
+    formNameDose: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginBottom: 10
+    },
+    formFetchStuff: {
+        flexDirection: "row"
+    },
+    formAddTime: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
+    formFetchDate: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginBottom: 10
+    },
+    dropdown: {
+        marginBottom: 10,
+        marginTop: 5
+    },
+    timeStyleContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        borderBottomWidth: 0.5,
+        marginBottom:10
+    },
+    timeStyle: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 15,
+        color: "#fff"
+    },
+    dateStyle: {
+        fontFamily: "Sunflower-Light",
+        fontSize: 15,
+        marginTop: 5 ,
+        color: "#fff"
+    }
 })
 
 export default MedicationLogs;
