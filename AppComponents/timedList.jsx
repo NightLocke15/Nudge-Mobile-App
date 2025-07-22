@@ -4,7 +4,9 @@ import { useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+import 'react-native-get-random-values';
 import { SwipeListView } from "react-native-swipe-list-view";
+import { v4 as uuidv4 } from 'uuid';
 
 function TimedList(props) {
     const { id } = props;
@@ -37,7 +39,7 @@ function TimedList(props) {
                     if (list.name === localUserInfo[0].lists[id].name) {
                         return {
                             ...list,
-                            listItems: [...list.listItems, {id: list.listItems.length, item: listItem, completed: false, overdue: false, inRange: true, timeLengthMins: 0, startTime: null, endTime: null}]
+                            listItems: [...list.listItems, {id: uuidv4(), item: listItem, completed: false, overdue: false, inRange: true, timeLengthMins: 0, startTime: null, endTime: null}]
                         }
                     }
                     else {
@@ -72,9 +74,9 @@ function TimedList(props) {
                         <View></View>
                     ) : (
                         <View style={stylesLight.timeToTime}>
-                            <Text>{item.startTime !== null ? `${item.startTime.h}:${item.startTime.m === 0 ? `${item.startTime.m}0` : `${item.startTime.m}`}` : ``}</Text>
+                            <Text>{item.startTime !== undefined ? `${item.startTime.h}:${item.startTime.m === 0 ? `${item.startTime.m}0` : `${item.startTime.m}`}` : ``}</Text>
                             <Text> to </Text>
-                            <Text>{item.endTime !== null ? `${item.endTime.h}:${item.endTime.m === 0 ? `${item.endTime.m}0` : item.endTime.m < 10 ? `0${item.endTime.m}` : `${item.endTime.m}`}` : ``}</Text>
+                            <Text>{item.endTime !== undefined ? `${item.endTime.h}:${item.endTime.m === 0 ? `${item.endTime.m}0` : item.endTime.m < 10 ? `0${item.endTime.m}` : `${item.endTime.m}`}` : ``}</Text>
                         </View> 
                     )}                                       
                 </View>           

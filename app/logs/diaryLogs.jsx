@@ -4,8 +4,10 @@ import { useRouter } from "expo-router";
 import { useContext, useState } from "react";
 import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+import 'react-native-get-random-values';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SwipeListView } from "react-native-swipe-list-view";
+import { v4 as uuidv4 } from 'uuid';
 
 function DiaryLogs() {
     const { users, setUsers, localUserInfo, localUser } = useContext(UserContext);
@@ -21,7 +23,7 @@ function DiaryLogs() {
         if (user.idnum === localUser) {
             return {
                 ...user,
-                logs: [...user.logs, {id: user.logs.length, name: `Untitled Note ${user.logs.length}`, type: "Diary", date: `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`, text: ""}]
+                logs: [...user.logs, {id: uuidv4(), name: `Untitled Note ${user.logs.length}`, type: "Diary", date: `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`, text: ""}]
             }
         }
         else {
@@ -84,7 +86,7 @@ function DiaryLogs() {
         const usersReVamp = users.map((user) => {
         if (user.idnum === localUser) {
             const newLogs = user.logs;
-            newLogs.splice(itemID, 1, {id: itemID, name: logName, type: "Diary", text: user.logs[itemID].text})
+            newLogs.splice(itemID, 1, {id: itemID, name: logName, type: "Diary", date: user.logs[user.logs.findIndex((log) => log.id === itemID)].date, text: user.logs[user.logs.findIndex((log) => log.id === itemID)].text})
             return {
                 ...user,
                 logs: newLogs

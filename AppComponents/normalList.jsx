@@ -4,7 +4,9 @@ import { useRouter } from "expo-router";
 import { useContext, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+import 'react-native-get-random-values';
 import { SwipeListView } from "react-native-swipe-list-view";
+import { v4 as uuidv4 } from 'uuid';
 
 function NormalList(props) {
     const { id } = props;
@@ -21,7 +23,7 @@ function NormalList(props) {
                     if (list.name === localUserInfo[0].lists[id].name) {
                         return {
                             ...list,
-                            listItems: [...list.listItems, {id: list.listItems.length, item: listItem, completed: false}]
+                            listItems: [...list.listItems, {id: uuidv4(), item: listItem, completed: false}]
                         }
                     }
                     else {

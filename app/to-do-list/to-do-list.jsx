@@ -4,8 +4,10 @@ import { useRouter } from "expo-router";
 import { useContext, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+import 'react-native-get-random-values';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SwipeListView } from "react-native-swipe-list-view";
+import { v4 as uuidv4 } from 'uuid';
 
 function ToDoList() {
     const { localUser, localUserInfo, users, setUsers } = useContext(UserContext);
@@ -26,7 +28,7 @@ function ToDoList() {
             if (user.idnum === localUser) {
                 return {
                     ...user,
-                    lists: [...user.lists, {id: user.lists.length, name: newListName, type: "Normal", listItems: []}]
+                    lists: [...user.lists, {id: uuidv4(), name: newListName, type: "Normal", listItems: []}]
                 }
             }
             else {

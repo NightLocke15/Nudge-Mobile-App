@@ -5,8 +5,10 @@ import { useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { SelectList } from 'react-native-dropdown-select-list';
+import 'react-native-get-random-values';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SwipeListView } from "react-native-swipe-list-view";
+import { v4 as uuidv4 } from 'uuid';
 
 function MedicationLogs() {
     const { users, setUsers, localUserInfo, localUser } = useContext(UserContext);
@@ -22,7 +24,6 @@ function MedicationLogs() {
     const [fetchRepeat, setFetchRepeat] = useState(0);
     const [fetchOption, setFetchOption] = useState("");
     const [todayDate, setTodayDate] = useState(new Date());
-    const [test, setTest] = useState(0);
 
     const repeatlist = [
         {key: "1", value: "Daily"},
@@ -138,7 +139,7 @@ function MedicationLogs() {
 
             return {
                 ...user,
-                logs: [...user.logs, {id: user.logs.length, name: medName, type: "Medication", 
+                logs: [...user.logs, {id: uuidv4(), name: medName, type: "Medication", 
                     dosage: dosage, firstPickUp: fetchDate, fetchOption: fetchOption, nextFetchDate: nextFetch, repeats: fetchRepeat, start: startDate, 
                     takeSpan: repeat, takeTimes: times, nextDose: next}]
             }
