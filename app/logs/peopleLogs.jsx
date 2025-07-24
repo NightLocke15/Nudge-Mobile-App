@@ -24,7 +24,7 @@ function PeopleLogs() {
             if (user.idnum === localUser) {
                 return {
                     ...user,
-                    logs: [...user.logs, {id: uuidv4(), personName: personName, relationship: personRelationship, personFacts: [], birthday: "", likes: [], dislikes: [], type: "People"}]
+                    logs: [...user.logs, {id: uuidv4(), personName: personName, relationship: personRelationship, personFacts: [], birthday: "", likes: [], dislikes: [], type: "People", notes: ""}]
                 }
             }
             else {

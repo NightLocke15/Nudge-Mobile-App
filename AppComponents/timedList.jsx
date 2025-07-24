@@ -138,7 +138,7 @@ function TimedList(props) {
                     if (list.name === localUserInfo[0].lists[id].name) {
                         const newListItems = list.listItems;
                         console.log(list.listItems);
-                        newListItems.splice(listItemID, 1, {id: listItemID, item: listItem});
+                        newListItems.splice(list.listItems.findIndex((item) => item.id === listItemID), 1, {...list.listItems[list.listItems.findIndex((item) => item.id === listItemID)], item: listItem});
                         console.log(newListItems);
                         return {
                             ...list,

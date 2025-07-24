@@ -18,14 +18,13 @@ function Diary(props) {
         if (!text) {
             setSaving(false);
         }
-
         setSaving(true);
 
         const timeOut = setTimeout(() => {
             const usersReVamp = users.map((user, index) => {
             if (user.idnum === localUser) {
                 const newLogs = user.logs;
-                newLogs.splice(id, 1, {id: id, name: user.logs[id].name, type: "Diary", date: user.logs[id].date, text: text})
+                newLogs.splice(id, 1, {...localUserInfo[0] && localUserInfo[0].logs[id], text: text})
                 return {
                     ...user,
                     logs: newLogs
@@ -37,7 +36,7 @@ function Diary(props) {
             });
             setUsers(usersReVamp);
             setSaving(false);
-        }, 3000)
+        }, 1000)
 
         return () => {
             clearTimeout(timeOut);
@@ -49,7 +48,7 @@ function Diary(props) {
         const usersReVamp = users.map((user, index) => {
         if (user.idnum === localUser) {
             const newLogs = user.logs;
-            newLogs.splice(id, 1, {id: id, name: name, type: "Diary", date: user.logs[id].date, text: text})
+            newLogs.splice(id, 1, {id: localUser[0] && localUser[0].logs[id].id, name: name, type: "Diary", date: user.logs[id].date, text: text})
             return {
                 ...user,
                 logs: newLogs

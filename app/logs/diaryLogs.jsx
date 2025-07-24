@@ -86,7 +86,7 @@ function DiaryLogs() {
         const usersReVamp = users.map((user) => {
         if (user.idnum === localUser) {
             const newLogs = user.logs;
-            newLogs.splice(itemID, 1, {id: itemID, name: logName, type: "Diary", date: user.logs[user.logs.findIndex((log) => log.id === itemID)].date, text: user.logs[user.logs.findIndex((log) => log.id === itemID)].text})
+            newLogs.splice(user.logs.findIndex((item) => item.id === itemID), 1, {id: itemID, name: logName, type: "Diary", date: user.logs[user.logs.findIndex((log) => log.id === itemID)].date, text: user.logs[user.logs.findIndex((log) => log.id === itemID)].text})
             return {
                 ...user,
                 logs: newLogs
@@ -127,7 +127,7 @@ function DiaryLogs() {
                         <View style={stylesLight.editNameContainer}>
                             <TextInput placeholder="Name..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setLogName(e)} value={logName} maxLength={15} style={stylesLight.input} />
                             <Pressable onPress={editLogName} style={stylesLight.done}>
-                                <Text onPress={editLogName} style={stylesLight.doneText}>Done</Text>
+                                <Text style={stylesLight.doneText}>Done</Text>
                             </Pressable>
                         </View>
                     </View>                    
