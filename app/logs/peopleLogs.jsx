@@ -10,15 +10,27 @@ import { SwipeListView } from "react-native-swipe-list-view";
 import { v4 as uuidv4 } from 'uuid';
 
 function PeopleLogs() {
+    //Accessing user context and all the users that already exist
     const { users, setUsers, localUserInfo, localUser } = useContext(UserContext);
-    const router = useRouter();
-    const [addPerson, setAddPerson] = useState(false);
-    const [personName, setPersonName] = useState("");
-    const [personRelationship, setPersonRelationship] = useState("");
-    const [warning, setWarning] = useState(false);
     const [currentItemID, setCurrentItemID] = useState(0);
+
+    //Router used to navigate back to the home page as well as navigate to the specific log chosen
+    const router = useRouter();
+
+    //setting the state of person addition in order to trigger the add people tile
+    const [addPerson, setAddPerson] = useState(false);
+
+    //Store the information of the person being added
+    const [personName, setPersonName] = useState("");
+    const [personRelationship, setPersonRelationship] = useState("");    
+
+    //Warning boolean that activates a warning tile when trying to delete a log (Experimental: Will most likely add this to other logs as well)
+    const [warning, setWarning] = useState(false);
+    
+    //Setting editiding state that activates the editing tile
     const [editing, setEditing] = useState(false);
 
+    //Adds the person's name and relationship aswell as creates space for the rest of the information that can be added within the log
     function addPersonBasicDetails() {
         const usersReVamp = users.map((user, index) => {
             if (user.idnum === localUser) {
@@ -32,21 +44,26 @@ function PeopleLogs() {
             }
         });
         setUsers(usersReVamp);
+
+        //reset information
         setPersonName("");
         setPersonRelationship("");
         setAddPerson(false);
         console.log(localUserInfo[0] && localUserInfo[0].logs.filter((log) => log.type === "People"));
     }
 
+    //Uses the router to dynamically navigate to the person chosen's information in the [id] page
     function goToPerson(id) {
         router.push(`/logs/${id}`);
     }
 
+    //Function that changes the state of the warning when trying to delete a log item
     function deleteWarning(item) {
         setWarning(true);
         setCurrentItemID(item.id);
     }
 
+    //Triggers the editing of the log item and sets the relevant information to be edited
     function triggerEditing(item) {
         setPersonName(item.personName);
         setPersonRelationship(item.relationship);
@@ -56,6 +73,7 @@ function PeopleLogs() {
         setAddPerson(true);
     }
 
+    //Renders the person log in the swipe list view ***(Subject to change, looking into options other than swiping)***
     const renderPeople = ({item}) => {
         return (
             <Pressable key={item.id} onPress={() => goToPerson(item.id)}>
@@ -70,6 +88,7 @@ function PeopleLogs() {
         ) 
     }
 
+    //Rendering of hidden button behind tile that deletes the log and on the other side it edits it ***(Subject to change, looking into options other than swiping)***
     const hiddenRender = (data, rowmap) => {
         return (
             <View style={stylesLight.hiddenItems}>
@@ -83,6 +102,7 @@ function PeopleLogs() {
         )
     }
 
+    //Delete the item from the user's information
     const deleteItem = (itemID) => {
         const usersReVamp = users.map((user, index) => {
             if (user.idnum === localUser) {
@@ -100,6 +120,7 @@ function PeopleLogs() {
         setWarning(false);
     }
 
+    //Edits the item and replaces the original that needs to be changed at the correct index
     const editItem = (itemID) => {
         const usersReVamp = users.map((user, index) => {
             if (user.idnum === localUser) {
@@ -115,6 +136,8 @@ function PeopleLogs() {
             }
         });
         setUsers(usersReVamp);
+
+        //reset information
         setEditing(false);
         setAddPerson(false);
         setPersonName("");

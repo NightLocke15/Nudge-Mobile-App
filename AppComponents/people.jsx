@@ -10,20 +10,41 @@ import { SwipeListView } from "react-native-swipe-list-view";
 import { v4 as uuidv4 } from 'uuid';
 
 function People(props) {
+    //Id of the object that was reverted to the index in the peopleLogs
     const { id } = props;
+
+    //Accessing user context and all the users that already exist
     const { localUserInfo, localUser, users, setUsers } = useContext(UserContext);
+
+    //Router that is used to navigate the user back to the peopleLogs page
     const router = useRouter();
+
+    //Editing information: setting the item to be edited at what element it is in the array, 
+    //eg: the item is the string "Granddaughter" and the element is tre relationship.
     const [toEdit, setToEdit] = useState("")
     const [singleElement, setSingleElement] = useState("");
+
+    //Set booleans to the correct state to edit the piece of information gived
     const [editing, setEditing] = useState(false);
+
+    //Set boolean to add a list to a section like likes or dislikes
     const [adding, setAdding] = useState(false);
+
+    //Set the section that will be added to when completed
     const [sectionAdding, setSectionAdding] = useState("");
+
+    //The list that will be added into the user's information
     const [listToAdd, setListToAdd] = useState();
     const [listItem, setListItem] = useState("");
     const [currentListItem, setCurrentListItem] = useState("");
+
+    //Text that will be saved in the user's list after added to the notes on the person's log
     const [text, setText] = useState(localUserInfo[0] && localUserInfo[0].logs[id].notes);
+
+    //Boolean to indicate when the note is being saved
     const [saving, setSaving] = useState(false);
 
+    //Use effect that saves the note a second after the user stopped writing
     useEffect(() => {
         if (!text) {
             setSaving(false);
@@ -55,6 +76,7 @@ function People(props) {
 
     }, [text]);
 
+    //function to edit a specific element in the log
     function editSingleElement(element, editItem) {
         console.log(singleElement);
         console.log(toEdit);
@@ -91,17 +113,21 @@ function People(props) {
             }
         });
         setUsers(usersReVamp);
+
+        //reset information
         setSingleElement("");
         setToEdit("");
         setEditing(false);
     }
 
+    //triggers the tile that the information is edited in
     function triggerEditing(element, editItem) {
         setEditing(true);
         setSingleElement(element);
         setToEdit(editItem);
     }
 
+    //deletes item from a list when editing one of the section (likes, dislikes, etc) afte being touched in the editing state
     function deleteFromList(itemID) {
         if (adding) {
             setCurrentListItem(itemID);
@@ -110,6 +136,7 @@ function People(props) {
         }     
     }
 
+    //Renders the item in the swipe list view ***(Subject to change, looking into options other than swiping)***
     const renderItems = ({item}) => {
         return (
             <View key={item.id} onTouchEnd={() => deleteFromList(item.id)}>
@@ -124,12 +151,14 @@ function People(props) {
         )
     }
 
+    //Adds item to independent list before adding it to the user's information
     function addListItems() {
         console.log(listToAdd);
         setListToAdd([...listToAdd, {id: uuidv4(), item: listItem}]);
         setListItem("");
     }
 
+    //Add the list iteme for the facts or likes or dislikes to the relevant section in the user's information
     function addToList(editItem) {
         const usersReVamp = users.map((user, index) => {
             if (user.idnum === localUser) {
@@ -174,6 +203,7 @@ function People(props) {
         setAdding(false);
     }
 
+    //Triggers the editing tile and also determines which section is being edited
     function triggerAdd(element) {
         setAdding(true);
         setSectionAdding(element);
@@ -189,6 +219,7 @@ function People(props) {
         }
     }
 
+    //Saves the date change in the user's information
     const onDateChange = (event, selectedDate) => {
         const currDate = selectedDate;
         const usersReVamp = users.map((user, index) => {
@@ -216,6 +247,7 @@ function People(props) {
         setUsers(usersReVamp);
     }
 
+    //Shows the calendar where the user changes the date
     const showMode = (mode) => {
         DateTimePickerAndroid.open({
             value: new Date(),
@@ -225,6 +257,7 @@ function People(props) {
         })
     }
 
+    //sets what type of date picker should be shown
     const showDatePicker = () => {
         showMode("date")
     }

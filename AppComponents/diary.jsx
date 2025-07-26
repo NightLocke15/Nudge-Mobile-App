@@ -6,14 +6,24 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
 function Diary(props) {
+    //Id of the object that was reverted to the index in the diaryLogs
     const { id } = props;
+
+    //Accessing user context and all the users that already exist
     const { localUserInfo, localUser, users, setUsers } = useContext(UserContext);
+
+    //Information that is stored from this component
     const [text, setText] = useState(localUserInfo[0].logs[id].text);
     const [name, setName] = useState(localUserInfo[0].logs[id].name);
+
+    //Boolean indicating when the log is being saved and when the name tile to edit name is being activated
     const [saving, setSaving] = useState(false);
     const [nameEdit, setNameEdit] = useState(false);
+
+    //Router that is used to navigate the user back to the diaryLogs page
     router = useRouter();
 
+    //Use effect that saves the text being written in the log 1 second after the user has stopped writing
     useEffect(() => {
         if (!text) {
             setSaving(false);
@@ -44,6 +54,7 @@ function Diary(props) {
 
     }, [text]);
 
+    //Edit the name of the diary entry and change it in the user's information
     function editName() {
         const usersReVamp = users.map((user, index) => {
         if (user.idnum === localUser) {

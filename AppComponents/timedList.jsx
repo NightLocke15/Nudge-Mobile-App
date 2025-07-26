@@ -9,21 +9,34 @@ import { SwipeListView } from "react-native-swipe-list-view";
 import { v4 as uuidv4 } from 'uuid';
 
 function TimedList(props) {
+    //Id of the object that was reverted to the index in the diaryLogs
     const { id } = props;
+
+    //Accessing user context and all the users that already exist
     const { setUsers, users, localUserInfo, localUser } = useContext(UserContext); 
+
+    //Information that is stored from this component
     const [listItem, setListItem] = useState("");
     const [listItemID, setlistItemID] = useState();
-    const [editing, setEditing] = useState(false);
-    const router = useRouter();
     const [time, setTime] = useState(new Date());
     const [changeTime, setChangeTime] = useState(false);
     const [timeAmount, setTimeAmount] = useState("");
-    const [viewItemBox, setViewItemBox] = useState(false);  
-    const [viewItemText, setViewItemText] = useState("");  
-    const [startTimes, setStartTimes] = useState({h: 0, m: 0});
     const [endTimes, setEndTimes] = useState({h: 0, m: 0});
     const [changed, setChanged] = useState(false);
+    const [startTimes, setStartTimes] = useState({h: 0, m: 0});
 
+    //Set the state of editing to trigger the editing tile for the list item
+    const [editing, setEditing] = useState(false);
+
+    //Router used to take the user back to the to-do-list page
+    const router = useRouter();
+    
+    //To view the full item if it is too long, this activates the tile to see it
+    const [viewItemBox, setViewItemBox] = useState(false);  
+    const [viewItemText, setViewItemText] = useState("");  
+    
+   
+    //Resets the time every second for the clock that is visible on this page to be accurate to local time
     useEffect(() => {
         const interval = setInterval(() => {
             setTime(new Date());
@@ -32,6 +45,7 @@ function TimedList(props) {
         return () => clearInterval(interval);
     }, []);
 
+    //Add a list item to the user's list
     function addItem() {
         const userListAddision = users.map((user) => {
             if (user.idnum === localUser) {
@@ -60,6 +74,7 @@ function TimedList(props) {
         console.log(localUserInfo);
     }
 
+    //Renders the list item in the swipe list view ***(Subject to change, looking into options other than swiping)***
     const itemRendered = ({item}) => {
         return (
             <View key={item.id} style={[stylesLight.listItemContainer, (item.endTime && item.endTime.h >= endTimes.h && item.endTime.m > endTimes.m) && stylesLight.listItemContainerOutRange, (item.endTime && time.getTime() >= new Date().setHours(item.endTime.h, item.endTime.m, 0, 0) && item.completed === false) && stylesLight.listItemContainerOverdue]}>
@@ -84,6 +99,7 @@ function TimedList(props) {
         )
     }
     
+    //Rendering of hidden button behind tile that deletes the log and on the other side it edits it ***(Subject to change, looking into options other than swiping)***
     const hiddenItemRendered = (data, rowMap) => {
         return (
             <View style={stylesLight.hiddenContainer}>
@@ -97,6 +113,7 @@ function TimedList(props) {
         )       
     }
 
+    //Delete the item from the user's information
     const deleteItem = (item) => {
         const userChange = users.map((user) => {
             if (user.idnum === localUser) {
@@ -125,12 +142,14 @@ function TimedList(props) {
         setChanged(true);
     }
 
+    //Trigger the editing of the item and set all the relevant information to be edited
     const editItem = (item) => {
         setEditing(true);
         setListItem(item.item);
         setlistItemID(item.id);
     }
 
+    //Replace the item in the relevant index in the user's list
     function finishEdit() {
         const userChange = users.map((user) => {
             if (user.idnum === localUser) {
@@ -165,11 +184,13 @@ function TimedList(props) {
         setEditing(false);
     }
 
+    //triggers tile to add amount of time that needs to be spent on a certain task
     const addTimeAmount = (item) => {
         setChangeTime(true);
         setlistItemID(item.id);
     } 
 
+    //Adds the amount needed to spend to the item in the user's list
     function finishTimeAmount() {
         const userChange = users.map((user) => {
             if (user.idnum === localUser) {
@@ -214,16 +235,19 @@ function TimedList(props) {
         setChanged(true);
     }
 
+    //Trigger the box to view the item's content
     const viewItem = (item) => {
         setViewItemBox(true);
         setViewItemText(item.item);
     }
 
+    //Closes the box that views the information
     function closeViewBox() {
         setViewItemText("");
         setViewItemBox(false);
     }
 
+    //On long press: strikes through the item and sets it to complet ein user;s list
     function completeListItem(itemID) {
         const userChange = users.map((user) => {
             if (user.idnum === localUser) {
@@ -262,6 +286,7 @@ function TimedList(props) {
         setUsers(userChange);
     }
 
+    //Updates times after information has been changed in the list like new items or changed times
     function update() {
         const currentListItems = localUserInfo[0].lists[id].listItems;
         const newListItems = [];
@@ -362,11 +387,13 @@ function TimedList(props) {
         setChanged(false);
     }
 
+    //Changes the time that the user starts their session
     function changeStartTimes(object) {
         setChanged(true);
         setStartTimes(object);
     }
 
+    //Changes the time that the user aims to end their session
     function changeEndTimes(object) {
         setChanged(true);
         setEndTimes(object);
@@ -691,267 +718,6 @@ const stylesLight = StyleSheet.create({
         fontFamily: "Sunflower-Light",
         fontSize: 18,
         lineHeight: 25
-    },
-    overdue: {
-        backgroundColor: "#ff6a6aff"
-    },
-    outRange: {
-        backgroundColor: "#ffd57aff"
-    }
-})
-
-const stylesDark = StyleSheet.create({
-    contentContainer: {
-        flex: 1,
-    },
-    headerContainer: {
-        marginBottom: 20,
-        marginTop: 20,
-    },
-    header: {
-        fontFamily: "Economica-Bold",
-        fontSize: 40,
-        marginLeft: "auto",
-        marginRight: "auto",
-        color: "#fff"
-    },
-    back: {
-        position: "absolute",
-        left: "5%",
-        top: "30%"        
-    },
-    backText: {
-        fontFamily: "Economica-Bold",
-        fontSize: 20, 
-        color: "#fff"        
-    },
-    timeText: {
-        fontFamily: "Economica-Bold",
-        fontSize: 20, 
-        position: "absolute",
-        right: "5%",
-        top: "30%",
-        color: "#fff"         
-    },
-    timeContainer: {
-        flexDirection: "row",
-        marginBottom: 5,
-        padding: 10
-    },
-    textsTime: {
-        fontFamily: "Economica-Bold",
-        fontSize: 18,
-        flex: 1,
-        color: "#fff"
-    },
-    timeInput: {
-        backgroundColor: "#323232",
-        borderWidth: 0.5,
-        borderColor: "#000000",
-        borderRadius: 10,
-        padding: 10,
-        elevation: 5,
-        width: 55
-    },
-    timeTextContainer: {
-        flexGrow: 1,
-        flexDirection: "row",
-    },
-    timeInputContainer: {
-        flex: 3,
-        flexDirection: "row",
-        justifyContent: "space-evenly",
-        marginRight: 10
-    },
-    update: {
-        margin: 10,
-    },
-    updateClickable: {
-        backgroundColor: "#323232",
-        padding: 10, 
-        elevation: 5,
-        borderRadius: 10       
-    },
-    updateText: {
-        textAlign: "center",
-        fontFamily: "Sunflower-Light",
-        fontSize: 18
-    },
-    addContainer: {
-        width: "95%",
-        marginLeft: "auto",
-        marginRight: "auto",
-        flexDirection: "row",
-        justifyContent: "space-evenly",
-        marginBottom: 5
-    },
-    input: {
-        backgroundColor: "#323232",
-        borderWidth: 0.5,
-        borderColor: "#000000",
-        borderRadius: 10,
-        padding: 10,
-        elevation: 5,
-        flex: 2,
-    },
-    add: {
-        flex: 1,
-        backgroundColor: "#3b3b3b",
-        marginLeft: 10,
-        marginRight: 5,
-        padding: 10,
-        elevation: 5,
-        borderRadius: 10,
-    },
-    addText: {
-        textAlign: "center",
-        fontFamily: "Sunflower-Light",
-        fontSize: 18,
-        color: "#fff"
-    },
-    listItemContainer: {
-        backgroundColor: "#323232",
-        padding: 10,
-        paddingTop: 15,
-        paddingBottom: 15,
-        width: "100%",
-        marginLeft: "auto",
-        marginRight: "auto",
-        borderBottomWidth: 1,
-        borderBottomColor: "#9e9e9e",   
-        flexDirection: "row",
-        justifyContent: "space-between"
-    },
-    listItemContainerOverdue: {
-        backgroundColor: "#ff7a7aff",
-        padding: 10,
-        paddingTop: 15,
-        paddingBottom: 15,
-        width: "100%",
-        marginLeft: "auto",
-        marginRight: "auto",
-        borderBottomWidth: 1,
-        borderBottomColor: "#9e9e9e",   
-        flexDirection: "row",
-        justifyContent: "space-between"
-    },
-    listItemContainerOutRange: {
-        backgroundColor: "#ffca58ff",
-        padding: 10,
-        paddingTop: 15,
-        paddingBottom: 15,
-        width: "100%",
-        marginLeft: "auto",
-        marginRight: "auto",
-        borderBottomWidth: 1,
-        borderBottomColor: "#9e9e9e",   
-        flexDirection: "row",
-        justifyContent: "space-between"
-    },
-    listItemNameContainer: {        
-        flexDirection: "row",
-        flexGrow: 1,
-    },
-    listItemNameUncomplete: {
-        fontFamily: "Sunflower-Light",
-        fontSize: 15,
-        marginLeft: 5,
-        flex: 1,
-        color: "#fff"
-    },
-    listItemNameComplete: {
-        fontFamily: "Sunflower-Light",
-        fontSize: 15,
-        marginLeft: 5,
-        color: "#818181",
-        textDecorationLine: "line-through",
-        flec: 1
-    },
-    listItemTimesContainer: {
-        flexDirection: "row",
-        width: "70%",
-        justifyContent: "space-evenly"
-    },
-    timeToTime: {
-        flexDirection: "row"
-    },
-    colon: {
-        fontFamily: "Sunflower-Light",
-        fontSize: 20,
-        marginTop: 10,
-        color: "#fff"
-    },
-    hiddenContainer: {
-        flexDirection: "row",
-        justifyContent: "space-evenly"
-    },
-    deleteContainer: {
-        backgroundColor: "#940314",
-        padding: 10,
-        paddingTop: 15,
-        paddingBottom: 15,
-        width: "50%",
-        marginRight: "auto",
-    },
-    delete: {
-        fontFamily: "Sunflower-Light",
-        color: "#fff",
-        fontSize: 15,
-    },
-    editContainer: {
-        backgroundColor: "#039464ff",
-        padding: 10,
-        paddingTop: 15,
-        paddingBottom: 15,
-        width: "50%",
-        textAlign: "right"
-    },
-    edit: {
-        fontFamily: "Sunflower-Light",
-        color: "#fff",
-        fontSize: 15,
-        marginLeft: "auto"
-    },
-    overLay: {
-        position: "absolute",
-        top: 0,
-        bottom: 0,
-        right: 0,
-        left: 0,
-        flex: 1,
-        backgroundColor: "rgba(139, 139, 139, 0.5)"
-    },
-    container: {
-        position: "absolute",
-        right: "5%",
-        left: "5%",
-        top: "10%",
-        padding: 20,
-        backgroundColor: "#fff",
-        elevation: 5,
-        borderRadius: 10,
-        zIndex: 1
-    },
-    done: {
-        backgroundColor: "#3b3b3b",
-        marginLeft: "auto",
-        marginRight: "auto",
-        padding: 10,
-        elevation: 5,
-        marginTop: 10,
-        borderRadius: 10,
-    },
-    doneText: {
-        textAlign: "center",
-        fontFamily: "Sunflower-Light",
-        fontSize: 18,
-        color: "#fff"
-    },
-    listItemText: {
-        fontFamily: "Sunflower-Light",
-        fontSize: 18,
-        lineHeight: 25,
-        color: "#fff"
     },
     overdue: {
         backgroundColor: "#ff6a6aff"

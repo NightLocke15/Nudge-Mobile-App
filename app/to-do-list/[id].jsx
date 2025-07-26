@@ -8,10 +8,16 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 
 function MakeList() {
+    //Accessing user context and all the users that already exist
     const { localUserInfo } = useContext(UserContext); 
+
+    //ID received through the router dynamically navigating to this page, and injecting the relevant information
     const { id } = useLocalSearchParams();
+
+    //Converting the user ID to its index in the array inorder to easily access the relevant info.
     const [index, setIndex] = useState(localUserInfo[0].lists.findIndex((log) => log.id === id));    
 
+    //Renders the relevent information based on the type of list
     return (
         <SafeAreaView style={stylesLight.container}>
             {localUserInfo[0].lists[index].type === "Normal" ? 

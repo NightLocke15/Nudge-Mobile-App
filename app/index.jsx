@@ -66,40 +66,4 @@ const stylesLight = StyleSheet.create({
     }
 });
 
-const stylesDark = StyleSheet.create({
-    mainContainer: {
-        flex: 1,
-    },
-    contentContainer: {
-        flex: 1
-    },
-    logoContainer: {
-        marginTop: "auto",
-        marginRight:"auto",
-        marginLeft: "auto"
-    },
-    logo: {
-        fontFamily: "Economica-Bold",
-        fontSize: 100,
-        color: "#fff"
-    },
-    getStartedContainer: {
-        marginBottom: "auto",
-        marginRight:"auto",
-        marginLeft: "auto",
-        marginTop: 20
-    },
-    getStarted: {
-        backgroundColor: "#3b3b3b",
-        padding: 15,
-        borderRadius: 25,
-        elevation: 5,
-    },
-    getStartedText: {
-        color: "#fff",
-        fontFamily: "Sunflower-Medium",
-        fontSize: 25,
-    }
-});
-
 export default WelcomeScreen;

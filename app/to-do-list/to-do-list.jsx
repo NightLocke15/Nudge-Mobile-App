@@ -10,18 +10,29 @@ import { SwipeListView } from "react-native-swipe-list-view";
 import { v4 as uuidv4 } from 'uuid';
 
 function ToDoList() {
+    //Accessing user context and all the users that already exist
     const { localUser, localUserInfo, users, setUsers } = useContext(UserContext);
+
+    //Sets the boolean that activates the tile to create a new list
     const [chooseList, setChooseList] = useState(false);
+
+    //Store the information of the list being created
     const [newListName, setNewListName] = useState("");
+
+    //Sets the warning message for when a user tries to change the type of list when it already contains items
     const [warning, setWarning] = useState("");
+
+    //Router used to navigate back to the home page
     const router = useRouter();
 
+    //Sets the state that triggers the tile to create a new list 
     function newList() {
         addList();
         setChooseList(false);   
         setNewListName("");   
     }
 
+    //Adds the list and all it's relevant information to the user's inforation
     function addList() {
         if (newListName !== "") {
             const usersReVamp = users.map((user, index) => {
@@ -40,10 +51,12 @@ function ToDoList() {
         }        
     }
 
+    //Uses the router to dynamically navigate to the chosen list in the [id] page
     function goToList(id) {
         router.push(`/to-do-list/${id}`)
     }
 
+    //Function that changes the chosen list's type from Normal to Timed or back
     function setType(listName) {
         const userChange = users.map((user) => {
             if (user.idnum === localUser) {
@@ -86,6 +99,7 @@ function ToDoList() {
         setUsers(userChange);
     }
 
+    //Renders the lists in the swipe list view ***(Subject to change, looking into options other than swiping)***
     const itemRendered = ({item}) => {
         return (
             <View key={item.id} style={stylesLight.listItemContainer}>
@@ -97,6 +111,7 @@ function ToDoList() {
         )
     }
 
+    //Rendering of hidden button behind tile that deletes the list ***(Subject to change, looking into options other than swiping)***
     const hiddenItemRendered = (data, rowMap) => {
         return (
             <View style={stylesLight.deleteContainer}>
@@ -107,6 +122,7 @@ function ToDoList() {
         )       
     }
 
+    //Delete the item from the user's information
     const deleteItem = (item) => {
         const userChange = users.map((user) => {
             if (user.idnum === localUser) {
@@ -123,8 +139,12 @@ function ToDoList() {
 
         setUsers(userChange);
     }
-
-    //https://medium.com/@wsvuefanatic/how-to-build-a-list-app-with-react-native-swipelistview-and-layout-animation-a3b6171faa50
+    
+    // Title: Mastering the Swipe: Building a Swipeable List App with React Native and LayoutAnimation
+    // Author: William Schulte
+    // Date: 27 April 2024
+    // Date Accessed: 7 July 2025
+    // Availability: https://medium.com/@wsvuefanatic/how-to-build-a-list-app-with-react-native-swipelistview-and-layout-animation-a3b6171faa50
     return (
         <SafeAreaView style={stylesLight.container}>
             <LinearGradient style={stylesLight.contentContainer} colors={["#ffffff", "#aaaaaa"]}>
@@ -343,187 +363,6 @@ const stylesLight = StyleSheet.create({
         fontFamily: "Sunflower-Light",
         color: "#fff",
         fontSize: 20,
-    }
-});
-
-const stylesDark = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    contentContainer: {
-        flex: 1,
-    },
-    back: {
-        position: "absolute",
-        left: "5%",
-        top: "30%",                
-    },
-    backText: {
-        fontFamily: "Economica-Bold",
-        fontSize: 20,  
-        color: "#fff"       
-    },
-    headerContainer: {
-        marginBottom: 20,
-        marginTop: 20,
-    },
-    header: {
-        fontFamily: "Economica-Bold",
-        fontSize: 40,
-        color: "#fff", 
-        marginLeft: "auto",
-        marginRight: "auto"
-    },
-    add: {        
-        position: "absolute",
-        right: "5%",
-        top: "30%"                   
-    },
-    addIcon: {
-        fontFamily: "Economica-Bold",
-        fontSize: 20,   
-        color: "#fff",     
-    },
-    input: {
-        backgroundColor: "#323232",
-        borderWidth: 0.5,
-        borderColor: "#000000",
-        borderRadius: 10,
-        padding: 10,
-        elevation: 5
-    },
-    addListContainer: {
-        position: "absolute",
-        right: "5%",
-        left: "5%",
-        top: "10%",
-        padding: 20,
-        backgroundColor: "#323232",
-        elevation: 5,
-        borderRadius: 10,
-        zIndex: 1
-    },
-    overLay: {
-        position: "absolute",
-        top: 0,
-        bottom: 0,
-        right: 0,
-        left: 0,
-        flex: 1,
-        backgroundColor: "rgba(139, 139, 139, 0.5)"
-    },
-    done: {
-        backgroundColor: "#3b3b3b",
-        marginLeft: "auto",
-        marginRight: "auto",
-        padding: 10,
-        elevation: 5,
-        marginTop: 10,
-        borderRadius: 10,
-    },
-    doneText: {
-        textAlign: "center",
-        fontFamily: "Sunflower-Light",
-        fontSize: 18,
-        color: "#fff",
-    },
-    warningContainer: {
-        position: "absolute",
-        right: "5%",
-        left: "5%",
-        top: "10%",
-        padding: 20,
-        backgroundColor: "#323232",
-        elevation: 5,
-        borderRadius: 10,
-        zIndex: 1,
-        borderWidth: 1,
-        borderColor: "#940314"
-    },
-    warningText: {
-        fontFamily: "Sunflower-Light",
-        fontSize: 20,
-        color: "#940314",
-        marginBottom: 10
-    },
-    okay: {
-        backgroundColor: "#3b3b3b",
-        marginLeft: "auto",
-        marginRight: "auto",
-        padding: 10,
-        elevation: 5,
-        marginTop: 10,
-        borderRadius: 10,
-    },
-    okayText: {
-        textAlign: "center",
-        fontFamily: "Sunflower-Light",
-        fontSize: 18,
-        color: "#fff"
-    },
-    listItemContainer: {
-        backgroundColor: "#323232",
-        padding: 10,
-        paddingTop: 15,
-        paddingBottom: 15,
-        width: "100%",
-        marginLeft: "auto",
-        marginRight: "auto",
-        borderBottomWidth: 1,
-        borderBottomColor: "#9e9e9e",
-    },
-    listItem: {
-        flexDirection: "row",
-        justifyContent: "space-between"
-    },
-    listItemName: {
-        fontFamily: "Sunflower-Light",
-        fontSize: 20,
-        marginLeft: 5,
-        color: "#fff"
-    },
-    listItemType: {
-        fontFamily: "Sunflower-Light",
-        fontSize: 20,
-        marginRight: 5,
-        color: "#fff"
-    },
-    headings: {
-        width: "100%",
-        marginRight: "auto",
-        marginLeft: "auto",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        borderBottomWidth: 0.5,
-        borderBottomColor: "#9e9e9e",
-        padding: 5
-    },
-    headingsTextName: {
-        fontFamily: "Economica-Bold",
-        fontSize: 25,
-        marginLeft: 10,
-        color: "#fff"
-    },
-    headingsTextType: {
-        fontFamily: "Economica-Bold",
-        fontSize: 25,
-        marginRight: 10,
-        color: "#fff"
-    },
-    deleteContainer: {
-        backgroundColor: "#940314",
-        padding: 10,
-        paddingTop: 15,
-        paddingBottom: 15,
-        width: "100%",
-        marginLeft: "auto",
-        marginRight: "auto",
-    },
-    delete: {
-        fontFamily: "Sunflower-Light",
-        color: "#fff",
-        fontSize: 20,
-        color: "#fff"
     }
 });
 

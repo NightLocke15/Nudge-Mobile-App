@@ -10,14 +10,26 @@ import { SwipeListView } from "react-native-swipe-list-view";
 import { v4 as uuidv4 } from 'uuid';
 
 function DiaryLogs() {
+    //Accessing user context and all the users that already exist
     const { users, setUsers, localUserInfo, localUser } = useContext(UserContext);
+
+    //Router used to navigate back to the home page as well as navigate to the specific log chosen
     const router = useRouter();
+
+    //Accessing the window height amd width in order to determine diary tile sizes
     const { width, height } = useWindowDimensions();
+
+    //Storing the information about the new diary log created
     const [logName, setLogName] = useState("");
-    const [editing, setEditing] = useState(false);
     const [itemID, setItemID] = useState(null);
+
+    //Setting editing state, activating editing tile
+    const [editing, setEditing] = useState(false);    
+
+    //Finding the current date
     const today = new Date();
 
+    //Add a new diary entry to the user's list of entries
     function addLog() {
         const usersReVamp = users.map((user, index) => {
         if (user.idnum === localUser) {
@@ -33,10 +45,12 @@ function DiaryLogs() {
         setUsers(usersReVamp);
     }
 
+    //Dynamically navigate to the [id] page and injecting the information relevant to the chosen log
     function goToLog(id) {
         router.push(`/logs/${id}`);
     }
 
+    //Rendering of list item in the swipe list view of the different diary logs ***(Subject to change, looking into options other than swiping)***
     const logRendered = ({ item }) => {
         return (
             <View key={item.id} style={[stylesLight.logContainer, {width: width/2 - 20, marginLeft: 5, marginRight: 5 }]}>
@@ -49,6 +63,7 @@ function DiaryLogs() {
         )
     }
 
+    //Rendering of hidden button behind tile that deletes the log ***(Subject to change, looking into options other than swiping)***
     const hiddenLogRendered = (data, rowMap) => {
         return (
             <View style={[stylesLight.deleteContainer, {width: width/2 - 20, marginLeft: 5, marginRight: 5 }]}>
@@ -59,6 +74,7 @@ function DiaryLogs() {
         ) 
     }
 
+    //Code that deletes the correct diary entry from the user's information
     const deleteLog = (item) => {
         const usersReVamp = users.map((user, index) => {
         if (user.idnum === localUser) {
@@ -75,12 +91,14 @@ function DiaryLogs() {
         setUsers(usersReVamp);
     }
 
+    //Triggers editing tile and sets the correct information to be edited ***(On long press, which is defferent from others. Subject to change, this is stille experimental)***
     const triggerEditing = (item) => {
         setEditing(true);
         setLogName(item.name);
         setItemID(item.id);
     }
 
+    //Accesses the correct diary entry to edit and edits the name of the diary entry by replacing the item at its index
     function editLogName() {
         console.log(itemID);
         const usersReVamp = users.map((user) => {
@@ -96,6 +114,7 @@ function DiaryLogs() {
             return user;
         }
         });
+        // reset all the storage
         setUsers(usersReVamp);
         setLogName("");
         setEditing(false);
@@ -259,136 +278,6 @@ const stylesLight = StyleSheet.create({
         textAlign: "center",
         fontFamily: "Sunflower-Light",
         fontSize: 18
-    },
-})
-
-const stylesDark = StyleSheet.create({
-    container: {
-        flex: 1
-    },
-    contentContainer: {
-        flex: 1
-    },
-    back: {
-        position: "absolute",
-        left: "5%",
-        top: "30%"        
-    },
-    backText: {
-        fontFamily: "Economica-Bold",
-        fontSize: 20,  
-        color: "#fff"       
-    },
-    headerContainer: {
-        marginBottom: 20,
-        marginTop: 20,
-    },
-    header: {
-        fontFamily: "Economica-Bold",
-        fontSize: 40,
-        marginLeft: "auto",
-        marginRight: "auto",
-        color: "#fff"
-    },
-    add: {        
-        position: "absolute",
-        right: "5%",
-        top: "30%"                   
-    },
-    addIcon: {
-        fontFamily: "Economica-Bold",
-        fontSize: 20, 
-        color: "#fff"       
-    },
-    logsContainer: {
-        marginLeft: "auto",
-        marginRight: "auto",
-        alignContent: "center"
-    },
-    logContainer: {
-        backgroundColor: "#323232",
-        elevation: 5,
-        borderRadius: 10,
-        marginBottom: 10,
-        height: 150
-    },
-    logName: {
-        fontFamily: "Economica-Bold",
-        fontSize: 20,
-        paddingLeft: 10,
-        paddingTop: 8,
-        color: "#fff"
-    },
-    logText: {
-        fontFamily: "Sunflower-Light",
-        fontSize: 13,
-        paddingLeft: 10,
-        paddingRight: 10,
-        paddingTop: 6,
-        color: "#fff"
-    },
-    logDate: {
-        fontFamily: "Sunflower-Medium",
-        paddingLeft: 10,
-        fontSize: 16,
-        marginTop: 2,
-        color: "#fff"
-    },
-    deleteContainer: {
-        marginBottom: 10,
-        height: 150,
-        backgroundColor: "#940314",
-        borderRadius: 10
-    },
-    delete: {
-        fontFamily: "Sunflower-Light",
-        fontSize: 20,
-        paddingTop: 60,
-        paddingLeft: 10,
-        color: "#fff"       
-    },
-    input: {
-        backgroundColor: "#323232",
-        borderWidth: 0.5,
-        borderColor: "#000000",
-        borderRadius: 10,
-        padding: 10,
-        elevation: 5
-    },
-    editNameContainer: {
-        position: "absolute",
-        right: "5%",
-        left: "5%",
-        top: "10%",
-        padding: 20,
-        backgroundColor: "#323232",
-        elevation: 5,
-        borderRadius: 10,
-        zIndex: 1
-    },
-    overLay: {
-        position: "absolute",
-        top: 0,
-        bottom: 0,
-        right: 0,
-        left: 0,
-        flex: 1,
-        backgroundColor: "rgba(139, 139, 139, 0.5)"
-    },
-    done: {
-        backgroundColor: "#3b3b3b",
-        marginLeft: "auto",
-        marginRight: "auto",
-        padding: 10,
-        elevation: 5,
-        marginTop: 10,
-        borderRadius: 10,
-    },
-    doneText: {
-        textAlign: "center",
-        fontFamily: "Sunflower-Light",
-        fontSize: 18,
-        color: "#fff"
     },
 })
 

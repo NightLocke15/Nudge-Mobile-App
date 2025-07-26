@@ -13,14 +13,10 @@ function Home() {
     //Router that allows the user to navigate to the different pages in the app
     const router = useRouter();
 
+    //Logs the user out of their profile (Current position on Home Page not final)
     function logoutHome() {
         logout();
         router.navigate('/');
-    }
-
-    function test() {
-        console.log(localUserInfo);
-        router.navigate('/logs/diaryLogs');
     }
 
     return (
@@ -142,52 +138,6 @@ const stylesLight = StyleSheet.create({
         fontFamily: "Economica-Bold",
         fontSize: 30,
         textAlign: "center"
-    }
-});
-
-const stylesDark = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    contentContainer: {
-        flex: 1
-    },
-    headerContainer: {
-        marginTop: 150,
-        marginRight:"auto",
-        marginLeft: "auto",
-        marginBottom: 10,
-        flex: 2,
-    },
-    header: {
-        fontFamily: "Economica-Bold",
-        fontSize: 40,
-        textAlign: "center",
-        color: "#fff"
-    },
-    header2: {
-        fontFamily: "Economica-Bold",
-        fontSize: 100,
-        textAlign: "center",
-        color: "#fff"
-    },
-    loginContainer: {
-        marginRight:"auto",
-        marginLeft: "auto",
-        flex: 1,
-        marginBottom: 50
-    },
-    clickableAccount: {
-        backgroundColor: "#3b3b3b",
-        padding: 15,
-        borderRadius: 25,
-        elevation: 5,
-        marginBottom: 10
-    },
-    clickableAccountText: {
-        fontFamily: "Sunflower-Light",
-        fontSize: 20,
-        color: "#fff"
     }
 });
 

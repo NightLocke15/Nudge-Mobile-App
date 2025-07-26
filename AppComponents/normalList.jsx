@@ -9,13 +9,23 @@ import { SwipeListView } from "react-native-swipe-list-view";
 import { v4 as uuidv4 } from 'uuid';
 
 function NormalList(props) {
+    //Id of the object that was reverted to the index in the diaryLogs
     const { id } = props;
+
+    //Accessing user context and all the users that already exist
     const { setUsers, users, localUserInfo, localUser } = useContext(UserContext); 
+
+    //Information that is stored from this component
     const [listItem, setListItem] = useState("");
     const [listItemID, setlistItemID] = useState();
+
+    //Set the state of editing to trigger the editing tile for the list item
     const [editing, setEditing] = useState(false);
+
+    //Router used to take the user back to the to-do-list page
     const router = useRouter();
 
+    //Add a list item to the user's list
     function addItem() {
         const userListAddision = users.map((user) => {
             if (user.idnum === localUser) {
@@ -43,6 +53,7 @@ function NormalList(props) {
         setListItem("");
     }
 
+    //Renders the list item in the swipe list view ***(Subject to change, looking into options other than swiping)***
     const itemRendered = ({item}) => {
         return (
             <View key={item.id} style={stylesLight.listItemContainer}>
@@ -53,6 +64,7 @@ function NormalList(props) {
         )
     }
     
+    //Rendering of hidden button behind tile that deletes the log and on the other side it edits it ***(Subject to change, looking into options other than swiping)***
     const hiddenItemRendered = (data, rowMap) => {
         return (
             <View style={stylesLight.hiddenContainer}>
@@ -66,6 +78,7 @@ function NormalList(props) {
         )       
     }
 
+    //Delete the item from the user's information
     const deleteItem = (item) => {
         const userChange = users.map((user) => {
             if (user.idnum === localUser) {
@@ -94,12 +107,14 @@ function NormalList(props) {
         setUsers(userChange);
     }
 
+    //Trigger the editing of the item and set all the relevant information to be edited
     const editItem = (item) => {
         setEditing(true);
         setListItem(item.item);
         setlistItemID(item.id);
     }
 
+    //Replace the item in the relevant index in the user's list
     function finishEdit() {
         const userChange = users.map((user) => {
             if (user.idnum === localUser) {
@@ -134,6 +149,7 @@ function NormalList(props) {
         setEditing(false);
     }
 
+    //When pressing the item for a longer period the item is striked through, and completed in the list saved for the user
     function completeListItem(itemID) {
         const userChange = users.map((user) => {
             if (user.idnum === localUser) {
@@ -270,120 +286,6 @@ const stylesLight = StyleSheet.create({
         fontSize: 20,
         marginLeft: 5,
         color: "#818181",
-        textDecorationLine: "line-through",
-    },
-    hiddenContainer: {
-        flexDirection: "row",
-        justifyContent: "space-evenly"
-    },
-    deleteContainer: {
-        backgroundColor: "#940314",
-        padding: 10,
-        paddingTop: 15,
-        paddingBottom: 15,
-        width: "50%",
-        marginRight: "auto",
-    },
-    delete: {
-        fontFamily: "Sunflower-Light",
-        color: "#fff",
-        fontSize: 20,
-    },
-    editContainer: {
-        backgroundColor: "#039464ff",
-        padding: 10,
-        paddingTop: 15,
-        paddingBottom: 15,
-        width: "50%",
-        textAlign: "right"
-    },
-    edit: {
-        fontFamily: "Sunflower-Light",
-        color: "#fff",
-        fontSize: 20,
-        marginLeft: "auto"
-    }
-})
-
-const stylesDark = StyleSheet.create({
-    contentContainer: {
-        flex: 1,
-    },
-    headerContainer: {
-        marginBottom: 20,
-        marginTop: 20,
-    },
-    header: {
-        fontFamily: "Economica-Bold",
-        fontSize: 40,
-        marginLeft: "auto",
-        marginRight: "auto",
-        color: "#fff"
-    },
-    back: {
-        position: "absolute",
-        left: "5%",
-        top: "30%"        
-    },
-    backText: {
-        fontFamily: "Economica-Bold",
-        fontSize: 20,     
-        color: "#fff"    
-    },
-    addContainer: {
-        width: "95%",
-        marginLeft: "auto",
-        marginRight: "auto",
-        flexDirection: "row",
-        justifyContent: "space-evenly",
-        marginBottom: 10
-    },
-    input: {
-        backgroundColor: "#323232",
-        borderWidth: 0.5,
-        borderColor: "#000000",
-        borderRadius: 10,
-        padding: 10,
-        elevation: 5,
-        flex: 2,
-    },
-    add: {
-        flex: 1,
-        backgroundColor: "#3b3b3b",
-        marginLeft: 10,
-        marginRight: 5,
-        padding: 10,
-        elevation: 5,
-        borderRadius: 10,
-    },
-    addText: {
-        textAlign: "center",
-        fontFamily: "Sunflower-Light",
-        fontSize: 18,
-        color: "#fff",
-    },
-    listItemContainer: {
-        backgroundColor: "#323232",
-        padding: 10,
-        paddingTop: 15,
-        paddingBottom: 15,
-        width: "100%",
-        marginLeft: "auto",
-        marginRight: "auto",
-        borderBottomWidth: 1,
-        borderBottomColor: "#9e9e9e",   
-    },
-    listItemNameUncomplete: {
-        fontFamily: "Sunflower-Light",
-        fontSize: 20,
-        marginLeft: 5,
-        color: "#fff"
-    },
-    listItemNameComplete: {
-        fontFamily: "Sunflower-Light",
-        fontSize: 20,
-        marginLeft: 5,
-        color: "#9c9c9cff",
         textDecorationLine: "line-through",
     },
     hiddenContainer: {

@@ -9,6 +9,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 SplashScreen.preventAutoHideAsync();
 
 function RootLayout() {
+    // Fonts currently used in this app ***(Subject to change)***
     const [loaded, error] = useFonts({
         'Economica-Bold': require('../assets/fonts/Economica-Bold.ttf'),
         'Economica-Regular': require('../assets/fonts/Economica-Regular.ttf'),
