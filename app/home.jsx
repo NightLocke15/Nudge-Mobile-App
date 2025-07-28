@@ -33,7 +33,7 @@ function Home() {
                     <Pressable style={stylesLight.button}>
                         <Text style={stylesLight.buttonText}>Calendar</Text>
                     </Pressable>
-                    <Pressable style={stylesLight.button} onPress={test}>
+                    <Pressable style={stylesLight.button} onPress={() => router.navigate('/logs/diaryLogs')}>
                         <Text style={stylesLight.buttonText}>Diary</Text>
                     </Pressable>
                     <Pressable style={stylesLight.button} onPress={() => router.navigate('/logs/peopleLogs')}>
