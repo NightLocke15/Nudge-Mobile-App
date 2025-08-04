@@ -11,7 +11,7 @@ function UserProvider({children}) {
         email: "user@mail.com",
         password: "password",
         lists: [],
-        logs: []
+        logs: [],
     }]);
     const [authenticated, setAuthenticated] = useState(() => {
         const Auth = AsyncStorage.getItem("isAuthenticated");

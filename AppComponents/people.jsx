@@ -44,6 +44,9 @@ function People(props) {
     //Boolean to indicate when the note is being saved
     const [saving, setSaving] = useState(false);
 
+    //Date formatting information
+    const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+
     //Use effect that saves the note a second after the user stopped writing
     useEffect(() => {
         if (!text) {
@@ -289,7 +292,7 @@ function People(props) {
                     </View>                
                     <Text style={stylesLight.heading}>Birthday: </Text> 
                     <View style={stylesLight.miniContainer}>
-                        <Text style={stylesLight.text}>{localUserInfo[0] && localUserInfo[0].logs[id].birthday === "" ? "" : localUserInfo[0] && localUserInfo[0].logs[id].birthday.toLocaleDateString()}</Text>
+                        <Text style={stylesLight.text}>{localUserInfo[0] && localUserInfo[0].logs[id].birthday === "" ? "" : `${localUserInfo[0].logs[id].birthday.getDate()} ${month[localUserInfo[0].logs[id].birthday.getMonth()]}`}</Text>
                         <Pressable onPress={showDatePicker} style={stylesLight.clickOther}>
                             <Text>Edit</Text>
                         </Pressable>
