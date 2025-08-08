@@ -3,13 +3,13 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { Calendar, CalendarProvider } from 'react-native-calendars';
+import { Agenda, Calendar } from 'react-native-calendars';
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function CalendarFunc() {
     const { users, setUsers, localUserInfo, localUser } = useContext(UserContext);
     const router = useRouter();
-    const [selectedDay, setSelectedDay] = useState();
+    const [selectedDay, setSelectedDay] = useState('');
     const [dateList, setDateList] = useState({});
     const [dynamicDateList, setDynamicDateList] = useState({});
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
@@ -38,14 +38,14 @@ function CalendarFunc() {
         setDynamicDateList(dateList);
         if (dynamicDateList[date]) {
             setDynamicDateList(prevData => ({
-                ...prevData, // Spreads existing properties of prevData
-                [date]: {selected: true, marked: true, dotColor: 'red'}, // Adds a new property 'city'
+                ...prevData, 
+                [date]: {selected: true, marked: true, dotColor: 'red'}, 
             }));
         }
         else {
             setDynamicDateList(prevData => ({
-                ...prevData, // Spreads existing properties of prevData
-                [date]: {selected: true}, // Adds a new property 'city'
+                ...prevData, 
+                [date]: {selected: true}, 
             }));
         }        
     }
@@ -75,11 +75,7 @@ function CalendarFunc() {
                         textDisabledColor: '#5e5e5eff',
                     }}
                 />
-                <CalendarProvider>
-                    {/* <AgendaList 
-                        renderItem={agendaItem}
-                    /> */}
-                </CalendarProvider>
+                {selectedDay ? <Agenda /> : <View></View>}
             </LinearGradient>
         </SafeAreaView>
     )
