@@ -3,7 +3,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { Agenda, Calendar } from 'react-native-calendars';
+import { Calendar } from 'react-native-calendars';
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function CalendarFunc() {
@@ -13,13 +13,17 @@ function CalendarFunc() {
     const [dateList, setDateList] = useState({});
     const [dynamicDateList, setDynamicDateList] = useState({});
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
+    const [today, setToday] = useState();
 
     useEffect(() => {
+        const todayDate = new Date();
+        setToday(`${todayDate.getFullYear()}-${todayDate.getMonth() + 1 < 10 ? `0${todayDate.getMonth() + 1}` : `${todayDate.getMonth() + 1}`}-${todayDate.getDate() < 10 ? `0${todayDate.getDate()}` : `${todayDate.getDate()}`}`)
+
         const relevantLogs = localUserInfo[0] && localUserInfo[0].logs.filter((log) => log.type === "People");
         const birthdays = {};
         relevantLogs && relevantLogs.forEach((log) => {
-            const year = `${log.birthday.getFullYear()}`;
-            const month = log.birthday.getMonth() < 10 ? `0${log.birthday.getMonth() + 1}` : `${log.birthday.getMonth() + 1}`;
+            const year = `${todayDate.getFullYear()}`;
+            const month = log.birthday.getMonth() + 1 < 10 ? `0${log.birthday.getMonth() + 1}` : `${log.birthday.getMonth() + 1}`;
             const day = log.birthday.getDate() < 10 ? `0${log.birthday.getDate()}` : `${log.birthday.getDate()}`;
 
             birthdays[`${year}-${month}-${day}`] = {
@@ -75,7 +79,19 @@ function CalendarFunc() {
                         textDisabledColor: '#5e5e5eff',
                     }}
                 />
-                {selectedDay ? <Agenda /> : <View></View>}
+                <View>
+                    <Text>{selectedDay && selectedDay === today ? 'Today' : `${selectedDay}`}</Text>
+                    <Pressable>
+                        <Text>Add</Text>
+                    </Pressable>
+                    <View>
+                        <View>
+                            <Text>Weather</Text>
+                            <Text>Ideal for short sleeves</Text>
+                        </View>
+                        <Text>21C</Text>
+                    </View>
+                </View>
             </LinearGradient>
         </SafeAreaView>
     )
