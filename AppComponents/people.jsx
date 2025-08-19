@@ -224,7 +224,9 @@ function People(props) {
 
     //Saves the date change in the user's information
     const onDateChange = (event, selectedDate) => {
-        const currDate = selectedDate;
+        const currDate = `${selectedDate.getFullYear()}-${selectedDate.getMonth() + 1 < 10 ? `0${selectedDate.getMonth() + 1}` : 
+        `${selectedDate.getMonth() + 1}`}-${selectedDate.getDate() < 10 ? `0${selectedDate.getDate()}` : `${selectedDate.getDate()}`}`;
+        
         const usersReVamp = users.map((user, index) => {
             if (user.idnum === localUser) {
                 const newLogs = user.logs.map((log) => {
@@ -292,7 +294,7 @@ function People(props) {
                     </View>                
                     <Text style={stylesLight.heading}>Birthday: </Text> 
                     <View style={stylesLight.miniContainer}>
-                        <Text style={stylesLight.text}>{localUserInfo[0] && localUserInfo[0].logs[id].birthday === "" ? "" : `${localUserInfo[0].logs[id].birthday.getDate()} ${month[localUserInfo[0].logs[id].birthday.getMonth()]}`}</Text>
+                        <Text style={stylesLight.text}>{localUserInfo[0] && localUserInfo[0].logs[id].birthday === "" ? "" : `${localUserInfo[0].logs[id].birthday.substring(8)} ${month[localUserInfo[0].logs[id].birthday.substring(6,7) - 1]}`}</Text>
                         <Pressable onPress={showDatePicker} style={stylesLight.clickOther}>
                             <Text>Edit</Text>
                         </Pressable>

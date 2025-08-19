@@ -12,6 +12,7 @@ function UserProvider({children}) {
         password: "password",
         lists: [],
         logs: [],
+        events: [{name: "event"}],
     }]);
     const [authenticated, setAuthenticated] = useState(() => {
         const Auth = AsyncStorage.getItem("isAuthenticated");

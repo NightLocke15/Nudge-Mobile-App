@@ -15,7 +15,7 @@ function WelcomeScreen() {
 
     return (
         <SafeAreaView style={stylesLight.mainContainer}>  
-            <LinearGradient style={stylesLight.contentContainer} colors={["#ffffff", "#aaaaaa"]}>
+            <LinearGradient style={stylesLight.contentContainer} colors={["#e3e3e3", "#aaaaaa"]}>
                 <View style={stylesLight.logoContainer}>
                     <Text style={stylesLight.logo}>NUDGE</Text> 
                 </View>
@@ -43,26 +43,29 @@ const stylesLight = StyleSheet.create({
         marginLeft: "auto"
     },
     logo: {
-        fontFamily: "Economica-Bold",
-        fontSize: 100,
-        color: "#000"
+        fontFamily: "PTSans-Regular",
+        fontSize: 80,
+        color: "#242424"
     },
     getStartedContainer: {
         marginBottom: "auto",
         marginRight:"auto",
         marginLeft: "auto",
-        marginTop: 20
+        marginTop: 45
     },
     getStarted: {
-        backgroundColor: "#f0f0f0",
-        padding: 15,
+        backgroundColor: "#f2f2f2",
+        paddingTop: 15,
+        paddingBottom: 15,
+        paddingLeft: 20,
+        paddingRight: 20,
         borderRadius: 25,
         elevation: 5,
     },
     getStartedText: {
-        color: "#000",
-        fontFamily: "Sunflower-Light",
-        fontSize: 25
+        color: "#242424",
+        fontFamily: "Roboto-Regular",
+        fontSize: 22
     }
 });
 

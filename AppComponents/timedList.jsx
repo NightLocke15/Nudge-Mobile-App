@@ -1,11 +1,11 @@
 import { UserContext } from "@/AppContexts/UserContext";
+import { Octicons } from "@react-native-vector-icons/octicons";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import 'react-native-get-random-values';
-import { SwipeListView } from "react-native-swipe-list-view";
 import { v4 as uuidv4 } from 'uuid';
 
 function TimedList(props) {
@@ -71,32 +71,7 @@ function TimedList(props) {
         }) 
         setUsers(userListAddision);
         setListItem("");
-        console.log(localUserInfo);
-    }
-
-    //Renders the list item in the swipe list view ***(Subject to change, looking into options other than swiping)***
-    const itemRendered = ({item}) => {
-        return (
-            <View key={item.id} style={[stylesLight.listItemContainer, (item.endTime && item.endTime.h >= endTimes.h && item.endTime.m > endTimes.m) && stylesLight.listItemContainerOutRange, (item.endTime && time.getTime() >= new Date().setHours(item.endTime.h, item.endTime.m, 0, 0) && item.completed === false) && stylesLight.listItemContainerOverdue]}>
-                <Pressable onLongPress={() => completeListItem(item.id)} onPress={() => viewItem(item)} style={stylesLight.listItemNameContainer}>
-                    <Text numberOfLines={1} ellipsizeMode="tail" style={item && item.completed ? stylesLight.listItemNameComplete : stylesLight.listItemNameUncomplete}>{item.item}</Text>
-                </Pressable>    
-                <View style={stylesLight.listItemTimesContainer}>
-                    <Pressable onPress={() => addTimeAmount(item)}>
-                        <Text>{item.timeLengthMins} Mins</Text>
-                    </Pressable>
-                    {item.startTime === null || item.endTime === null ? (
-                        <View></View>
-                    ) : (
-                        <View style={stylesLight.timeToTime}>
-                            <Text>{item.startTime !== undefined ? `${item.startTime.h}:${item.startTime.m === 0 ? `${item.startTime.m}0` : `${item.startTime.m}`}` : ``}</Text>
-                            <Text> to </Text>
-                            <Text>{item.endTime !== undefined ? `${item.endTime.h}:${item.endTime.m === 0 ? `${item.endTime.m}0` : item.endTime.m < 10 ? `0${item.endTime.m}` : `${item.endTime.m}`}` : ``}</Text>
-                        </View> 
-                    )}                                       
-                </View>           
-            </View>
-        )
+        console.log(localUserInfo[0] && localUserInfo[0].lists[id].listItems);
     }
     
     //Rendering of hidden button behind tile that deletes the log and on the other side it edits it ***(Subject to change, looking into options other than swiping)***
@@ -400,10 +375,10 @@ function TimedList(props) {
     }
 
     return (
-        <LinearGradient style={stylesLight.contentContainer} colors={["#ffffff", "#aaaaaa"]}>
+        <LinearGradient style={stylesLight.contentContainer} colors={["#e3e3e3", "#aaaaaa"]}>
             <View style={stylesLight.headerContainer}>
                 <Pressable onPress={() => router.dismissTo("/to-do-list/to-do-list")} style={stylesLight.back}>
-                    <Text style={stylesLight.backText}>Lists</Text>
+                    <Octicons name="arrow-left" size={25} color={'#242424'}/>
                 </Pressable>
                 <Text style={stylesLight.header}>{localUserInfo[0].lists[id].name}</Text>
                 <Text style={stylesLight.timeText}>{`${time.getHours()}:${time.getMinutes() < 10 ? `0${time.getMinutes()}` : time.getMinutes()}`}</Text>
@@ -441,11 +416,27 @@ function TimedList(props) {
             ) : (
                 <View></View>
             )}
-            <SwipeListView data={localUserInfo[0].lists[id] && localUserInfo[0].lists[id].listItems} 
-                renderItem={itemRendered} 
-                renderHiddenItem={hiddenItemRendered} 
-                leftOpenValue={100} 
-                rightOpenValue={-100} />  
+            {localUserInfo[0].lists[id] && localUserInfo[0].lists[id].listItems.map((item) => (
+                <View key={item.id} style={[stylesLight.listItemContainer, (item.endTime && item.endTime.h >= endTimes.h && item.endTime.m > endTimes.m) && stylesLight.listItemContainerOutRange, (item.endTime && time.getTime() >= new Date().setHours(item.endTime.h, item.endTime.m, 0, 0) && item.completed === false) && stylesLight.listItemContainerOverdue]}>
+                    <Pressable onLongPress={() => completeListItem(item.id)} onPress={() => viewItem(item)} style={stylesLight.listItemNameContainer}>
+                        <Text numberOfLines={1} ellipsizeMode="tail" style={item && item.completed ? stylesLight.listItemNameComplete : stylesLight.listItemNameUncomplete}>{item.item}</Text>
+                    </Pressable>    
+                    <View style={stylesLight.listItemTimesContainer}>
+                        <Pressable onPress={() => addTimeAmount(item)}>
+                            <Text>{item.timeLengthMins} Mins</Text>
+                        </Pressable>
+                        {item.startTime === null || item.endTime === null ? (
+                            <View></View>
+                        ) : (
+                            <View style={stylesLight.timeToTime}>
+                                <Text>{item.startTime !== undefined ? `${item.startTime.h}:${item.startTime.m === 0 ? `${item.startTime.m}0` : `${item.startTime.m}`}` : ``}</Text>
+                                <Text> to </Text>
+                                <Text>{item.endTime !== undefined ? `${item.endTime.h}:${item.endTime.m === 0 ? `${item.endTime.m}0` : item.endTime.m < 10 ? `0${item.endTime.m}` : `${item.endTime.m}`}` : ``}</Text>
+                            </View> 
+                        )}                                       
+                    </View>           
+                </View>
+            ))} 
             {changeTime ? (
                 <View style={stylesLight.overLay}>
                     <View style={stylesLight.container}>
@@ -483,7 +474,7 @@ const stylesLight = StyleSheet.create({
         marginTop: 20,
     },
     header: {
-        fontFamily: "Economica-Bold",
+        fontFamily: "PTSans-Regular",
         fontSize: 40,
         marginLeft: "auto",
         marginRight: "auto"
@@ -494,11 +485,11 @@ const stylesLight = StyleSheet.create({
         top: "30%"        
     },
     backText: {
-        fontFamily: "Economica-Bold",
+        fontFamily: "PTSans-Regular",
         fontSize: 20,         
     },
     timeText: {
-        fontFamily: "Economica-Bold",
+        fontFamily: "PTSans-Regular",
         fontSize: 20, 
         position: "absolute",
         right: "5%",
@@ -510,14 +501,14 @@ const stylesLight = StyleSheet.create({
         padding: 10
     },
     textsTime: {
-        fontFamily: "Economica-Bold",
-        fontSize: 18,
+        fontFamily: "PTSans-Regular",
+        fontSize: 15,
         flex: 1
     },
     timeInput: {
-        backgroundColor: "#fff",
+        backgroundColor: "#f2f2f2",
         borderWidth: 0.5,
-        borderColor: "#4d4d4d",
+        borderColor: "#2b2b2b",
         borderRadius: 10,
         padding: 10,
         elevation: 5,
@@ -537,14 +528,14 @@ const stylesLight = StyleSheet.create({
         margin: 10,
     },
     updateClickable: {
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#f2f2f2",
         padding: 10, 
         elevation: 5,
         borderRadius: 10       
     },
     updateText: {
         textAlign: "center",
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 18
     },
     addContainer: {
@@ -556,9 +547,9 @@ const stylesLight = StyleSheet.create({
         marginBottom: 5
     },
     input: {
-        backgroundColor: "#fff",
+        backgroundColor: "#f2f2f2",
         borderWidth: 0.5,
-        borderColor: "#4d4d4d",
+        borderColor: "#2b2b2b",
         borderRadius: 10,
         padding: 10,
         elevation: 5,
@@ -566,7 +557,7 @@ const stylesLight = StyleSheet.create({
     },
     add: {
         flex: 1,
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#f2f2f2",
         marginLeft: 10,
         marginRight: 5,
         padding: 10,
@@ -575,11 +566,11 @@ const stylesLight = StyleSheet.create({
     },
     addText: {
         textAlign: "center",
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 18
     },
     listItemContainer: {
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#e3e3e3",
         padding: 10,
         paddingTop: 15,
         paddingBottom: 15,
@@ -622,13 +613,13 @@ const stylesLight = StyleSheet.create({
         flexGrow: 1,
     },
     listItemNameUncomplete: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 15,
         marginLeft: 5,
         flex: 1
     },
     listItemNameComplete: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 15,
         marginLeft: 5,
         color: "#818181",
@@ -644,7 +635,7 @@ const stylesLight = StyleSheet.create({
         flexDirection: "row"
     },
     colon: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 20,
         marginTop: 10,
 
@@ -662,7 +653,7 @@ const stylesLight = StyleSheet.create({
         marginRight: "auto",
     },
     delete: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         color: "#fff",
         fontSize: 15,
     },
@@ -675,7 +666,7 @@ const stylesLight = StyleSheet.create({
         textAlign: "right"
     },
     edit: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         color: "#fff",
         fontSize: 15,
         marginLeft: "auto"
@@ -701,7 +692,7 @@ const stylesLight = StyleSheet.create({
         zIndex: 1
     },
     done: {
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#f2f2f2",
         marginLeft: "auto",
         marginRight: "auto",
         padding: 10,
@@ -711,11 +702,11 @@ const stylesLight = StyleSheet.create({
     },
     doneText: {
         textAlign: "center",
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 18
     },
     listItemText: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 18,
         lineHeight: 25
     },

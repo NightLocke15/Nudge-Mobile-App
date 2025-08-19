@@ -78,37 +78,41 @@ const stylesLight = StyleSheet.create({
         flex: 1
     },
     headerContainer: {
-        marginTop: 150,
+        marginTop: 200,
         marginRight:"auto",
         marginLeft: "auto",
         marginBottom: 10,
         flex: 2,
     },
     header: {
-        fontFamily: "Economica-Bold",
-        fontSize: 40,
+        fontFamily: "PTSans-Regular",
+        fontSize: 35,
         textAlign: "center",
+        lineHeight: 30
     },
     header2: {
-        fontFamily: "Economica-Bold",
-        fontSize: 100,
+        fontFamily: "PTSans-Regular",
+        fontSize: 80,
         textAlign: "center",
     },
     loginContainer: {
         marginRight:"auto",
         marginLeft: "auto",
         flex: 1,
-        marginBottom: 50,
+        marginBottom: 200,
     },
     clickableAccount: {
         backgroundColor: "#f0f0f0",
-        padding: 15,
+        paddingTop: 15,
+        paddingBottom: 15,
+        paddingLeft: 20,
+        paddingRight: 20,
         borderRadius: 25,
         elevation: 5,
         marginBottom: 10
     },
     clickableAccountText: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 20,
         textAlign: "center"
     },

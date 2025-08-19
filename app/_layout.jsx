@@ -11,13 +11,14 @@ SplashScreen.preventAutoHideAsync();
 function RootLayout() {
     // Fonts currently used in this app ***(Subject to change)***
     const [loaded, error] = useFonts({
-        'Economica-Bold': require('../assets/fonts/Economica-Bold.ttf'),
-        'Economica-Regular': require('../assets/fonts/Economica-Regular.ttf'),
-        'Economica-Italic': require('../assets/fonts/Economica-Italic.ttf'),
-        'Economica-BoldItalic': require('../assets/fonts/Economica-BoldItalic.ttf'),
-        'Sunflower-Bold': require('../assets/fonts/Sunflower-Bold.ttf'),
-        'Sunflower-Light': require('../assets/fonts/Sunflower-Light.ttf'),
-        'Sunflower-Medium': require('../assets/fonts/Sunflower-Medium.ttf'),
+        'PTSans-Bold': require('../assets/fonts/PTSans-Bold.ttf'),
+        'PTSans-BoldItalic': require('../assets/fonts/PTSans-BoldItalic.ttf'),
+        'PTSans-Italic': require('../assets/fonts/PTSans-Italic.ttf'),
+        'PTSans-Regular': require('../assets/fonts/PTSans-Regular.ttf'),
+        'Roboto-Bold': require('../assets/fonts/Roboto-Bold.ttf'),
+        'Roboto-Light': require('../assets/fonts/Roboto-Light.ttf'),
+        'Roboto-Medium': require('../assets/fonts/Roboto-Medium.ttf'),
+        'Roboto-Regular': require('../assets/fonts/Roboto-Regular.ttf'),
     });
 
     useEffect(() => {
