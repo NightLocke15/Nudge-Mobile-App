@@ -1,9 +1,14 @@
 import { UserContext } from "@/AppContexts/UserContext";
+import { Octicons } from "@react-native-vector-icons/octicons";
+import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Gesture, GestureDetector, TextInput } from "react-native-gesture-handler";
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
+
 
 function Diary(props) {
     //Id of the object that was reverted to the index in the diaryLogs
@@ -21,7 +26,12 @@ function Diary(props) {
     const [nameEdit, setNameEdit] = useState(false);
 
     //Router that is used to navigate the user back to the diaryLogs page
-    router = useRouter();
+    const router = useRouter();
+
+    const [images, setImages] = useState([]);
+    const [addOptions, setAddOptions] = useState(false);
+    const [action, setAction] = useState(false);
+    const [tapPostition, setTapPosition] = useState({x: 0, y: 0})
 
     //Use effect that saves the text being written in the log 1 second after the user has stopped writing
     useEffect(() => {
@@ -54,12 +64,17 @@ function Diary(props) {
 
     }, [text]);
 
+    function activateEditing() {
+        setNameEdit(true);
+        setAction(false);
+    }
+
     //Edit the name of the diary entry and change it in the user's information
     function editName() {
         const usersReVamp = users.map((user, index) => {
         if (user.idnum === localUser) {
             const newLogs = user.logs;
-            newLogs.splice(id, 1, {id: localUser[0] && localUser[0].logs[id].id, name: name, type: "Diary", date: user.logs[id].date, text: text})
+            newLogs.splice(id, 1, {...localUserInfo[0] && localUserInfo[0].logs[id], name: name})
             return {
                 ...user,
                 logs: newLogs
@@ -73,29 +88,115 @@ function Diary(props) {
         setNameEdit(false);
     }
 
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images', 'videos'],
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+        });
+
+        console.log(result);
+
+        if (!result.canceled) {
+            addImagesToLogs(result.assets[0].uri);
+            setAddOptions(false);
+        }
+    };
+
+    function addImagesToLogs(imageURI) {
+        const userList = users.map((user) => {
+            if (user.idnum === localUser) {
+                const newLogs = user.logs.map((log) => {
+                    if (user.logs.indexOf(log) === id) {
+                        return {
+                            ...log,
+                            images: [...log.images, {id: uuidv4(), uri: imageURI}]
+                        }
+                    }
+                    else {
+                        return log;
+                    }
+                })
+
+                return {
+                    ...user,
+                    logs: newLogs
+                }
+            }
+            else {
+                return user;
+            }
+        })
+
+        setUsers(userList);
+    }
+
+    const doubleTap = () => Gesture.Tap().maxDuration(250).numberOfTaps(2).onStart((event) => {
+            setTapPosition({x: event.absoluteX , y: event.absoluteY})
+            setAction(true);
+        }).runOnJS(true);
+
     return (
-        <LinearGradient style={stylesLight.contentContainer} colors={["#ffffff", "#aaaaaa"]}>
+        <LinearGradient style={stylesLight.contentContainer} colors={["#e3e3e3", "#aaaaaa"]}>
             <View style={stylesLight.headerContainer}>
                 <Pressable onPress={() => router.dismissTo('/logs/diaryLogs')} style={stylesLight.back}>
-                    <Text style={stylesLight.backText}>Back</Text>
+                    <Octicons name="arrow-left" size={25} color={'#585858'}/>
                 </Pressable>  
                 <View style={stylesLight.headingContainer}>
-                    <Pressable onLongPress={() => setNameEdit(true)}>
+                    <GestureDetector gesture={Gesture.Exclusive(doubleTap())}>
                         <Text style={stylesLight.header}>{localUserInfo[0].logs[id].name}</Text>
-                    </Pressable>                        
+                    </GestureDetector>                        
                     <Text style={stylesLight.logDate}>{localUserInfo[0].logs[id].date}</Text>
-                </View>  
-                <View style={stylesLight.save}>
-                    <Text style={stylesLight.saveText}>{saving ? "Saving..." : "Saved!"}</Text>
-                </View>                    
-            </View>                
+                    <View style={stylesLight.save}>
+                        <Text style={stylesLight.saveText}>{saving ? "Saving..." : "Saved!"}</Text>
+                    </View> 
+                </View> 
+                <Pressable onPress={() => setAddOptions(true)} style={stylesLight.add}>
+                    <Octicons name="plus" size={25} color={'#585858'}/>
+                </Pressable>            
+            </View>    
+            <View style={stylesLight.imagesContainer}>  
+                {localUserInfo[0] && localUserInfo[0].logs[id].images.map((image) => (<Image key={image.id} source={{ uri: image.uri }} style={stylesLight.image} />))}
+            </View>                    
             <TextInput multiline placeholder="Enter Log..." value={text} onChangeText={(e) => setText(e)} style={stylesLight.noteInput}/>
             {nameEdit ? (
                 <View style={stylesLight.overLay}>
                     <View style={stylesLight.editNameContainer}>
                         <TextInput placeholder="Name..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setName(e)} value={name} maxLength={15} style={stylesLight.input}/>
-                        <Pressable onPress={editName} style={stylesLight.done}>
-                            <Text style={stylesLight.doneText}>Done</Text>
+                        <Pressable onPress={editName} style={stylesLight.click}>
+                            <Text style={stylesLight.clickText}>Done</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            ) : (
+                <View></View>
+            )}
+            {addOptions ? (
+                <View style={stylesLight.overLay}>
+                    <View style={stylesLight.optionsContainer}>
+                        <Pressable onPress={pickImage} style={stylesLight.click}>
+                            <Text style={stylesLight.clickText}>Image</Text>
+                        </Pressable>
+                        <Pressable style={stylesLight.click}>
+                            <Text style={stylesLight.clickText}>Voice Note</Text>
+                        </Pressable>
+                        <Pressable onPress={() => setAddOptions(false)} style={stylesLight.click}>
+                            <Text style={stylesLight.clickText}>Cancel</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            ) : (
+                <View></View>
+            )}
+            {action ? (
+                <View style={stylesLight.overLay}>
+                    <View style={[stylesLight.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
+                        <Pressable onPress={activateEditing} style={stylesLight.edit}>
+                            <Text style={stylesLight.editText}>Edit</Text>
+                        </Pressable>
+                        <Pressable onPress={() => setAction(false)} style={stylesLight.cancel}>
+                            <Text style={stylesLight.cancelText}>Cancel</Text>
                         </Pressable>
                     </View>
                 </View>
@@ -115,16 +216,12 @@ const stylesLight = StyleSheet.create({
         left: "5%",
         top: "30%"        
     },
-    backText: {
-        fontFamily: "Economica-Bold",
-        fontSize: 20,         
-    },
     headerContainer: {
         marginBottom: 20,
         marginTop: 20,
     },
     header: {
-        fontFamily: "Economica-Bold",
+        fontFamily: "PTSans-Regular",
         fontSize: 40,
         marginLeft: "auto",
         marginRight: "auto"
@@ -133,17 +230,14 @@ const stylesLight = StyleSheet.create({
         marginLeft: "auto",
         marginRight: "auto"
     },
-    save: {        
-        position: "absolute",
-        right: "5%",
-        top: "30%"                   
-    },
     saveText: {
-        fontFamily: "Economica-Bold",
-        fontSize: 20,        
+        fontFamily: "PTSans-Regular",
+        fontSize: 20,      
+        marginLeft: "auto",
+        marginRight: "auto"  
     },
     logDate: {
-        fontFamily: "Sunflower-Medium",
+        fontFamily: "Roboto-Regular",
         fontSize: 16,
         marginTop: 2,
         marginLeft: "auto",
@@ -153,11 +247,11 @@ const stylesLight = StyleSheet.create({
         width: "95%",
         marginLeft: "auto",
         marginRight: "auto",
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 18
     },
     input: {
-        backgroundColor: "#fff",
+        backgroundColor: "#e3e3e3",
         borderWidth: 0.5,
         borderColor: "#4d4d4d",
         borderRadius: 10,
@@ -170,7 +264,7 @@ const stylesLight = StyleSheet.create({
         left: "5%",
         top: "10%",
         padding: 20,
-        backgroundColor: "#fff",
+        backgroundColor: "#e3e3e3",
         elevation: 5,
         borderRadius: 10,
         zIndex: 1
@@ -184,8 +278,8 @@ const stylesLight = StyleSheet.create({
         flex: 1,
         backgroundColor: "rgba(139, 139, 139, 0.5)"
     },
-    done: {
-        backgroundColor: "#f0f0f0",
+    click: {
+        backgroundColor: "#f2f2f2",
         marginLeft: "auto",
         marginRight: "auto",
         padding: 10,
@@ -193,9 +287,69 @@ const stylesLight = StyleSheet.create({
         marginTop: 10,
         borderRadius: 10,
     },
-    doneText: {
+    clickText: {
         textAlign: "center",
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18
+    },
+    imagesContainer: {
+        flexDirection: "row",
+        flexWrap: 'wrap',
+        justifyContent: "space-between",
+        padding: 10,
+    },
+    image: {
+        width: 175,
+        height: 175,
+        marginBottom: 10,
+        borderRadius: 10,
+    },
+    add: {
+        position: "absolute",
+        right: "5%",
+        top: "30%"
+    },
+    optionsContainer: {
+        backgroundColor: "#e3e3e3",
+        position: "absolute",
+        padding: 20,
+        borderRadius: 10,
+        bottom: 0,
+        width: "100%"
+    },
+    actionContainer: {
+        backgroundColor: '#e3e3e3',
+        padding: 20,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 10
+    },
+    edit: {
+        backgroundColor: "#1f9615ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        borderRadius: 10,
+    },
+    editText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    cancel: {
+        backgroundColor: "#f2f2f2",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    cancelText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
         fontSize: 18
     },
 });

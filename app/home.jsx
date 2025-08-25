@@ -1,4 +1,6 @@
 import { UserContext } from "@/AppContexts/UserContext";
+import { Lucide } from "@react-native-vector-icons/lucide";
+import { Octicons } from "@react-native-vector-icons/octicons";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from "expo-router";
 import { useContext } from "react";
@@ -22,35 +24,47 @@ function Home() {
     return (
         <SafeAreaView style={stylesLight.container}>
             {JSON.parse(authenticated) ? 
-            (<LinearGradient style={stylesLight.contentContainer} colors={["#ffffff", "#aaaaaa"]}>
+            (<LinearGradient style={stylesLight.contentContainer} colors={["#e3e3e3", "#aaaaaa"]}>
                 <View style={stylesLight.homeHeaderContainer}>
                     <Text style={stylesLight.homeHeader}>NUDGE</Text>
                 </View>
+                <Pressable style={stylesLight.settings}>
+                    <Octicons style={stylesLight.icon} name="gear" size={25} color={'#585858'}/>
+                </Pressable>
                 <View style={stylesLight.menuContainer}>
                     <Pressable style={stylesLight.button} onPress={() => router.navigate('/to-do-list/to-do-list')}>
+                        <Octicons style={stylesLight.icon} name="list-unordered" size={50} color={'#585858'}/>
                         <Text style={stylesLight.buttonText}>To-Do</Text>
                     </Pressable>
                     <Pressable style={stylesLight.button} onPress={() => router.navigate('/calendar/calendar')}>
+                        <Octicons style={stylesLight.icon} name="calendar" size={50} color={'#585858'}/>
                         <Text style={stylesLight.buttonText}>Calendar</Text>
                     </Pressable>
                     <Pressable style={stylesLight.button} onPress={() => router.navigate('/logs/diaryLogs')}>
+                        <Octicons style={stylesLight.icon} name="repo" size={50} color={'#585858'}/>
                         <Text style={stylesLight.buttonText}>Diary</Text>
                     </Pressable>
                     <Pressable style={stylesLight.button} onPress={() => router.navigate('/logs/peopleLogs')}>
+                        <Octicons style={stylesLight.icon} name="people" size={50} color={'#585858'}/>
                         <Text style={stylesLight.buttonText}>People</Text>
                     </Pressable>
                     <Pressable style={stylesLight.button} onPress={() => router.navigate('/logs/medicationLogs')}>
+                        <Lucide style={stylesLight.icon} name="pill" size={50} color={'#585858'}/>
                         <Text style={stylesLight.buttonText}>Medication</Text>
                     </Pressable>
                     <Pressable style={stylesLight.button}>
-                        <Text style={stylesLight.buttonText}>Emergency</Text>
+                        <Octicons style={stylesLight.icon} name="clock" size={50} color={'#585858'}/>
+                        <Text style={stylesLight.buttonText}>Clock</Text>
                     </Pressable>
-                    <Pressable onPress={logoutHome}>
-                        <Text>LogOut</Text>
-                    </Pressable>
-                </View>                
+                </View>  
+                <Pressable style={stylesLight.emergencyButton}>
+                    <View style={stylesLight.redBorder}>
+                        <Lucide style={stylesLight.emergencyIcon} name="activity" size={50} color={'#c00f0fff'}/>
+                        <Text style={stylesLight.emergencyButtonText}>EMERGENCY</Text>
+                    </View>                    
+                </Pressable>              
             </LinearGradient>) : 
-            (<LinearGradient style={stylesLight.contentContainer} colors={["#ffffff", "#aaaaaa"]}>
+            (<LinearGradient style={stylesLight.contentContainer} colors={["#e3e3e3", "#aaaaaa"]}>
                 <View style={stylesLight.headerContainer}>
                     <Text style={stylesLight.header}>Welcome to</Text>
                     <Text style={stylesLight.header2}>NUDGE</Text>
@@ -102,7 +116,7 @@ const stylesLight = StyleSheet.create({
         marginBottom: 200,
     },
     clickableAccount: {
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#f2f2f2",
         paddingTop: 15,
         paddingBottom: 15,
         paddingLeft: 20,
@@ -124,25 +138,65 @@ const stylesLight = StyleSheet.create({
         marginTop: 20
     },
     homeHeader: {
-        fontFamily: "Economica-Bold",
+        fontFamily: "PTSans-Regular",
         fontSize: 40
     },
     menuContainer: {
+        flexDirection: "row",
+        flexWrap: 'wrap',
+        justifyContent: "space-between",
         marginLeft: 30,
         marginRight: 30
     },
     button: {
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#f2f2f2",
         marginTop: 30,
         padding: 20,
         borderRadius: 10,
-        elevation: 5
+        elevation: 5,
+        width: "45%"
     },
     buttonText: {
-        fontFamily: "Economica-Bold",
-        fontSize: 30,
-        textAlign: "center"
-    }
+        fontFamily: "PTSans-Regular",
+        fontSize: 16,
+        textAlign: "center",
+        marginTop: 10
+    },
+    icon: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+    },
+    emergencyIcon: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginTop: 10
+    },
+    emergencyButton: {
+        backgroundColor: "#f2f2f2",
+        marginTop: 30,
+        padding: 20,
+        borderRadius: 10,
+        elevation: 5,
+        marginLeft: 30,
+        marginRight: 30,
+    },
+    emergencyButtonText: {
+        fontFamily: "PTSans-Regular",
+        fontSize: 16,
+        textAlign: "center",
+        marginTop: 10,
+        marginBottom: 10
+    },
+    redBorder: {
+        borderColor: "#c00f0fff",
+        borderWidth: 8,
+        borderRadius: 10,
+    },
+    settings: {
+        position: "absolute",
+        right: 40,
+        top: 35,
+    },
 });
 
 export default Home;

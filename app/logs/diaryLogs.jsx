@@ -35,7 +35,7 @@ function DiaryLogs() {
         if (user.idnum === localUser) {
             return {
                 ...user,
-                logs: [...user.logs, {id: uuidv4(), name: `Untitled Note ${user.logs.length}`, type: "Diary", date: `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`, text: ""}]
+                logs: [...user.logs, {id: uuidv4(), name: `Untitled Note ${user.logs.length}`, type: "Diary", date: `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`, text: "", images: []}]
             }
         }
         else {

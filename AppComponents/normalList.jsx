@@ -4,9 +4,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from "expo-router";
 import { useContext, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import { Gesture, GestureDetector, TextInput } from "react-native-gesture-handler";
 import 'react-native-get-random-values';
-import { SwipeListView } from "react-native-swipe-list-view";
 import { v4 as uuidv4 } from 'uuid';
 
 function NormalList(props) {
@@ -22,6 +21,9 @@ function NormalList(props) {
 
     //Set the state of editing to trigger the editing tile for the list item
     const [editing, setEditing] = useState(false);
+    const [item, setItem] = useState();
+    const [action, setAction] = useState(false);
+    const [tapPostition, setTapPosition] = useState({x: 0, y: 0})
 
     //Router used to take the user back to the to-do-list page
     const router = useRouter();
@@ -54,31 +56,6 @@ function NormalList(props) {
         setListItem("");
     }
 
-    //Renders the list item in the swipe list view ***(Subject to change, looking into options other than swiping)***
-    const itemRendered = ({item}) => {
-        return (
-            <View key={item.id} style={stylesLight.listItemContainer}>
-                <Pressable onLongPress={() => completeListItem(item.id)}>
-                    <Text style={item.completed ? stylesLight.listItemNameComplete : stylesLight.listItemNameUncomplete}>{item.item}</Text>
-                </Pressable>                
-            </View>
-        )
-    }
-    
-    //Rendering of hidden button behind tile that deletes the log and on the other side it edits it ***(Subject to change, looking into options other than swiping)***
-    const hiddenItemRendered = (data, rowMap) => {
-        return (
-            <View style={stylesLight.hiddenContainer}>
-                <Pressable onPress={() => deleteItem(data.item)} style={stylesLight.deleteContainer}>
-                    <Text style={stylesLight.delete}>Delete</Text>
-                </Pressable>
-                <Pressable onPress={() => editItem(data.item)} style={stylesLight.editContainer}>
-                    <Text style={stylesLight.edit}>Edit</Text>
-                </Pressable>                
-            </View>
-        )       
-    }
-
     //Delete the item from the user's information
     const deleteItem = (item) => {
         const userChange = users.map((user) => {
@@ -106,6 +83,7 @@ function NormalList(props) {
         }) 
 
         setUsers(userChange);
+        setAction(false)
     }
 
     //Trigger the editing of the item and set all the relevant information to be edited
@@ -113,6 +91,7 @@ function NormalList(props) {
         setEditing(true);
         setListItem(item.item);
         setlistItemID(item.id);
+        setAction(false)
     }
 
     //Replace the item in the relevant index in the user's list
@@ -188,6 +167,13 @@ function NormalList(props) {
 
         setUsers(userChange);
     }
+
+    const doubleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(2).onStart((event) => {
+        setItem(item);
+        setTapPosition({x: event.absoluteX , y: event.absoluteY})
+        setAction(true);
+    }).runOnJS(true);
+    const longPress = (item) => Gesture.LongPress().onEnd(() => completeListItem(item.id)).runOnJS(true);
     
     return (        
         <LinearGradient style={stylesLight.contentContainer} colors={["#e3e3e3", "#aaaaaa"]}>
@@ -203,11 +189,31 @@ function NormalList(props) {
                     {editing ? <Octicons name="check" size={25} color={'#585858'}/> : <Octicons name="plus" size={25} color={'#585858'}/>}
                 </Pressable>
             </View>   
-            <SwipeListView data={localUserInfo[0].lists[id] && localUserInfo[0].lists[id].listItems} 
-                renderItem={itemRendered} 
-                renderHiddenItem={hiddenItemRendered} 
-                leftOpenValue={100} 
-                rightOpenValue={-100} />  
+            {localUserInfo[0].lists[id] && localUserInfo[0].lists[id].listItems.map((item) => (
+                <GestureDetector key={item.id} gesture={Gesture.Exclusive(doubleTap(item), longPress(item))}>
+                    <View key={item.id} style={stylesLight.listItemContainer}>
+                        <Octicons style={stylesLight.check} name={item.completed ? "check-circle" : "circle"} size={20} color={'#585858'}/>
+                        <Text style={item.completed ? stylesLight.listItemNameComplete : stylesLight.listItemNameUncomplete}>{item.item}</Text>                
+                    </View>
+                </GestureDetector>
+            ))}
+            {action ? (
+                <View style={stylesLight.overLay}>
+                    <View style={[stylesLight.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
+                        <Pressable onPress={() => editItem(item)} style={stylesLight.edit}>
+                            <Text style={stylesLight.editText}>Edit</Text>
+                        </Pressable>
+                        <Pressable onPress={() => deleteItem(item)} style={stylesLight.delete}>
+                            <Text style={stylesLight.deleteText}>Delete</Text>
+                        </Pressable>
+                        <Pressable onPress={() => setAction(false)} style={stylesLight.cancel}>
+                            <Text style={stylesLight.cancelText}>Cancel</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            ) : (
+                <View></View>
+            )}
         </LinearGradient>
     )
 }
@@ -230,10 +236,6 @@ const stylesLight = StyleSheet.create({
         position: "absolute",
         left: "5%",
         top: "30%"        
-    },
-    backText: {
-        fontFamily: "PTSans-Regular",
-        fontSize: 20,         
     },
     addContainer: {
         width: "95%",
@@ -268,6 +270,7 @@ const stylesLight = StyleSheet.create({
         marginRight: "auto",
         borderBottomWidth: 1,
         borderBottomColor: "#9e9e9e",   
+        flexDirection: "row"
     },
     listItemNameUncomplete: {
         fontFamily: "Roboto-Regular",
@@ -285,32 +288,68 @@ const stylesLight = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-evenly"
     },
-    deleteContainer: {
-        backgroundColor: "#940314",
-        padding: 10,
-        paddingTop: 15,
-        paddingBottom: 15,
-        width: "50%",
-        marginRight: "auto",
-    },
     delete: {
-        fontFamily: "Roboto-Regular",
-        color: "#fff",
-        fontSize: 20,
-    },
-    editContainer: {
-        backgroundColor: "#039464ff",
+        backgroundColor: "#be2206ff",
+        marginLeft: "auto",
+        marginRight: "auto",
         padding: 10,
-        paddingTop: 15,
-        paddingBottom: 15,
-        width: "50%",
-        textAlign: "right"
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    deleteText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
     },
     edit: {
+        backgroundColor: "#1f9615ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        borderRadius: 10,
+    },
+    editText: {
+        textAlign: "center",
         fontFamily: "Roboto-Regular",
-        color: "#fff",
-        fontSize: 20,
-        marginLeft: "auto"
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    overLay: {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        right: 0,
+        left: 0,
+        flex: 1,
+        backgroundColor: "rgba(139, 139, 139, 0.5)"
+    },
+    actionContainer: {
+        backgroundColor: '#e3e3e3',
+        padding: 20,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 10
+    },
+    cancel: {
+        backgroundColor: "#f2f2f2",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    cancelText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18
+    },
+    check: {
+        marginTop: "auto",
+        marginBottom: "auto"
     }
 })
 

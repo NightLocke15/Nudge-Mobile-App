@@ -90,9 +90,9 @@ Each use case will be explained below.
 
 ### Screenshots (Left) and Wireframes (Right):
 
-![Splashscreen Current]()
-![Splashscreen Light]()
-![Splashscreen Dark]()
+![Splashscreen Current](/assets/ReadMeImages/startPageCur.png)
+![Splashscreen Light](/assets/ReadMeImages/startPageNewL.png)
+![Splashscreen Dark](/assets/ReadMeImages/startPageNewD.png)
 
 **Splash Screen:** 
 This is the page that the user will see when they open the application.
@@ -101,25 +101,25 @@ This page will take the user to a page where they will either log in or create a
 account. If the user has already been logged in, the page will immediately go to the
 Home Page.
 
-![Splashscreen Current]()
-![Splashscreen Light]()
-![Splashscreen Dark]()
+![Pre-Home Current](/assets/ReadMeImages/preHomeCur.png)
+![Pre-Home Light](/assets/ReadMeImages/preHomeNewL.png)
+![Pre-Home Dark](/assets/ReadMeImages/preHomeNewD.png)
 
 **Pre-Home Page:** 
 From this page, the user will either log in or create a new account.
 
-![Splashscreen Current]()
-![Splashscreen Light]()
-![Splashscreen Dark]()
+![Login Current](/assets/ReadMeImages/loginCur.png)
+![Login Light](/assets/ReadMeImages/loginNewL.png)
+![Login Dark](/assets/ReadMeImages/loginNewD.png)
 
 **Log In Page:** 
 Here, the user will log in with their email address and their password. They
 are also able to access the “Create a New Account” page through the blue link at the
 bottom of the page, should they need to.
 
-![Splashscreen Current]()
-![Splashscreen Light]()
-![Splashscreen Dark]()
+![Create Account Current](/assets/ReadMeImages/createCur.png)
+![Create Account Light](/assets/ReadMeImages/createNewL.png)
+![Create Account Dark](/assets/ReadMeImages/createNewD.png)
 
 **Create an Account Page:** 
 Here, the user will be able to create a new account by
@@ -127,9 +127,9 @@ entering their name, email address and a password that consists of 8 characters,
 number and 1 special character. The user will also be able to access the login page
 through the blue link at the bottom of the page, should they need to.
 
-![Splashscreen Current]()
-![Splashscreen Light]()
-![Splashscreen Dark]()
+![Home Current](/assets/ReadMeImages/homeCur.png)
+![Home Light](/assets/ReadMeImages/homeNewL.png)
+![Home Dark](/assets/ReadMeImages/homeNewD.png)
 
 **Home Page:** 
 The initial design was purely to show the buttons. The newest iteration will
@@ -138,9 +138,9 @@ you need. The user will be able to access any section of the application from th
 page. These include the settings (Top right) and each of the elements made accessible
 by the application, like the diary logs, to-do lists, etc.
 
-![Splashscreen Current]()
-![Splashscreen Light]()
-![Splashscreen Dark]()
+![To-do Current](/assets/ReadMeImages/listsCur.png)
+![To-do Light](/assets/ReadMeImages/listsNewL.png)
+![To-do Dark](/assets/ReadMeImages/listsNewD.png)
 
 **To-Do Lists:** 
 Here, all the user’s lists will be stored. When a list is created, the user can
@@ -148,9 +148,9 @@ press and hold the list item to change its type from normal to timed to checklis
 back. Clicking on the list itself will take the user to the list where they can then directly
 interact with its content.
 
-![Splashscreen Current]()
-![Splashscreen Light]()
-![Splashscreen Dark]()
+![Adding List Current](/assets/ReadMeImages/createListsCur.png)
+![Adding List Light](/assets/ReadMeImages/createListsNewL.png)
+![Adding List Dark](/assets/ReadMeImages/createListsNewD.png)
 
 **Adding To-Do Lists:** 
 When clicking on the plus icon in the top right, a box will then
@@ -158,9 +158,9 @@ appear that allows the user to name their list. Once they press “Done”, the 
 be added to the user’s information and the list on this page. This functionality is the
 same for all the lists, and the same functionality is used when the user edits an item.
 
-![Splashscreen Current]()
-![Splashscreen Light]()
-![Splashscreen Dark]()
+![Normal List Current](/assets/ReadMeImages/normalListsCur.png)
+![Normal List Light](/assets/ReadMeImages/normalListsNewL.png)
+![Normal List Dark](/assets/ReadMeImages/normalListsNewD.png)
 
 **Normal List:** 
 When accessing a normal list, this is what the user will be presented with.
@@ -170,8 +170,8 @@ as shown in the wireframes below. Furthermore, when completing an item, the user
 needs to press and hold the item for it to be struck through and register as completed in
 the user’s information.
 
-![Splashscreen Current]()
-![Splashscreen Light]()
+![Actions Light](/assets/ReadMeImages/listActionsNewL.png)
+![Actions Dark](/assets/ReadMeImages/listActionsNewD.png)
 
 (No current iteration, only wireframes)
 
@@ -181,9 +181,9 @@ provided with extra options like delete and edit. This is to keep movement minim
 will be implemented anywhere where there are list- or log items that the user can
 interact with, to keep it consistent throughout the application.
 
-![Splashscreen Current]()
-![Splashscreen Light]()
-![Splashscreen Dark]()
+![Timed List Current](/assets/ReadMeImages/timedListsCur.png)
+![Timed List Light](/assets/ReadMeImages/timedListsNewL.png)
+![Timed List Dark](/assets/ReadMeImages/timedListsNewD.png)
 
 **Timed List:** 
 This list is a little more complicated. The user can add a start and end time
@@ -196,8 +196,8 @@ on possibly adding an “auto” functionality that divides the time spent on ea
 based on its priority. If an item is overdue, the list item turns red. If a list item is outside
 of the timespan, the item turns orange.
 
-![Splashscreen Current]()
-![Splashscreen Light]()
+![Checklist Light](/assets/ReadMeImages/checkListsNewL.png)
+![Checklist Dark](/assets/ReadMeImages/checkListsNewD.png)
 
 (No current iteration, only wireframes)
 
@@ -206,54 +206,54 @@ A possible new addition. The functionality will be the same as the normal
 list; however, the aim is a bit different. This is more useful for things like grocery lists.
 The biggest difference is the check marks on the side.
 
-![Splashscreen Current]()
-![Splashscreen Light]()
-![Splashscreen Dark]()
+![Diary list Current](/assets/ReadMeImages/diaryLogsCur.png)
+![Diary list Light](/assets/ReadMeImages/diaryLogsNewL.png)
+![Diary List Dark](/assets/ReadMeImages/diaryLogsNewD.png)
 
 **Diary logs:** 
 These store information much like a note application. These tiles show the
 entry name, which can be edited, the date it was created and a preview of the note
 contained within.
 
-![Splashscreen Current]()
-![Splashscreen Light]()
-![Splashscreen Dark]()
+![Diary log Current](/assets/ReadMeImages/diaryEntryCur.png)
+![Diary log Light](/assets/ReadMeImages/diaryEntryNewL.png)
+![Diary log Dark](/assets/ReadMeImages/diaryEntryNewD.png)
 
 **Diary Log Content:** 
 The diary logs currently only hold text, but I plan on adding
 functionality to add images and voice recordings as well, for people who find typing
 hard. This will make it accessible to a wider range of people.
 
-![Splashscreen Current]()
-![Splashscreen Light]()
-![Splashscreen Dark]()
+![People list Current](/assets/ReadMeImages/peopleLogsCur.png)
+![People list Light](/assets/ReadMeImages/peopleLogsNewL.png)
+![People list Dark](/assets/ReadMeImages/peopleLogsNewD.png)
 
 **People Logs:** 
 Here, the people in the user’s life can be stored. These will store each
 person’s information. On this page, their name and relationship to the user will be
 showcased. When clicked on, the user can access and edit more information.
 
-![Splashscreen Current]()
-![Splashscreen Light]()
-![Splashscreen Dark]()
+![Adding people Current](/assets/ReadMeImages/addPeopleCur.png)
+![Adding people Light](/assets/ReadMeImages/addPeopleNewL.png)
+![Adding people Dark](/assets/ReadMeImages/addPeopleNewD.png)
 
 **Adding People:** 
 Initially, adding a person will only require their name and their
 relationship to the user. The user will be able to edit the content when accessing it
 separately.
 
-![Splashscreen Current]()
-![Splashscreen Light]()
-![Splashscreen Dark]()
+![People log Current](/assets/ReadMeImages/personLogCur.png)
+![People log Light](/assets/ReadMeImages/personLogNewL.png)
+![People log Dark](/assets/ReadMeImages/personLogNewD.png)
 
 **Person Log:** 
 Here, the user will be able to access and edit the information of the person
 recorded. It showcases their birthday, number, likes, dislikes, notes, name and
 relationship. The user will also be able to add a picture of the person.
 
-![Splashscreen Current]()
-![Splashscreen Light]()
-![Splashscreen Dark]()
+![Medication list Current](/assets/ReadMeImages/medicineCur.png)
+![Medication list Light](/assets/ReadMeImages/medicineNewL.png)
+![Medication list Dark](/assets/ReadMeImages/medicineNewD.png)
 
 **Medication Logs:** 
 Here, the user’s medication will be stored. These tiles will showcase
@@ -262,9 +262,9 @@ an image of the medicine, its name, dosage, when the medicine should next be fet
 when the next dose is due. The completion buttons can be clicked to indicate that the
 dosage was taken. This is reset on the next day that a dose needs to be taken.
 
-![Splashscreen Current]()
-![Splashscreen Light]()
-![Splashscreen Dark]()
+![Adding meds Current](/assets/ReadMeImages/addMedicineCur.png)
+![Adding meds Light](/assets/ReadMeImages/addMedicineNewL.png)
+![Adding meds Dark](/assets/ReadMeImages/addMedicineNewD.png)
 
 **Adding Medication:** 
 Here, all the relevant information is added so all the relevant
@@ -274,8 +274,8 @@ needs to be fetched, when the first dose was taken, how often the medicine needs
 taken and every time a dose needs to be taken. This does look complicated; however,
 this is more meant for the caretakers to add all the logs.
 
-![Splashscreen Current]()
-![Splashscreen Light]()
+![Calendar Light](/assets/ReadMeImages/calendarNewL.png)
+![Calendar Dark](/assets/ReadMeImages/calendarNewD.png)
 
 (No current iteration, only wireframes)
 
@@ -287,8 +287,8 @@ clothing. The calendar will have access to other things like timed lists and the
 logs for birthdays. The calendar will show dots on any of the days that contain events
 the user needs to know about.
 
-![Splashscreen Current]()
-![Splashscreen Light]()
+![Adding event Light](/assets/ReadMeImages/addEventNewL.png)
+![Adding event Dark](/assets/ReadMeImages/addEventNewD.png)
 
 (No current iteration, only wireframes)
 
@@ -297,8 +297,8 @@ Events and appointments can be added by adding the event
 name, place, time and duration of the event. This will then be stored in the calendar and
 daily agenda.
 
-![Splashscreen Current]()
-![Splashscreen Light]()
+![View Event Light](/assets/ReadMeImages/viewEventNewL.png)
+![View Event Dark](/assets/ReadMeImages/viewEventNewD.png)
 
 (No current iteration, only wireframes)
 
@@ -306,8 +306,8 @@ daily agenda.
 The user can view the event and its details by clicking on it in the daily
 agenda.
 
-![Splashscreen Current]()
-![Splashscreen Light]()
+![Clock Light](/assets/ReadMeImages/clockNewL.png)
+![Clock Dark](/assets/ReadMeImages/clockNewD.png)
 
 (No current iteration, only wireframes)
 
@@ -316,8 +316,8 @@ agenda.
 for doing a task for a certain time, as well as set up alarms, for any reminder they might
 need.
 
-![Splashscreen Current]()
-![Splashscreen Light]()
+![Emergency Light](/assets/ReadMeImages/emergencyNewL.png)
+![Emergency Dark](/assets/ReadMeImages/emergencyNewD.png)
 
 (No current iteration, only wireframes)
 
@@ -325,8 +325,8 @@ need.
 a certain amount of time for them to call either their emergency contact or Emergency
 services.
 
-![Splashscreen Current]()
-![Splashscreen Light]()
+![Settings Light](/assets/ReadMeImages/settingsNewL.png)
+![Settings Dark](/assets/ReadMeImages/settingsNewD.png)
 
 (No current iteration, only wireframes)
 
@@ -339,3 +339,131 @@ I am looking to implement a function where a caregiver can prevent the user from
 editing certain elements, like medicine, to prevent them from accidentally changing
 important information.
 
+## Goals:
+
+I divided my goals for this project into two sections: personal and project goals. Over the
+last few months, working on this project, I found that some of these goals needed more
+specifics. Below, I will be specifying each goal further and discussing how I have or
+haven’t worked towards these goals.
+
+*Personal:*
+
+1. Implementing Good UI/UX Practices:
+
+**Define:** To give it a more specific Definition, this goal entails having industry-standard
+UI/UX that follows the recommended guidelines. UI/UX that is accessible, inclusive,
+responsive, easily understandable and implemented in a way that makes sense in code.
+
+**Have I worked towards this:** The UI/UX currently implemented is not final. And
+although I did do my best to implement the UI/UX in this way, I think there is a lot of
+room for improvement. Styling works a little bit differently in React Native, so I have
+needed to adjust. I am still learning how to implement it properly, and although I do not
+think I have completely been able to achieve this yet, I am confident I will be able to at
+least find a better way of implementing the styles than I have been thus far.
+
+2. Implementing Good, Clean and Understandable Code:
+
+**Define:** Implementing code that is easily understandable, clean, efficient and
+consistent. The code uses the correct syntax. On a more personal note, am I able to
+learn about new code on my own and implement it effectively.
+
+**Have I worked towards this:** In a broad sense, yes. I truly attempted to create code that
+is not unnecessarily convoluted. I will be honest in saying that I do think there are pieces
+of code that can be streamlined, but as I have continued to create this application, I
+have learned to do this more easily. I will be going back and adjusting the code to be
+more streamlined. On the topic of whether I was able to learn new code? This is a
+definite yes. Although React Native is very similar to ReactJS, it has many nuances, and I
+had to go through quite a learning curve to get everything to work. I also plan on working
+towards using a database in the future, which is a whole other challenge.
+
+3. Staying Feedback Driven and Human First:
+
+**Define:** Using testing and feedback to make positive changes to improve the project,
+while making sure to properly discern between useful and non-useful feedback. Making
+sure the application is made for people and always keeping them in mind.
+
+**Have I worked towards this:** Partly yes. I always have the individuals who might use
+this application in mind when I develop. However, I could not do testing on the
+application yet. That is the next step after I have finished the last of the frontend for the
+mobile application.
+
+*Project:*
+
+1. Intuitive UI/UX:
+
+**Define:** UI/UX that is easy to understand and easy for new users to get used to. UI/UX
+that is easy to interact with, with no unnecessary actions or interactions. UI/UX that is
+consistent throughout the application.
+
+**Have I worked towards this:** I have done my best; however, I did realise that the swiping
+action might not be a right fit for the application, so I plan on changing it to a double tap
+that provides more options. Furthermore, I have done my best to stay consistent with
+the UI/UX; however, I did use this first iteration to test different methods of interacting
+with the UI/UX to see which would work the best.
+
+2. Accessibility:
+
+**Define:** An application that is accessible to anyone who wishes to use it, and that
+allows the user to personalise their experience to what best suits them.
+
+**Have I worked towards this:** I have made decisions on how I will be implementing
+personalisation through the wireframes shown above, although this still needs to be
+implemented. When it comes to whether it is accessible to anyone who wishes to use it,
+I would say yes. I am trying to make the application easy to understand and easy to use
+so that anyone of any ability can use it.
+
+3. Smooth Integration:
+
+**Have I worked towards this:** I have not reached this part of the project yet, so I do not
+have any comment on its definition yet.
+
+4. Scalability:
+
+**Define:** A scalable application that contains code that can be used to expand the
+application.
+
+**Have I worked towards this:** I have, albeit unintentionally. The elements I have chosen
+for this application are inherently similar in the way they are set up, which helped me
+set up many of the pages. But this has also allowed me to think of other components
+that might be added; the checklist is a good example of this. The application is
+inherently something you can add to, because it is meant to be an application that
+people use for different reasons. There is a lot of expanding that can be done in the diary
+and calendar sections, for example, if you want to optimise parts of it for students. This
+application can be scaled to a much wider scope than I currently have it at. It is,
+however, important that I go back and make sure that the code allows for this. There are
+admittedly a few areas in the code that can be done in a better way.
+
+## References:
+
+Baxter, Y.A. (2025) ‘Designing for Neurodiversity: Creating ADHD-Friendly Digital
+Publications’. Available at: https://digitalcommons.liberty.edu/masters/1297/
+(Accessed: 28 July 2025).
+
+Ghorbel, F., Metais, E., Ellouze, N., Hamdi, F. and Gargouri, F. (2017) “Towards
+Accessibility Guidelines of Interaction and User Interface Design for Alzheimer’s
+Disease Patients”. ACHI 2017. The Tenth International Conference on Advances in
+Computer-Human Interactions, Mar 2017, Nice, France. pp.143-149
+
+Khan, R., Oon, Y.B., Inam, M., Inam Ul Haq, M. and Hajarah, S. (2018). “Proposed user
+interface design criteria for children with dyslexia”. International Journal of Engineering
+and Technology. 7. 5253-5257. 10.14419/ijet.v7i4.25496.
+
+Tymoshchuk, O. (2021) “Font Readability Research: Key Difference Between Serif Vs
+Sans Serif Font”, Geniusee. 30 June. Available at: https://geniusee.com/single-
+blog/font-readability-research-famous-designers-vs-scientists (Accessed: 28 July
+2025).
+
+Design Whisperer. (2025) ‘Neurodiverse by Design: UX Strategies for Inclusive Digital
+Spaces’, Dtalks, 9 January. Available at: https://medium.com/dtalks/neurodiverse-by-
+design-ux-strategies-for-inclusive-digital-spaces-f06aef12c95c (Accessed: 28 July
+2025).
+
+Williams, R. (2024) “Why is digital design important for someone affected by
+dementia?” Alzheimer’s Society. 20 March. Available at:
+https://www.alzheimers.org.uk/blog/how-design-website-someone-affected-dementia
+(Accessed: 28 July 2025).
+
+Erikson, M. (2024) “Embracing Neurodiversity in UX Design: Crafting Inclusive Digital
+Environments”. UXmatters. 22 April. Available at:
+https://www.alzheimers.org.uk/blog/how-design-website-someone-affected-dementia
+(Accessed: 28 July 2025).
