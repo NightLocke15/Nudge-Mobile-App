@@ -1,12 +1,12 @@
 import { UserContext } from "@/AppContexts/UserContext";
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import { Octicons } from "@react-native-vector-icons/octicons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import 'react-native-get-random-values';
-import { SwipeListView } from "react-native-swipe-list-view";
 import { v4 as uuidv4 } from 'uuid';
 
 function People(props) {
@@ -101,6 +101,12 @@ function People(props) {
                                 relationship: element
                             }
                         }
+                        else if (editItem === "number") {
+                            return {
+                                ...log,
+                                number: element
+                            }
+                        }
                     }
                     else {
                         return log;
@@ -132,26 +138,9 @@ function People(props) {
 
     //deletes item from a list when editing one of the section (likes, dislikes, etc) afte being touched in the editing state
     function deleteFromList(itemID) {
-        if (adding) {
-            setCurrentListItem(itemID);
-            const newListItems = listToAdd.filter((list) => list.id !== itemID);
-            setListToAdd(newListItems);
-        }     
-    }
-
-    //Renders the item in the swipe list view ***(Subject to change, looking into options other than swiping)***
-    const renderItems = ({item}) => {
-        return (
-            <View key={item.id} onTouchEnd={() => deleteFromList(item.id)}>
-                <Text style={[stylesLight.text, {marginBottom: 10}]}>- {item.item}</Text>
-            </View>
-        )
-    }
-
-    const hiddenItems = (data, rowmap) => {
-        return (
-            <View></View>
-        )
+        setCurrentListItem(itemID);
+        const newListItems = listToAdd.filter((list) => list.id !== itemID);
+        setListToAdd(newListItems);    
     }
 
     //Adds item to independent list before adding it to the user's information
@@ -167,13 +156,7 @@ function People(props) {
             if (user.idnum === localUser) {
                 const newLogs = user.logs.map((log) => {
                     if (user.logs.indexOf(log) === id) {
-                        if (editItem === "personFacts") {
-                            return {
-                                ...log,
-                                personFacts: listToAdd
-                            }
-                        }
-                        else if (editItem === "likes") {
+                        if (editItem === "likes") {
                             return {
                                 ...log,
                                 likes: listToAdd
@@ -210,11 +193,7 @@ function People(props) {
     function triggerAdd(element) {
         setAdding(true);
         setSectionAdding(element);
-        
-        if (element === "personFacts") {
-           setListToAdd(localUserInfo[0] && localUserInfo[0].logs[id].personFacts);
-        }
-        else if (element === "likes") {
+        if (element === "likes") {
             setListToAdd(localUserInfo[0] && localUserInfo[0].logs[id].likes);
         }
         else if (element === "dislikes") {
@@ -268,10 +247,10 @@ function People(props) {
     }
 
     return (
-        <LinearGradient style={stylesLight.contentContainer} colors={["#ffffff", "#aaaaaa"]}>            
+        <LinearGradient style={stylesLight.contentContainer} colors={["#e3e3e3", "#aaaaaa"]}>            
             <View style={stylesLight.headerContainer}>
                 <Pressable onPress={() => router.dismissTo("/logs/peopleLogs")} style={stylesLight.back}>
-                    <Text style={stylesLight.backText}>People</Text>
+                    <Octicons name="arrow-left" size={25} color={'#585858'}/>
                 </Pressable>
                 <Text style={stylesLight.header}>{localUserInfo[0] && localUserInfo[0].logs[id].personName}</Text>
             </View>
@@ -299,36 +278,35 @@ function People(props) {
                             <Text>Edit</Text>
                         </Pressable>
                     </View>    
+                    <Text style={stylesLight.heading}>Number:</Text>
                     <View style={stylesLight.miniHeaderContainer}>
-                        <Text style={stylesLight.heading}>Facts:</Text>
-                        <Pressable onPress={() => triggerAdd("personFacts")} style={stylesLight.clickOther}>
+                        <Text style={stylesLight.text}>{localUserInfo[0] && localUserInfo[0].logs[id].number}</Text>
+                        <Pressable onPress={() => triggerEditing(localUserInfo[0] && localUserInfo[0].logs[id].number, "number")} style={stylesLight.clickOther}>
                             <Text>Edit</Text>
                         </Pressable>
-                    </View>                            
-                    <SwipeListView data={localUserInfo[0] && localUserInfo[0].logs[id].personFacts} 
-                        renderItem={renderItems}
-                        scrollEnabled={false}                     
-                    />
+                    </View>
                     <View style={stylesLight.miniHeaderContainer}>
                         <Text style={stylesLight.heading}>Likes: </Text>
                         <Pressable onPress={() => triggerAdd("likes")} style={stylesLight.clickOther}>
                             <Text>Edit</Text>
                         </Pressable>
-                    </View>                
-                    <SwipeListView data={localUserInfo[0] && localUserInfo[0].logs[id].likes} 
-                        renderItem={renderItems}      
-                        scrollEnabled={false}               
-                    />
+                    </View>    
+                    {localUserInfo[0] && localUserInfo[0].logs[id].likes.map((like) => (
+                        <View key={like.id}>
+                            <Text style={[stylesLight.text, {marginBottom: 10}]}>- {like.item}</Text>
+                        </View>
+                    ))}   
                     <View style={stylesLight.miniHeaderContainer}>
                         <Text style={stylesLight.heading}>Dislikes: </Text>
                         <Pressable onPress={() => triggerAdd("dislikes")} style={stylesLight.clickOther}>
                             <Text>Edit</Text>
                         </Pressable>
                     </View>                
-                    <SwipeListView data={localUserInfo[0] && localUserInfo[0].logs[id].dislikes} 
-                        renderItem={renderItems}  
-                        scrollEnabled={false}                   
-                    />
+                    {localUserInfo[0] && localUserInfo[0].logs[id].dislikes.map((like) => (
+                        <View key={like.id}>
+                            <Text style={[stylesLight.text, {marginBottom: 10}]}>- {like.item}</Text>
+                        </View>
+                    ))} 
                     <Text style={stylesLight.heading}>Notes: </Text>
                     <TextInput placeholder="Add a Note..." placeholderTextColor="#9e9e9e" multiline value={text} onChangeText={(e) => setText(e)} />
                 </View>                  
@@ -348,10 +326,16 @@ function People(props) {
             {adding ? (
                 <View style={stylesLight.overLay}>
                     <View style={stylesLight.editContainer}>
-                        <SwipeListView data={listToAdd && listToAdd} 
-                            renderItem={renderItems} 
-                            renderHiddenItem={hiddenItems}
-                        />
+                        {listToAdd && listToAdd.map((like) => (
+                            <View key={like.id}>
+                                <View>
+                                    <Text style={[stylesLight.text, {marginBottom: 10}]}>- {like.item}</Text>
+                                </View>
+                                <Pressable onPress={() => deleteFromList(like.id)}>
+                                    <Text>Delete</Text>
+                                </Pressable>
+                            </View>
+                        ))} 
                         <View style={stylesLight.addContainer}>
                             <TextInput  placeholder="Type..." placeholderTextColor="#9e9e9e" multiline value={listItem} onChangeText={(e) => setListItem(e)} style={[stylesLight.input, {width: "80%"}]}/>
                             <Pressable onPress={addListItems}>
@@ -380,16 +364,12 @@ const stylesLight = StyleSheet.create({
         left: "5%",
         top: "30%"        
     },
-    backText: {
-        fontFamily: "Economica-Bold",
-        fontSize: 20,         
-    },
     headerContainer: {
         marginBottom: 20,
         marginTop: 20,
     },
     header: {
-        fontFamily: "Economica-Bold",
+        fontFamily: "PTSans-Regular",
         fontSize: 40,
         marginLeft: "auto",
         marginRight: "auto"
@@ -402,7 +382,7 @@ const stylesLight = StyleSheet.create({
         marginRight: "auto",
     },
     heading: {
-        fontFamily: "Economica-Bold",
+        fontFamily: "PTSans-Regular",
         fontSize: 22,
         marginBottom: 5
     },
@@ -417,8 +397,8 @@ const stylesLight = StyleSheet.create({
         marginBottom: 10
     },
     text: {
-        fontFamily: "Sunflower-Light",
-        fontSize: 18,
+        fontFamily: "Roboto-Regular",
+        fontSize: 16,
     },
     miniHeaderContainer: {
         flexDirection: "row",
@@ -430,7 +410,7 @@ const stylesLight = StyleSheet.create({
         left: "5%",
         top: "10%",
         padding: 20,
-        backgroundColor: "#fff",
+        backgroundColor: "#e3e3e3",
         elevation: 5,
         borderRadius: 10,
         zIndex: 1,
@@ -445,7 +425,7 @@ const stylesLight = StyleSheet.create({
         backgroundColor: "rgba(139, 139, 139, 0.5)"
     },
     click: {
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#f2f2f2",
         marginLeft: "auto",
         marginRight: "auto",
         padding: 10,
@@ -454,14 +434,17 @@ const stylesLight = StyleSheet.create({
     },
     clickOther: {
         backgroundColor: "#f0f0f0",
-        padding: 5,
+        paddingTop: 5,
+        paddingBottom: 5,
+        paddingLeft: 10,
+        paddingRight: 10,
         elevation: 5,
-        borderRadius: 10,
+        borderRadius: 15,
         marginBottom: 10
     },
     clickText: {
         textAlign: "center",
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 15
     },
     input: {

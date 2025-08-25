@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import { Gesture, GestureDetector, TextInput } from "react-native-gesture-handler";
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -18,6 +18,7 @@ function TimedList(props) {
     //Information that is stored from this component
     const [listItem, setListItem] = useState("");
     const [listItemID, setlistItemID] = useState();
+    const [item, setItem] = useState();
     const [time, setTime] = useState(new Date());
     const [changeTime, setChangeTime] = useState(false);
     const [timeAmount, setTimeAmount] = useState("");
@@ -35,6 +36,8 @@ function TimedList(props) {
     const [viewItemBox, setViewItemBox] = useState(false);  
     const [viewItemText, setViewItemText] = useState("");  
     
+    const [action, setAction] = useState(false);
+    const [tapPostition, setTapPosition] = useState({x: 0, y: 0})
    
     //Resets the time every second for the clock that is visible on this page to be accurate to local time
     useEffect(() => {
@@ -73,20 +76,6 @@ function TimedList(props) {
         setListItem("");
         console.log(localUserInfo[0] && localUserInfo[0].lists[id].listItems);
     }
-    
-    //Rendering of hidden button behind tile that deletes the log and on the other side it edits it ***(Subject to change, looking into options other than swiping)***
-    const hiddenItemRendered = (data, rowMap) => {
-        return (
-            <View style={stylesLight.hiddenContainer}>
-                <Pressable onPress={() => deleteItem(data.item)} style={stylesLight.deleteContainer}>
-                    <Text style={stylesLight.delete}>Delete</Text>
-                </Pressable>
-                <Pressable onPress={() => editItem(data.item)} style={stylesLight.editContainer}>
-                    <Text style={stylesLight.edit}>Edit</Text>
-                </Pressable>                
-            </View>
-        )       
-    }
 
     //Delete the item from the user's information
     const deleteItem = (item) => {
@@ -115,6 +104,7 @@ function TimedList(props) {
         }) 
         setUsers(userChange);
         setChanged(true);
+        setAction(false);
     }
 
     //Trigger the editing of the item and set all the relevant information to be edited
@@ -122,6 +112,7 @@ function TimedList(props) {
         setEditing(true);
         setListItem(item.item);
         setlistItemID(item.id);
+        setAction(false);
     }
 
     //Replace the item in the relevant index in the user's list
@@ -374,11 +365,19 @@ function TimedList(props) {
         setEndTimes(object);
     }
 
+    const singleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(1).onStart(() => viewItem(item)).runOnJS(true);
+    const doubleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(2).onStart((event) => {
+        setItem(item);
+        setTapPosition({x: event.absoluteX , y: event.absoluteY})
+        setAction(true);
+    }).runOnJS(true);
+    const longPress = (item) => Gesture.LongPress().onEnd(() => completeListItem(item.id)).runOnJS(true);
+
     return (
         <LinearGradient style={stylesLight.contentContainer} colors={["#e3e3e3", "#aaaaaa"]}>
             <View style={stylesLight.headerContainer}>
                 <Pressable onPress={() => router.dismissTo("/to-do-list/to-do-list")} style={stylesLight.back}>
-                    <Octicons name="arrow-left" size={25} color={'#242424'}/>
+                    <Octicons name="arrow-left" size={25} color={'#585858'}/>
                 </Pressable>
                 <Text style={stylesLight.header}>{localUserInfo[0].lists[id].name}</Text>
                 <Text style={stylesLight.timeText}>{`${time.getHours()}:${time.getMinutes() < 10 ? `0${time.getMinutes()}` : time.getMinutes()}`}</Text>
@@ -404,7 +403,7 @@ function TimedList(props) {
             <View style={stylesLight.addContainer}>
                 <TextInput placeholder="Add List Item..." placeholderTextColor="#9e9e9e" value={listItem} onChangeText={(e) => setListItem(e)} style={stylesLight.input}/>
                 <Pressable onPress={editing ? finishEdit : addItem}  style={stylesLight.add}>
-                    <Text style={stylesLight.addText}>{editing ? "Done" : "Add"}</Text>
+                    {editing ? <Octicons name="check" size={25} color={'#585858'}/> : <Octicons name="plus" size={25} color={'#585858'}/>}
                 </Pressable>
             </View>   
             {changed ? (
@@ -418,20 +417,22 @@ function TimedList(props) {
             )}
             {localUserInfo[0].lists[id] && localUserInfo[0].lists[id].listItems.map((item) => (
                 <View key={item.id} style={[stylesLight.listItemContainer, (item.endTime && item.endTime.h >= endTimes.h && item.endTime.m > endTimes.m) && stylesLight.listItemContainerOutRange, (item.endTime && time.getTime() >= new Date().setHours(item.endTime.h, item.endTime.m, 0, 0) && item.completed === false) && stylesLight.listItemContainerOverdue]}>
-                    <Pressable onLongPress={() => completeListItem(item.id)} onPress={() => viewItem(item)} style={stylesLight.listItemNameContainer}>
-                        <Text numberOfLines={1} ellipsizeMode="tail" style={item && item.completed ? stylesLight.listItemNameComplete : stylesLight.listItemNameUncomplete}>{item.item}</Text>
-                    </Pressable>    
+                    {/* <Pressable onLongPress={() => completeListItem(item.id)} onPress={() => viewItem(item)} style={stylesLight.listItemNameContainer}> */}
+                        <GestureDetector gesture={Gesture.Exclusive(doubleTap(item), singleTap(item), longPress(item))}>
+                            <Text numberOfLines={1} ellipsizeMode="tail" style={item && item.completed ? stylesLight.listItemNameComplete : stylesLight.listItemNameUncomplete}>{item.item}</Text>
+                        </GestureDetector>
+                    {/* </Pressable>     */}
                     <View style={stylesLight.listItemTimesContainer}>
                         <Pressable onPress={() => addTimeAmount(item)}>
-                            <Text>{item.timeLengthMins} Mins</Text>
+                            <Text style={stylesLight.time}>{item.timeLengthMins} Mins</Text>
                         </Pressable>
                         {item.startTime === null || item.endTime === null ? (
                             <View></View>
                         ) : (
                             <View style={stylesLight.timeToTime}>
-                                <Text>{item.startTime !== undefined ? `${item.startTime.h}:${item.startTime.m === 0 ? `${item.startTime.m}0` : `${item.startTime.m}`}` : ``}</Text>
-                                <Text> to </Text>
-                                <Text>{item.endTime !== undefined ? `${item.endTime.h}:${item.endTime.m === 0 ? `${item.endTime.m}0` : item.endTime.m < 10 ? `0${item.endTime.m}` : `${item.endTime.m}`}` : ``}</Text>
+                                <Text style={stylesLight.time}>{item.startTime !== undefined ? `${item.startTime.h}:${item.startTime.m === 0 ? `${item.startTime.m}0` : `${item.startTime.m}`}` : ``}</Text>
+                                <Text style={stylesLight.time}> to </Text>
+                                <Text style={stylesLight.time}>{item.endTime !== undefined ? `${item.endTime.h}:${item.endTime.m === 0 ? `${item.endTime.m}0` : item.endTime.m < 10 ? `0${item.endTime.m}` : `${item.endTime.m}`}` : ``}</Text>
                             </View> 
                         )}                                       
                     </View>           
@@ -460,7 +461,24 @@ function TimedList(props) {
                 </View>                
             ) : (
                 <View></View>
-            )}            
+            )}     
+            {action ? (
+                <View style={stylesLight.overLay}>
+                    <View style={[stylesLight.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
+                        <Pressable onPress={() => editItem(item)} style={stylesLight.edit}>
+                            <Text style={stylesLight.editText}>Edit</Text>
+                        </Pressable>
+                        <Pressable onPress={() => deleteItem(item)} style={stylesLight.delete}>
+                            <Text style={stylesLight.deleteText}>Delete</Text>
+                        </Pressable>
+                        <Pressable onPress={() => setAction(false)} style={stylesLight.done}>
+                            <Text style={stylesLight.doneText}>Cancel</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            ) : (
+                <View></View>
+            )}       
         </LinearGradient>
     )
 }
@@ -553,15 +571,12 @@ const stylesLight = StyleSheet.create({
         borderRadius: 10,
         padding: 10,
         elevation: 5,
-        flex: 2,
+        flex: 10,
     },
     add: {
         flex: 1,
-        backgroundColor: "#f2f2f2",
         marginLeft: 10,
-        marginRight: 5,
         padding: 10,
-        elevation: 5,
         borderRadius: 10,
     },
     addText: {
@@ -644,32 +659,34 @@ const stylesLight = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-evenly"
     },
-    deleteContainer: {
-        backgroundColor: "#940314",
-        padding: 10,
-        paddingTop: 15,
-        paddingBottom: 15,
-        width: "50%",
-        marginRight: "auto",
-    },
     delete: {
-        fontFamily: "Roboto-Regular",
-        color: "#fff",
-        fontSize: 15,
-    },
-    editContainer: {
-        backgroundColor: "#039464ff",
+        backgroundColor: "#be2206ff",
+        marginLeft: "auto",
+        marginRight: "auto",
         padding: 10,
-        paddingTop: 15,
-        paddingBottom: 15,
-        width: "50%",
-        textAlign: "right"
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    deleteText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
     },
     edit: {
+        backgroundColor: "#1f9615ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        borderRadius: 10,
+    },
+    editText: {
+        textAlign: "center",
         fontFamily: "Roboto-Regular",
-        color: "#fff",
-        fontSize: 15,
-        marginLeft: "auto"
+        fontSize: 18,
+        color: '#e3e3e3'
     },
     overLay: {
         position: "absolute",
@@ -686,7 +703,7 @@ const stylesLight = StyleSheet.create({
         left: "5%",
         top: "10%",
         padding: 20,
-        backgroundColor: "#fff",
+        backgroundColor: "#e3e3e3",
         elevation: 5,
         borderRadius: 10,
         zIndex: 1
@@ -715,6 +732,16 @@ const stylesLight = StyleSheet.create({
     },
     outRange: {
         backgroundColor: "#ffd57aff"
+    },
+    time: {
+        fontFamily: "Roboto-Regular",
+    },
+    actionContainer: {
+        backgroundColor: '#e3e3e3',
+        padding: 20,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 10
     }
 })
 

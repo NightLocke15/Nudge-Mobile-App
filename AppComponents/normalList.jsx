@@ -1,4 +1,5 @@
 import { UserContext } from "@/AppContexts/UserContext";
+import { Octicons } from "@react-native-vector-icons/octicons";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from "expo-router";
 import { useContext, useState } from "react";
@@ -189,17 +190,17 @@ function NormalList(props) {
     }
     
     return (        
-        <LinearGradient style={stylesLight.contentContainer} colors={["#ffffff", "#aaaaaa"]}>
+        <LinearGradient style={stylesLight.contentContainer} colors={["#e3e3e3", "#aaaaaa"]}>
             <View style={stylesLight.headerContainer}>
                 <Pressable onPress={() => router.dismissTo("/to-do-list/to-do-list")} style={stylesLight.back}>
-                    <Text style={stylesLight.backText}>Lists</Text>
+                    <Octicons name="arrow-left" size={25} color={'#585858'}/>
                 </Pressable>
                 <Text style={stylesLight.header}>{localUserInfo[0].lists[id].name}</Text>
             </View>   
             <View style={stylesLight.addContainer}>
                 <TextInput placeholder="Add List Item..." placeholderTextColor="#9e9e9e" value={listItem} onChangeText={(e) => setListItem(e)} style={stylesLight.input}/>
                 <Pressable onPress={editing ? finishEdit : addItem}  style={stylesLight.add}>
-                    <Text style={stylesLight.addText}>{editing ? "Done" : "Add"}</Text>
+                    {editing ? <Octicons name="check" size={25} color={'#585858'}/> : <Octicons name="plus" size={25} color={'#585858'}/>}
                 </Pressable>
             </View>   
             <SwipeListView data={localUserInfo[0].lists[id] && localUserInfo[0].lists[id].listItems} 
@@ -220,7 +221,7 @@ const stylesLight = StyleSheet.create({
         marginTop: 20,
     },
     header: {
-        fontFamily: "Economica-Bold",
+        fontFamily: "PTSans-Regular",
         fontSize: 40,
         marginLeft: "auto",
         marginRight: "auto"
@@ -231,7 +232,7 @@ const stylesLight = StyleSheet.create({
         top: "30%"        
     },
     backText: {
-        fontFamily: "Economica-Bold",
+        fontFamily: "PTSans-Regular",
         fontSize: 20,         
     },
     addContainer: {
@@ -243,27 +244,19 @@ const stylesLight = StyleSheet.create({
         marginBottom: 10
     },
     input: {
-        backgroundColor: "#fff",
+        backgroundColor: "#f2f2f2",
         borderWidth: 0.5,
-        borderColor: "#4d4d4d",
+        borderColor: "#2b2b2b",
         borderRadius: 10,
         padding: 10,
         elevation: 5,
-        flex: 2,
+        flex: 10,
     },
     add: {
         flex: 1,
-        backgroundColor: "#f0f0f0",
         marginLeft: 10,
-        marginRight: 5,
         padding: 10,
-        elevation: 5,
         borderRadius: 10,
-    },
-    addText: {
-        textAlign: "center",
-        fontFamily: "Sunflower-Light",
-        fontSize: 18
     },
     listItemContainer: {
         backgroundColor: "#f0f0f0",
@@ -277,12 +270,12 @@ const stylesLight = StyleSheet.create({
         borderBottomColor: "#9e9e9e",   
     },
     listItemNameUncomplete: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 20,
         marginLeft: 5
     },
     listItemNameComplete: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 20,
         marginLeft: 5,
         color: "#818181",
@@ -301,7 +294,7 @@ const stylesLight = StyleSheet.create({
         marginRight: "auto",
     },
     delete: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         color: "#fff",
         fontSize: 20,
     },
@@ -314,7 +307,7 @@ const stylesLight = StyleSheet.create({
         textAlign: "right"
     },
     edit: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         color: "#fff",
         fontSize: 20,
         marginLeft: "auto"
