@@ -1,3 +1,4 @@
+import { ThemeContext } from "@/AppContexts/ThemeContext";
 import { UserContext } from "@/AppContexts/UserContext";
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { Octicons } from "@react-native-vector-icons/octicons";
@@ -15,6 +16,7 @@ function People(props) {
 
     //Accessing user context and all the users that already exist
     const { localUserInfo, localUser, users, setUsers } = useContext(UserContext);
+    const {currentTheme, gradientColours } = useContext(ThemeContext);
 
     //Router that is used to navigate the user back to the peopleLogs page
     const router = useRouter();
@@ -247,7 +249,7 @@ function People(props) {
     }
 
     return (
-        <LinearGradient style={stylesLight.contentContainer} colors={["#e3e3e3", "#aaaaaa"]}>            
+        <LinearGradient style={stylesLight.contentContainer} colors={gradientColours}>            
             <View style={stylesLight.headerContainer}>
                 <Pressable onPress={() => router.dismissTo("/logs/peopleLogs")} style={stylesLight.back}>
                     <Octicons name="arrow-left" size={25} color={'#585858'}/>
@@ -255,7 +257,7 @@ function People(props) {
                 <Text style={stylesLight.header}>{localUserInfo[0] && localUserInfo[0].logs[id].personName}</Text>
             </View>
             <ScrollView>
-                <Image source={require('../app/images/photo.png')} style={stylesLight.peoplePhoto}/>
+                <Image source={{uri: localUserInfo[0] && localUserInfo[0].logs[id].image}} style={stylesLight.peoplePhoto}/>
                 <View style={stylesLight.infoContainer}>
                     <Text style={stylesLight.heading}>Name: </Text>
                     <View style={stylesLight.miniContainer}>
@@ -433,7 +435,7 @@ const stylesLight = StyleSheet.create({
         borderRadius: 10,
     },
     clickOther: {
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#f2f2f2",
         paddingTop: 5,
         paddingBottom: 5,
         paddingLeft: 10,

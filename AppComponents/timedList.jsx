@@ -1,3 +1,4 @@
+import { ThemeContext } from "@/AppContexts/ThemeContext";
 import { UserContext } from "@/AppContexts/UserContext";
 import { Octicons } from "@react-native-vector-icons/octicons";
 import { LinearGradient } from 'expo-linear-gradient';
@@ -14,6 +15,7 @@ function TimedList(props) {
 
     //Accessing user context and all the users that already exist
     const { setUsers, users, localUserInfo, localUser } = useContext(UserContext); 
+    const {currentTheme, gradientColours } = useContext(ThemeContext);
 
     //Information that is stored from this component
     const [listItem, setListItem] = useState("");
@@ -374,76 +376,79 @@ function TimedList(props) {
     const longPress = (item) => Gesture.LongPress().onEnd(() => completeListItem(item.id)).runOnJS(true);
 
     return (
-        <LinearGradient style={stylesLight.contentContainer} colors={["#e3e3e3", "#aaaaaa"]}>
-            <View style={stylesLight.headerContainer}>
-                <Pressable onPress={() => router.dismissTo("/to-do-list/to-do-list")} style={stylesLight.back}>
-                    <Octicons name="arrow-left" size={25} color={'#585858'}/>
+        <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>
+            <View style={currentTheme.includes("Light") ? stylesLight.headerContainer : stylesDark.headerContainer}>
+                <Pressable onPress={() => router.dismissTo("/to-do-list/to-do-list")} style={currentTheme.includes("Light") ? stylesLight.back : stylesDark.back}>
+                    <Octicons name="arrow-left" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                 </Pressable>
-                <Text style={stylesLight.header}>{localUserInfo[0].lists[id].name}</Text>
-                <Text style={stylesLight.timeText}>{`${time.getHours()}:${time.getMinutes() < 10 ? `0${time.getMinutes()}` : time.getMinutes()}`}</Text>
+                <Text style={currentTheme.includes("Light") ? stylesLight.header : stylesDark.header}>{localUserInfo[0].lists[id].name}</Text>
+                <Text style={currentTheme.includes("Light") ? stylesLight.timeText : stylesDark.timeText}>{`${time.getHours()}:${time.getMinutes() < 10 ? `0${time.getMinutes()}` : time.getMinutes()}`}</Text>
             </View>   
-            <View style={stylesLight.timeContainer}>
-                <View style={stylesLight.timeTextContainer}>
-                    <Text style={stylesLight.textsTime}>Start Time</Text>
+            <View style={currentTheme.includes("Light") ? stylesLight.timeContainer : stylesDark.timeContainer}>
+                <View style={currentTheme.includes("Light") ? stylesLight.timeTextContainer : stylesDark.timeTextContainer}>
+                    <Text style={currentTheme.includes("Light") ? stylesLight.textsTime : stylesDark.textsTime}>Start Time</Text>
                 </View>
-                <View style={stylesLight.timeInputContainer}>
-                    <TextInput placeholder="hrs" placeholderTextColor="#9e9e9e" value={startTimes.h === null ? 0 : startTimes.h} onChangeText={(e) => changeStartTimes({...startTimes, h: parseInt(e)})} style={stylesLight.timeInput} />
-                    <Text style={stylesLight.colon}>:</Text>
-                    <TextInput placeholder="mins" placeholderTextColor="#9e9e9e" value={startTimes.m === null ? 0 : startTimes.m}  onChangeText={(e) => changeStartTimes({...startTimes, m: parseInt(e)})} style={stylesLight.timeInput} />
+                <View style={currentTheme.includes("Light") ? stylesLight.timeInputContainer : stylesDark.timeInputContainer}>
+                    <TextInput placeholder="hrs" placeholderTextColor="#9e9e9e" value={startTimes.h === null ? 0 : startTimes.h} onChangeText={(e) => changeStartTimes({...startTimes, h: parseInt(e)})} style={currentTheme.includes("Light") ? stylesLight.timeInput : stylesDark.timeInput} />
+                    <Text style={currentTheme.includes("Light") ? stylesLight.colon : stylesDark.colon}>:</Text>
+                    <TextInput placeholder="mins" placeholderTextColor="#9e9e9e" value={startTimes.m === null ? 0 : startTimes.m}  onChangeText={(e) => changeStartTimes({...startTimes, m: parseInt(e)})} style={currentTheme.includes("Light") ? stylesLight.timeInput : stylesDark.timeInput} />
                 </View>
-                <View style={stylesLight.timeTextContainer}>
-                    <Text style={stylesLight.textsTime}>End Time</Text>
+                <View style={currentTheme.includes("Light") ? stylesLight.timeTextContainer : stylesDark.timeTextContainer}>
+                    <Text style={currentTheme.includes("Light") ? stylesLight.textsTime : stylesDark.textsTime}>End Time</Text>
                 </View>
-                <View style={stylesLight.timeInputContainer}>
-                    <TextInput placeholder="hrs" placeholderTextColor="#9e9e9e" value={endTimes.h === null ? 0 : endTimes.h}  onChangeText={(e) => changeEndTimes({...endTimes, h: parseInt(e)})} style={stylesLight.timeInput} />
-                    <Text style={stylesLight.colon}>:</Text>
-                    <TextInput placeholder="mins" placeholderTextColor="#9e9e9e" value={endTimes.m === null ? 0 : endTimes.m}  onChangeText={(e) => changeEndTimes({...endTimes, m: parseInt(e)})} style={stylesLight.timeInput} />
+                <View style={currentTheme.includes("Light") ? stylesLight.timeInputContainer : stylesDark.timeInputContainer}>
+                    <TextInput placeholder="hrs" placeholderTextColor="#9e9e9e" value={endTimes.h === null ? 0 : endTimes.h}  onChangeText={(e) => changeEndTimes({...endTimes, h: parseInt(e)})} style={currentTheme.includes("Light") ? stylesLight.timeInput : stylesDark.timeInput} />
+                    <Text style={currentTheme.includes("Light") ? stylesLight.colon : stylesDark.colon}>:</Text>
+                    <TextInput placeholder="mins" placeholderTextColor="#9e9e9e" value={endTimes.m === null ? 0 : endTimes.m}  onChangeText={(e) => changeEndTimes({...endTimes, m: parseInt(e)})} style={currentTheme.includes("Light") ? stylesLight.timeInput : stylesDark.timeInput} />
                 </View>               
             </View>
             <View style={stylesLight.addContainer}>
-                <TextInput placeholder="Add List Item..." placeholderTextColor="#9e9e9e" value={listItem} onChangeText={(e) => setListItem(e)} style={stylesLight.input}/>
-                <Pressable onPress={editing ? finishEdit : addItem}  style={stylesLight.add}>
-                    {editing ? <Octicons name="check" size={25} color={'#585858'}/> : <Octicons name="plus" size={25} color={'#585858'}/>}
+                <TextInput placeholder="Add List Item..." placeholderTextColor="#9e9e9e" value={listItem} onChangeText={(e) => setListItem(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input}/>
+                <Pressable onPress={editing ? finishEdit : addItem}  style={currentTheme.includes("Light") ? stylesLight.add : stylesDark.add}>
+                    {editing ? <Octicons name="check" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/> : <Octicons name="plus" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>}
                 </Pressable>
             </View>   
             {changed ? (
-                <View style={stylesLight.update}>
-                    <Pressable onPress={update} style={stylesLight.updateClickable}>
-                        <Text style={stylesLight.updateText}>Update</Text>
+                <View style={currentTheme.includes("Light") ? stylesLight.update : stylesDark.update}>
+                    <Pressable onPress={update} style={currentTheme.includes("Light") ? stylesLight.updateClickable : stylesDark.updateClickable}>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.updateText : stylesDark.updateText}>Update</Text>
                     </Pressable>
                 </View>
             ) : (
                 <View></View>
             )}
             {localUserInfo[0].lists[id] && localUserInfo[0].lists[id].listItems.map((item) => (
-                <View key={item.id} style={[stylesLight.listItemContainer, (item.endTime && item.endTime.h >= endTimes.h && item.endTime.m > endTimes.m) && stylesLight.listItemContainerOutRange, (item.endTime && time.getTime() >= new Date().setHours(item.endTime.h, item.endTime.m, 0, 0) && item.completed === false) && stylesLight.listItemContainerOverdue]}>
+                <View key={item.id} style={[currentTheme.includes("Light") ? stylesLight.listItemContainer : stylesDark.listItemContainer, (item.endTime && item.endTime.h >= endTimes.h && item.endTime.m > endTimes.m) && (currentTheme.includes("Light") ? stylesLight.listItemContainerOutRange : stylesDark.listItemContainerOutRange), (item.endTime && time.getTime() >= new Date().setHours(item.endTime.h, item.endTime.m, 0, 0) && item.completed === false) && (currentTheme.includes("Light") ? stylesLight.listItemContainerOverdue : stylesDark.listItemContainerOverdue)]}>
                     {/* <Pressable onLongPress={() => completeListItem(item.id)} onPress={() => viewItem(item)} style={stylesLight.listItemNameContainer}> */}
                         <GestureDetector gesture={Gesture.Exclusive(doubleTap(item), singleTap(item), longPress(item))}>
-                            <Text numberOfLines={1} ellipsizeMode="tail" style={item && item.completed ? stylesLight.listItemNameComplete : stylesLight.listItemNameUncomplete}>{item.item}</Text>
+                            <Text numberOfLines={1} ellipsizeMode="tail" style={item && item.completed ? (currentTheme.includes("Light") ? stylesLight.listItemNameComplete : stylesDark.listItemNameComplete) : (currentTheme.includes("Light") ? stylesLight.listItemNameUncomplete : stylesDark.listItemNameUncomplete)}>{item.item}</Text>
                         </GestureDetector>
                     {/* </Pressable>     */}
-                    <View style={stylesLight.listItemTimesContainer}>
+                    <View style={currentTheme.includes("Light") ? stylesLight.listItemTimesContainer : stylesDark.listItemTimesContainer}>
                         <Pressable onPress={() => addTimeAmount(item)}>
-                            <Text style={stylesLight.time}>{item.timeLengthMins} Mins</Text>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.time : stylesDark.time}>{item.timeLengthMins} Mins</Text>
                         </Pressable>
                         {item.startTime === null || item.endTime === null ? (
                             <View></View>
                         ) : (
-                            <View style={stylesLight.timeToTime}>
-                                <Text style={stylesLight.time}>{item.startTime !== undefined ? `${item.startTime.h}:${item.startTime.m === 0 ? `${item.startTime.m}0` : `${item.startTime.m}`}` : ``}</Text>
-                                <Text style={stylesLight.time}> to </Text>
-                                <Text style={stylesLight.time}>{item.endTime !== undefined ? `${item.endTime.h}:${item.endTime.m === 0 ? `${item.endTime.m}0` : item.endTime.m < 10 ? `0${item.endTime.m}` : `${item.endTime.m}`}` : ``}</Text>
+                            <View style={currentTheme.includes("Light") ? stylesLight.timeToTime : stylesDark.timeToTime}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.time : stylesDark.time}>{item.startTime !== undefined ? `${item.startTime.h}:${item.startTime.m === 0 ? `${item.startTime.m}0` : `${item.startTime.m}`}` : ``}</Text>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.time : stylesDark.time}> to </Text>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.time : stylesDark.time}>{item.endTime !== undefined ? `${item.endTime.h}:${item.endTime.m === 0 ? `${item.endTime.m}0` : item.endTime.m < 10 ? `0${item.endTime.m}` : `${item.endTime.m}`}` : ``}</Text>
                             </View> 
                         )}                                       
                     </View>           
                 </View>
             ))} 
             {changeTime ? (
-                <View style={stylesLight.overLay}>
-                    <View style={stylesLight.container}>
-                        <TextInput keyboardType="numeric" placeholder="Number of Minutes..." onChangeText={(e) => setTimeAmount(parseInt(e))} style={stylesLight.input}/>
-                        <Pressable onPress={finishTimeAmount} style={stylesLight.done}>
-                            <Text style={stylesLight.doneText}>Done</Text>
+                <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <View style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
+                        <Pressable onPress={() => setChangeTime(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
+                            <Octicons name="x" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
+                        </Pressable>
+                        <TextInput keyboardType="numeric" placeholder="Number of Minutes..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setTimeAmount(parseInt(e))} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input}/>
+                        <Pressable onPress={finishTimeAmount} style={currentTheme.includes("Light") ? stylesLight.done : stylesDark.done}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.doneText : stylesDark.doneText}>Done</Text>
                         </Pressable>
                     </View>
                 </View>                
@@ -451,11 +456,11 @@ function TimedList(props) {
                 <View></View>
             )}
             {viewItemBox ? (
-                <View style={stylesLight.overLay}>
-                    <View style={stylesLight.container}>
-                        <Text style={stylesLight.listItemText}>{viewItemText}</Text>
-                        <Pressable onPress={closeViewBox} style={stylesLight.done}>
-                            <Text style={stylesLight.doneText}>Done</Text>
+                <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <View style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.listItemText : stylesDark.listItemText}>{viewItemText}</Text>
+                        <Pressable onPress={closeViewBox} style={currentTheme.includes("Light") ? stylesLight.done : stylesDark.done}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.doneText : stylesDark.doneText}>Done</Text>
                         </Pressable>
                     </View>
                 </View>                
@@ -463,16 +468,16 @@ function TimedList(props) {
                 <View></View>
             )}     
             {action ? (
-                <View style={stylesLight.overLay}>
-                    <View style={[stylesLight.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
-                        <Pressable onPress={() => editItem(item)} style={stylesLight.edit}>
-                            <Text style={stylesLight.editText}>Edit</Text>
+                <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
+                        <Pressable onPress={() => editItem(item)} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                         </Pressable>
-                        <Pressable onPress={() => deleteItem(item)} style={stylesLight.delete}>
-                            <Text style={stylesLight.deleteText}>Delete</Text>
+                        <Pressable onPress={() => deleteItem(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                         </Pressable>
-                        <Pressable onPress={() => setAction(false)} style={stylesLight.done}>
-                            <Text style={stylesLight.doneText}>Cancel</Text>
+                        <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.done : stylesDark.done}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.doneText : stylesDark.doneText}>Cancel</Text>
                         </Pressable>
                     </View>
                 </View>
@@ -493,6 +498,7 @@ const stylesLight = StyleSheet.create({
     },
     header: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 40,
         marginLeft: "auto",
         marginRight: "auto"
@@ -504,10 +510,12 @@ const stylesLight = StyleSheet.create({
     },
     backText: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 20,         
     },
     timeText: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 20, 
         position: "absolute",
         right: "5%",
@@ -520,6 +528,7 @@ const stylesLight = StyleSheet.create({
     },
     textsTime: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 15,
         flex: 1
     },
@@ -554,6 +563,7 @@ const stylesLight = StyleSheet.create({
     updateText: {
         textAlign: "center",
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 18
     },
     addContainer: {
@@ -582,6 +592,7 @@ const stylesLight = StyleSheet.create({
     addText: {
         textAlign: "center",
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 18
     },
     listItemContainer: {
@@ -629,12 +640,14 @@ const stylesLight = StyleSheet.create({
     },
     listItemNameUncomplete: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 15,
         marginLeft: 5,
         flex: 1
     },
     listItemNameComplete: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 15,
         marginLeft: 5,
         color: "#818181",
@@ -651,6 +664,7 @@ const stylesLight = StyleSheet.create({
     },
     colon: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 20,
         marginTop: 10,
 
@@ -671,6 +685,7 @@ const stylesLight = StyleSheet.create({
     deleteText: {
         textAlign: "center",
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 18,
         color: '#e3e3e3'
     },
@@ -685,8 +700,8 @@ const stylesLight = StyleSheet.create({
     editText: {
         textAlign: "center",
         fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
         fontSize: 18,
-        color: '#e3e3e3'
     },
     overLay: {
         position: "absolute",
@@ -720,10 +735,12 @@ const stylesLight = StyleSheet.create({
     doneText: {
         textAlign: "center",
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 18
     },
     listItemText: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 18,
         lineHeight: 25
     },
@@ -735,6 +752,7 @@ const stylesLight = StyleSheet.create({
     },
     time: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
     },
     actionContainer: {
         backgroundColor: '#e3e3e3',
@@ -742,7 +760,288 @@ const stylesLight = StyleSheet.create({
         borderTopRightRadius: 10,
         borderBottomRightRadius: 10,
         borderBottomLeftRadius: 10
-    }
+    },
+    cancel: {
+        alignSelf: "flex-end",
+    },
+})
+
+const stylesDark = StyleSheet.create({
+    contentContainer: {
+        flex: 1,
+    },
+    headerContainer: {
+        marginBottom: 20,
+        marginTop: 20,
+    },
+    header: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 40,
+        marginLeft: "auto",
+        marginRight: "auto"
+    },
+    back: {
+        position: "absolute",
+        left: "5%",
+        top: "30%"        
+    },
+    backText: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 20,         
+    },
+    timeText: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 20, 
+        position: "absolute",
+        right: "5%",
+        top: "30%"         
+    },
+    timeContainer: {
+        flexDirection: "row",
+        marginBottom: 5,
+        padding: 10
+    },
+    textsTime: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 15,
+        flex: 1
+    },
+    timeInput: {
+        backgroundColor: "#2b2b2b",
+        borderWidth: 0.5,
+        borderColor: "#000000",
+        color: "#e3e3e3",
+        borderRadius: 10,
+        padding: 10,
+        elevation: 5,
+        width: 55
+    },
+    timeTextContainer: {
+        flexGrow: 1,
+        flexDirection: "row",
+    },
+    timeInputContainer: {
+        flex: 3,
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+        marginRight: 10
+    },
+    update: {
+        margin: 10,
+    },
+    updateClickable: {
+        backgroundColor: "#3a3a3a",
+        padding: 10, 
+        elevation: 5,
+        borderRadius: 10       
+    },
+    updateText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 18
+    },
+    addContainer: {
+        width: "95%",
+        marginLeft: "auto",
+        marginRight: "auto",
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+        marginBottom: 5
+    },
+    input: {
+        backgroundColor: "#2b2b2b",
+        borderWidth: 0.5,
+        borderColor: "#000000",
+        color: "#e3e3e3",
+        borderRadius: 10,
+        padding: 10,
+        elevation: 5,
+        flex: 10,
+    },
+    add: {
+        flex: 1,
+        marginLeft: 10,
+        padding: 10,
+        borderRadius: 10,
+    },
+    addText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 18
+    },
+    listItemContainer: {
+        backgroundColor: "#2b2b2b",
+        padding: 10,
+        paddingTop: 15,
+        paddingBottom: 15,
+        width: "100%",
+        marginLeft: "auto",
+        marginRight: "auto",
+        borderBottomWidth: 1,
+        borderBottomColor: "#9e9e9e",   
+        flexDirection: "row",
+        justifyContent: "space-between"
+    },
+    listItemContainerOverdue: {
+        backgroundColor: "#ff7a7aff",
+        padding: 10,
+        paddingTop: 15,
+        paddingBottom: 15,
+        width: "100%",
+        marginLeft: "auto",
+        marginRight: "auto",
+        borderBottomWidth: 1,
+        borderBottomColor: "#9e9e9e",   
+        flexDirection: "row",
+        justifyContent: "space-between"
+    },
+    listItemContainerOutRange: {
+        backgroundColor: "#ffca58ff",
+        padding: 10,
+        paddingTop: 15,
+        paddingBottom: 15,
+        width: "100%",
+        marginLeft: "auto",
+        marginRight: "auto",
+        borderBottomWidth: 1,
+        borderBottomColor: "#9e9e9e",   
+        flexDirection: "row",
+        justifyContent: "space-between"
+    },
+    listItemNameContainer: {        
+        flexDirection: "row",
+        flexGrow: 1,
+    },
+    listItemNameUncomplete: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 15,
+        marginLeft: 5,
+        flex: 1
+    },
+    listItemNameComplete: {
+        fontFamily: "Roboto-Regular",
+        fontSize: 15,
+        marginLeft: 5,
+        color: "#818181",
+        textDecorationLine: "line-through",
+        flec: 1
+    },
+    listItemTimesContainer: {
+        flexDirection: "row",
+        width: "70%",
+        justifyContent: "space-evenly"
+    },
+    timeToTime: {
+        flexDirection: "row"
+    },
+    colon: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 20,
+        marginTop: 10,
+
+    },
+    hiddenContainer: {
+        flexDirection: "row",
+        justifyContent: "space-evenly"
+    },
+    delete: {
+        backgroundColor: "#be2206ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    deleteText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 18,
+    },
+    edit: {
+        backgroundColor: "#1f9615ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        borderRadius: 10,
+    },
+    editText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 18,
+    },
+    overLay: {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        right: 0,
+        left: 0,
+        flex: 1,
+        backgroundColor: "rgba(139, 139, 139, 0.5)"
+    },
+    container: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "10%",
+        padding: 20,
+        backgroundColor: "#2b2b2b",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1
+    },
+    done: {
+        backgroundColor: "#3a3a3a",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    doneText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 18
+    },
+    listItemText: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 18,
+        lineHeight: 25
+    },
+    overdue: {
+        backgroundColor: "#ff6a6aff"
+    },
+    outRange: {
+        backgroundColor: "#ffd57aff"
+    },
+    time: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+    },
+    actionContainer: {
+        backgroundColor: '#2b2b2b',
+        padding: 20,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 10
+    },
+    cancel: {
+        alignSelf: "flex-end",
+    },
 })
 
 export default TimedList;

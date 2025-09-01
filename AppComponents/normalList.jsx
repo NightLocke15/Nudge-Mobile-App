@@ -1,3 +1,4 @@
+import { ThemeContext } from "@/AppContexts/ThemeContext";
 import { UserContext } from "@/AppContexts/UserContext";
 import { Octicons } from "@react-native-vector-icons/octicons";
 import { LinearGradient } from 'expo-linear-gradient';
@@ -14,6 +15,7 @@ function NormalList(props) {
 
     //Accessing user context and all the users that already exist
     const { setUsers, users, localUserInfo, localUser } = useContext(UserContext); 
+    const {currentTheme, gradientColours } = useContext(ThemeContext);
 
     //Information that is stored from this component
     const [listItem, setListItem] = useState("");
@@ -176,7 +178,7 @@ function NormalList(props) {
     const longPress = (item) => Gesture.LongPress().onEnd(() => completeListItem(item.id)).runOnJS(true);
     
     return (        
-        <LinearGradient style={stylesLight.contentContainer} colors={["#e3e3e3", "#aaaaaa"]}>
+        <LinearGradient style={stylesLight.contentContainer} colors={gradientColours}>
             <View style={stylesLight.headerContainer}>
                 <Pressable onPress={() => router.dismissTo("/to-do-list/to-do-list")} style={stylesLight.back}>
                     <Octicons name="arrow-left" size={25} color={'#585858'}/>

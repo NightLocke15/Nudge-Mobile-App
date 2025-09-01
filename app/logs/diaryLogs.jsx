@@ -1,17 +1,19 @@
+import { ThemeContext } from "@/AppContexts/ThemeContext";
 import { UserContext } from "@/AppContexts/UserContext";
+import { Octicons } from "@react-native-vector-icons/octicons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useContext, useState } from "react";
 import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import { Gesture, GestureDetector, TextInput } from "react-native-gesture-handler";
 import 'react-native-get-random-values';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { SwipeListView } from "react-native-swipe-list-view";
 import { v4 as uuidv4 } from 'uuid';
 
 function DiaryLogs() {
     //Accessing user context and all the users that already exist
     const { users, setUsers, localUserInfo, localUser } = useContext(UserContext);
+    const {currentTheme, gradientColours } = useContext(ThemeContext);
 
     //Router used to navigate back to the home page as well as navigate to the specific log chosen
     const router = useRouter();
@@ -29,13 +31,18 @@ function DiaryLogs() {
     //Finding the current date
     const today = new Date();
 
+    const [item, setItem] = useState();
+    const [action, setAction] = useState(false);
+    const [tapPostition, setTapPosition] = useState({x: 0, y: 0})
+
     //Add a new diary entry to the user's list of entries
     function addLog() {
         const usersReVamp = users.map((user, index) => {
         if (user.idnum === localUser) {
             return {
                 ...user,
-                logs: [...user.logs, {id: uuidv4(), name: `Untitled Note ${user.logs.length}`, type: "Diary", date: `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`, text: "", images: []}]
+                logs: [...user.logs, {id: uuidv4(), name: `Untitled Note ${user.logs.length}`, type: "Diary", date: `${today.getFullYear()}-${today.getMonth() + 1 < 10 ? `0${today.getMonth() + 1}` : 
+                `${today.getMonth() + 1}`}-${today.getDate() < 10 ? `0${today.getDate()}` : `${today.getDate()}`}`, text: "", images: []}]
             }
         }
         else {
@@ -48,30 +55,7 @@ function DiaryLogs() {
     //Dynamically navigate to the [id] page and injecting the information relevant to the chosen log
     function goToLog(id) {
         router.push(`/logs/${id}`);
-    }
 
-    //Rendering of list item in the swipe list view of the different diary logs ***(Subject to change, looking into options other than swiping)***
-    const logRendered = ({ item }) => {
-        return (
-            <View key={item.id} style={[stylesLight.logContainer, {width: width/2 - 20, marginLeft: 5, marginRight: 5 }]}>
-                <Pressable onPress={() => goToLog(item.id)} onLongPress={() => triggerEditing(item)}>
-                    <Text style={stylesLight.logName}>{item.name}</Text>
-                    <Text style={stylesLight.logDate}>{item.date}</Text>
-                    <Text numberOfLines={6} ellipsizeMode="tail" style={stylesLight.logText}>{item.text}</Text>
-                </Pressable>
-            </View>
-        )
-    }
-
-    //Rendering of hidden button behind tile that deletes the log ***(Subject to change, looking into options other than swiping)***
-    const hiddenLogRendered = (data, rowMap) => {
-        return (
-            <View style={[stylesLight.deleteContainer, {width: width/2 - 20, marginLeft: 5, marginRight: 5 }]}>
-                <Pressable onPress={() => deleteLog(data.item)}>
-                    <Text style={stylesLight.delete}>Delete</Text>
-                </Pressable>            
-            </View>
-        ) 
     }
 
     //Code that deletes the correct diary entry from the user's information
@@ -89,6 +73,7 @@ function DiaryLogs() {
         }
         });
         setUsers(usersReVamp);
+        setAction(false);
     }
 
     //Triggers editing tile and sets the correct information to be edited ***(On long press, which is defferent from others. Subject to change, this is stille experimental)***
@@ -96,6 +81,7 @@ function DiaryLogs() {
         setEditing(true);
         setLogName(item.name);
         setItemID(item.id);
+        setAction(false);
     }
 
     //Accesses the correct diary entry to edit and edits the name of the diary entry by replacing the item at its index
@@ -104,7 +90,7 @@ function DiaryLogs() {
         const usersReVamp = users.map((user) => {
         if (user.idnum === localUser) {
             const newLogs = user.logs;
-            newLogs.splice(user.logs.findIndex((item) => item.id === itemID), 1, {id: itemID, name: logName, type: "Diary", date: user.logs[user.logs.findIndex((log) => log.id === itemID)].date, text: user.logs[user.logs.findIndex((log) => log.id === itemID)].text})
+            newLogs.splice(user.logs.findIndex((item) => item.id === itemID), 1, {...user.logs[user.logs.findIndex((item) => item.id === itemID)], name: logName})
             return {
                 ...user,
                 logs: newLogs
@@ -121,26 +107,38 @@ function DiaryLogs() {
         setItemID(null);
     }
 
+    const singleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(1).onStart(() => {
+            goToLog(item)
+    }).runOnJS(true);
+    const doubleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(2).onStart((event) => {
+        setItem(item);
+        setTapPosition({x: event.absoluteX , y: event.absoluteY})
+        setAction(true);
+    }).runOnJS(true);
+
     return (
         <SafeAreaView style={stylesLight.container}>
-            <LinearGradient style={stylesLight.contentContainer} colors={["#ffffff", "#aaaaaa"]}>
+            <LinearGradient style={stylesLight.contentContainer} colors={gradientColours}>
                 <View style={stylesLight.headerContainer}>
                     <Pressable onPress={() => router.navigate("/home")} style={stylesLight.back}>
-                        <Text style={stylesLight.backText}>Home</Text>
+                        <Octicons name="home" size={25} color={'#585858'}/>
                     </Pressable>
-                    <Text style={stylesLight.header}>DIARY</Text>
+                    <Text style={stylesLight.header}>Diary</Text>
                     <Pressable onPress={addLog} style={stylesLight.add}>
-                        <Text style={stylesLight.addIcon}>Add</Text>
+                        <Octicons name="plus" size={25} color={'#585858'}/>
                     </Pressable>
                 </View>  
-                <SwipeListView data={localUserInfo[0] && localUserInfo[0].logs.filter((log) => log.type === "Diary")}
-                style={stylesLight.logsContainer} 
-                renderItem={logRendered} 
-                renderHiddenItem={hiddenLogRendered} 
-                horizontal={false}
-                numColumns={2}
-                leftOpenValue={70}
-                disableLeftSwipe={true}/>
+                <View style={stylesLight.diaryLogContainer}>
+                    {localUserInfo[0] && localUserInfo[0].logs.filter((log) => log.type === "Diary").map((log) => (
+                        <GestureDetector key={log.id} gesture={Gesture.Exclusive(doubleTap(log), singleTap(log.id))}>
+                            <View style={stylesLight.logContainer}>
+                                <Text style={stylesLight.logName}>{log.name}</Text>
+                                <Text style={stylesLight.logDate}>{log.date}</Text>
+                                <Text numberOfLines={5} ellipsizeMode="tail" style={stylesLight.logText}>{log.text}</Text>
+                            </View>
+                        </GestureDetector>
+                    ))}
+                </View>
                 {editing ? (
                     <View style={stylesLight.overLay}>
                         <View style={stylesLight.editNameContainer}>
@@ -150,6 +148,23 @@ function DiaryLogs() {
                             </Pressable>
                         </View>
                     </View>                    
+                ) : (
+                    <View></View>
+                )}
+                {action ? (
+                    <View style={stylesLight.overLay}>
+                        <View style={[stylesLight.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
+                            <Pressable onPress={() => triggerEditing(item)} style={stylesLight.edit}>
+                                <Text style={stylesLight.editText}>Edit</Text>
+                            </Pressable>
+                            <Pressable onPress={() => deleteLog(item)} style={stylesLight.delete}>
+                                <Text style={stylesLight.deleteText}>Delete</Text>
+                            </Pressable>
+                            <Pressable onPress={() => setAction(false)} style={stylesLight.cancel}>
+                                <Text style={stylesLight.cancelText}>Cancel</Text>
+                            </Pressable>
+                        </View>
+                    </View>
                 ) : (
                     <View></View>
                 )}
@@ -170,16 +185,12 @@ const stylesLight = StyleSheet.create({
         left: "5%",
         top: "30%"        
     },
-    backText: {
-        fontFamily: "Economica-Bold",
-        fontSize: 20,         
-    },
     headerContainer: {
         marginBottom: 20,
         marginTop: 20,
     },
     header: {
-        fontFamily: "Economica-Bold",
+        fontFamily: "PTSans-Regular",
         fontSize: 40,
         marginLeft: "auto",
         marginRight: "auto"
@@ -189,56 +200,42 @@ const stylesLight = StyleSheet.create({
         right: "5%",
         top: "30%"                   
     },
-    addIcon: {
-        fontFamily: "Economica-Bold",
-        fontSize: 20,        
-    },
-    logsContainer: {
-        marginLeft: "auto",
-        marginRight: "auto",
-        alignContent: "center"
+    diaryLogContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: "space-between",
+        width: "90%",
+        alignSelf: "center"
     },
     logContainer: {
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#e3e3e3",
         elevation: 5,
         borderRadius: 10,
         marginBottom: 10,
-        height: 150
+        height: 150,
+        width: "45%",
     },
     logName: {
-        fontFamily: "Economica-Bold",
-        fontSize: 20,
+        fontFamily: "PTSans-Regular",
+        fontSize: 21,
         paddingLeft: 10,
         paddingTop: 8
     },
     logText: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 13,
         paddingLeft: 10,
         paddingRight: 10,
         paddingTop: 6
     },
     logDate: {
-        fontFamily: "Sunflower-Medium",
+        fontFamily: "Roboto-Regular",
         paddingLeft: 10,
         fontSize: 16,
         marginTop: 2
     },
-    deleteContainer: {
-        marginBottom: 10,
-        height: 150,
-        backgroundColor: "#940314",
-        borderRadius: 10
-    },
-    delete: {
-        fontFamily: "Sunflower-Light",
-        fontSize: 20,
-        paddingTop: 60,
-        paddingLeft: 10,
-        color: "#fff"       
-    },
     input: {
-        backgroundColor: "#fff",
+        backgroundColor: "#e3e3e3",
         borderWidth: 0.5,
         borderColor: "#4d4d4d",
         borderRadius: 10,
@@ -251,7 +248,7 @@ const stylesLight = StyleSheet.create({
         left: "5%",
         top: "10%",
         padding: 20,
-        backgroundColor: "#fff",
+        backgroundColor: "#e3e3e3",
         elevation: 5,
         borderRadius: 10,
         zIndex: 1
@@ -266,7 +263,7 @@ const stylesLight = StyleSheet.create({
         backgroundColor: "rgba(139, 139, 139, 0.5)"
     },
     done: {
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#f2f2f2",
         marginLeft: "auto",
         marginRight: "auto",
         padding: 10,
@@ -276,8 +273,58 @@ const stylesLight = StyleSheet.create({
     },
     doneText: {
         textAlign: "center",
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 18
+    },
+    edit: {
+        backgroundColor: "#1f9615ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        borderRadius: 10,
+    },
+    editText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    delete: {
+        backgroundColor: "#be2206ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    deleteText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    actionContainer: {
+        backgroundColor: '#e3e3e3',
+        padding: 20,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 10
+    },
+    cancelText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18
+    },
+    cancel: {
+        backgroundColor: "#f2f2f2",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
     },
 })
 

@@ -1,3 +1,4 @@
+import { ThemeContext } from "@/AppContexts/ThemeContext";
 import { UserContext } from "@/AppContexts/UserContext";
 import { Octicons } from "@react-native-vector-icons/octicons";
 import * as ImagePicker from 'expo-image-picker';
@@ -16,6 +17,7 @@ function Diary(props) {
 
     //Accessing user context and all the users that already exist
     const { localUserInfo, localUser, users, setUsers } = useContext(UserContext);
+    const {currentTheme, gradientColours } = useContext(ThemeContext);
 
     //Information that is stored from this component
     const [text, setText] = useState(localUserInfo[0].logs[id].text);
@@ -28,7 +30,6 @@ function Diary(props) {
     //Router that is used to navigate the user back to the diaryLogs page
     const router = useRouter();
 
-    const [images, setImages] = useState([]);
     const [addOptions, setAddOptions] = useState(false);
     const [action, setAction] = useState(false);
     const [tapPostition, setTapPosition] = useState({x: 0, y: 0})
@@ -138,7 +139,7 @@ function Diary(props) {
         }).runOnJS(true);
 
     return (
-        <LinearGradient style={stylesLight.contentContainer} colors={["#e3e3e3", "#aaaaaa"]}>
+        <LinearGradient style={stylesLight.contentContainer} colors={gradientColours}>
             <View style={stylesLight.headerContainer}>
                 <Pressable onPress={() => router.dismissTo('/logs/diaryLogs')} style={stylesLight.back}>
                     <Octicons name="arrow-left" size={25} color={'#585858'}/>
@@ -156,9 +157,15 @@ function Diary(props) {
                     <Octicons name="plus" size={25} color={'#585858'}/>
                 </Pressable>            
             </View>    
-            <View style={stylesLight.imagesContainer}>  
-                {localUserInfo[0] && localUserInfo[0].logs[id].images.map((image) => (<Image key={image.id} source={{ uri: image.uri }} style={stylesLight.image} />))}
-            </View>                    
+            {localUserInfo[0] && localUserInfo[0].logs[id].images !== undefined ? (
+                <View style={stylesLight.imagesContainer}>  
+                    {localUserInfo[0] && localUserInfo[0].logs[id].images.map((image) => (<Image key={image.id} source={{ uri: image.uri }} style={stylesLight.image} />))}
+                </View>
+            ) : (
+                <View></View>
+            )}
+            
+                                
             <TextInput multiline placeholder="Enter Log..." value={text} onChangeText={(e) => setText(e)} style={stylesLight.noteInput}/>
             {nameEdit ? (
                 <View style={stylesLight.overLay}>

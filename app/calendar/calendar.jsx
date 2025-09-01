@@ -1,3 +1,4 @@
+import { ThemeContext } from "@/AppContexts/ThemeContext";
 import { UserContext } from "@/AppContexts/UserContext";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
@@ -12,6 +13,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 function CalendarFunc() {
     const { users, setUsers, localUserInfo, localUser } = useContext(UserContext);
+    const {currentTheme, gradientColours } = useContext(ThemeContext);
     const router = useRouter();
     const [selectedDay, setSelectedDay] = useState('');
     const [dateList, setDateList] = useState({});
@@ -120,7 +122,7 @@ function CalendarFunc() {
 
     return (
         <SafeAreaView style={stylesLight.container}>
-            <LinearGradient style={stylesLight.contentContainer} colors={["#ffffff", "#aaaaaa"]}>
+            <LinearGradient style={stylesLight.contentContainer} colors={gradientColours}>
                 <View style={stylesLight.headerContainer}>
                     <Pressable onPress={() => router.dismissTo("/home")} style={stylesLight.back}>
                         <Text style={stylesLight.backText}>Home</Text>

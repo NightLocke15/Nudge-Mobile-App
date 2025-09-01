@@ -13,6 +13,7 @@ function UserProvider({children}) {
         lists: [],
         logs: [],
         events: [{name: "event"}],
+        preferredTheme: "Light - Gradient"
     }]);
     const [authenticated, setAuthenticated] = useState(() => {
         const Auth = AsyncStorage.getItem("isAuthenticated");
@@ -41,7 +42,7 @@ function UserProvider({children}) {
             }
         })
         setLocalUserInfo(oneUser);
-    }, [users]);
+    }, [users, authenticated]);
 
     //Create new account and add it to the list of already existing accounts
     function createUserProfile(username, id, password, email) {
@@ -54,7 +55,6 @@ function UserProvider({children}) {
     function login(loggedIn) {
         if (loggedIn) {
             setAuthenticated(JSON.stringify(true));
-            console.log(localUser);
         }
         else {
 
@@ -64,7 +64,6 @@ function UserProvider({children}) {
     //Logs user out of app
     function logout() {
         setAuthenticated(JSON.stringify(false));
-        console.log("logout");
     }
     return (
         <UserContext.Provider value={{setUsers, users, localUser, localUserInfo, authenticated, setLocalUser, createUserProfile, login, logout}}>

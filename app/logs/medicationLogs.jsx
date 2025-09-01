@@ -1,18 +1,22 @@
+import { ThemeContext } from "@/AppContexts/ThemeContext";
 import { UserContext } from "@/AppContexts/UserContext";
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import { Octicons } from "@react-native-vector-icons/octicons";
+import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { SelectList } from 'react-native-dropdown-select-list';
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import 'react-native-get-random-values';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { SwipeListView } from "react-native-swipe-list-view";
 import { v4 as uuidv4 } from 'uuid';
 
 function MedicationLogs() {
     //Accessing user context and all the users that already exist
     const { users, setUsers, localUserInfo, localUser } = useContext(UserContext);
+    const {currentTheme, gradientColours } = useContext(ThemeContext);
 
     //Router used to navigate back to the home page
     const router = useRouter();
@@ -41,6 +45,13 @@ function MedicationLogs() {
         {key: "3", value: "Biweekly"},
         {key: "4", value: "Monthly"},
     ]
+
+    const [item, setItem] = useState();
+    const [action, setAction] = useState(false);
+    const [tapPostition, setTapPosition] = useState({x: 0, y: 0})
+
+    const [viewImg, setViewImg] = useState(false);
+    const [image, setImage] = useState("");
 
     //Use effect that resets the time every minute. This is then used to check whether a new day has started so that the dosages taken can be reset
     useEffect(() => {
@@ -157,7 +168,7 @@ function MedicationLogs() {
             //adds all the information stored to a log in the user's info
             return {
                 ...user,
-                logs: [...user.logs, {id: uuidv4(), name: medName, type: "Medication", 
+                logs: [...user.logs, {id: uuidv4(), image: "", name: medName, type: "Medication", 
                     dosage: dosage, firstPickUp: fetchDate, fetchOption: fetchOption, nextFetchDate: nextFetch, repeats: fetchRepeat, start: startDate, 
                     takeSpan: repeat, takeTimes: times, nextDose: next}]
             }
@@ -312,56 +323,6 @@ function MedicationLogs() {
         setUsers(usersReVamp);
     }
 
-    //Renders the medication log in the swipe list view ***(Subject to change, looking into options other than swiping)***
-    const renderMeds = ({item}) => {
-        return (
-            <View style={stylesLight.medicationContainer}>
-                <View style={stylesLight.nameDose}>
-                    <View style={stylesLight.nameContainer}>
-                        <Text style={stylesLight.name}>{item.name}</Text>
-                        <Text style={stylesLight.dosage}>{item.dosage}</Text>
-                    </View>
-                    <View style={stylesLight.doseContainer}>
-                        <View style={stylesLight.nextDose}>
-                            <Text style={stylesLight.nextDoseText}>{item.takeTimes.find((time) => time.taken === false) !== undefined ? "Next Dose:" : "Finished!"}</Text>
-                            <Text>{item.takeTimes.find((time) => time.taken === false) !== undefined ? item.takeTimes.find((time) => time.taken === false).time : ""}</Text>
-                        </View>                        
-                        {item.takeTimes.find((time) => time.taken === false) === undefined ? 
-                        (<View></View>) : 
-                        (<Pressable onPress={() => takeMeds(item.id, item.takeTimes.find((time) => time.taken === false).id)}>
-                            <Text style={stylesLight.clickable}>Taken</Text>
-                        </Pressable>)}
-                    </View>
-                </View>                                
-                <View style={stylesLight.fetching}>
-                    <View>
-                        <Text style={stylesLight.nextFetchText}>Next Fetching Date: </Text>
-                        <Text style={stylesLight.nextFetchTime}>{item.nextFetchDate.toLocaleDateString()}</Text>
-                    </View>                      
-                    {item.nextFetchDate.getDate() === todayDate.getDate() ? 
-                    (<Pressable onPress={() => fetchMeds(item.id)}>
-                        <Text style={stylesLight.clickable}>Fetched</Text>
-                    </Pressable>) : 
-                    (<View></View>)}   
-                </View>                                    
-            </View>
-        )
-    }
-
-    //Rendering of hidden button behind tile that deletes the log and on the other side it edits it ***(Subject to change, looking into options other than swiping)***
-    const hiddenRender = (data, rowmap) => {
-        return (
-            <View style={stylesLight.hiddenItems}>
-                <Pressable style={stylesLight.deleteContainer} onPress={() => deleteItem(data.item)}>
-                    <Text style={stylesLight.deleteText}>Delete</Text>
-                </Pressable>
-                <Pressable style={stylesLight.editContainer}>
-                    <Text style={stylesLight.editText}>Edit</Text>
-                </Pressable>
-            </View>
-        )
-    }
-
     //Code that deletes the correct medication entry from the user's information
     const deleteItem = (item) => {
         const userChange = users.map((user) => {
@@ -378,6 +339,7 @@ function MedicationLogs() {
         }) 
 
         setUsers(userChange);
+        setAction(false);
     }
 
     //Takes out a dosage time that the ueser no longer wants (can only do this when creating the medication log or when editing)
@@ -385,40 +347,125 @@ function MedicationLogs() {
         setTimes(times.filter((time) => time.id !== timeID));
     }
 
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images', 'videos'],
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+        });
+
+        console.log(result);
+
+        if (!result.canceled) {
+            setImage(result.assets[0].uri);
+            addImageToLogs(result.assets[0].uri);            
+        }
+    };
+
+    function addImageToLogs(image) {
+        const userList = users.map((user) => {
+            if (user.idnum === localUser) {
+                const newLogs = user.logs.map((log) => {
+                    if (log.id === item.id) {
+                        return {
+                            ...log,
+                            image: image,
+                        }
+                    }
+                    else {
+                        return log;
+                    }
+                })
+
+                return {
+                    ...user,
+                    logs: newLogs
+                }
+            }
+            else {
+                return user;
+            }
+        })
+
+        setUsers(userList);
+    }
+
+    function viewImage(item) {
+        setViewImg(true);
+        setItem(item)
+    }
+
+    const doubleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(2).onStart((event) => {
+        setItem(item);
+        setTapPosition({x: event.absoluteX , y: event.absoluteY})
+        setAction(true);
+    }).runOnJS(true);
+
     return (
         <SafeAreaView style={stylesLight.container}>
-            <LinearGradient colors={["#ffffff", "#aaaaaa"]} style={stylesLight.contentContainer}>
+            <LinearGradient colors={gradientColours} style={stylesLight.contentContainer}>
                 <View style={stylesLight.headerContainer}>
                     <Pressable onPress={() => router.navigate("/home")} style={stylesLight.back}>
-                        <Text style={stylesLight.backText}>Home</Text>
+                        <Octicons name="home" size={25} color={'#585858'}/>
                     </Pressable>
-                    <Text style={stylesLight.header}>MEDICATION</Text>
+                    <Text style={stylesLight.header}>Medication</Text>
                     <Pressable onPress={() => setCreateEntry(true)} style={stylesLight.add}>
-                        <Text style={stylesLight.addIcon}>Add</Text>
+                        <Octicons name="plus" size={25} color={'#585858'}/>
                     </Pressable>
                 </View>  
-                <SwipeListView data={localUserInfo[0] && localUserInfo[0].logs.filter((log) => log.type === "Medication")} 
-                renderItem={renderMeds} 
-                renderHiddenItem={hiddenRender}
-                leftOpenValue={100}
-                disableLeftSwipe={true}/>
+                {localUserInfo[0] && localUserInfo[0].logs.filter((log) => log.type === "Medication").map((med) => (
+                    <GestureDetector key={med.id} gesture={Gesture.Exclusive(doubleTap(med))}>
+                        <View style={stylesLight.medicationContainer}>
+                            <View style={stylesLight.nameDose}>
+                                <Pressable onPress={() => viewImage(med)}>
+                                    {med.image !== "" ? <Image source={{uri: med.image}} style={stylesLight.pillImage}/> : <Image source={""} style={stylesLight.pillImage}/>}
+                                </Pressable>                                
+                                <View style={stylesLight.nameContainer}>
+                                    <Text style={stylesLight.name}>{med.name}</Text>
+                                    <Text style={stylesLight.dosage}>{med.dosage}</Text>
+                                </View>
+                            </View>                                
+                            <View style={stylesLight.fetching}>
+                                <View>
+                                    <Text style={stylesLight.nextFetchText}>Fetch: </Text>
+                                    <Text style={stylesLight.nextFetchTime}>{med.nextFetchDate.toLocaleDateString()}</Text>
+                                </View>                      
+                                {med.nextFetchDate.getDate() === todayDate.getDate() ? 
+                                (<Pressable onPress={() => fetchMeds(med.id)}>
+                                    <Text style={stylesLight.clickable}>Fetched</Text>
+                                </Pressable>) : 
+                                (<View></View>)}  
+                                <View style={stylesLight.doseContainer}>
+                                    <View style={stylesLight.nextDose}>
+                                        <Text style={stylesLight.nextDoseText}>{med.takeTimes.find((time) => time.taken === false) !== undefined ? "Next Dose:" : "Finished!"}</Text>
+                                        <Text style={stylesLight.nextDoseTime}>{med.takeTimes.find((time) => time.taken === false) !== undefined ? med.takeTimes.find((time) => time.taken === false).time : ""}</Text>
+                                    </View>                        
+                                    {med.takeTimes.find((time) => time.taken === false) === undefined ? 
+                                    (<View></View>) : 
+                                    (<Pressable onPress={() => takeMeds(med.id, med.takeTimes.find((time) => time.taken === false).id)}>
+                                        <Octicons name="check-circle" size={40} color={'#585858'} style={stylesLight.checkButton}/>
+                                    </Pressable>)}
+                                </View> 
+                            </View>                                    
+                        </View>
+                    </GestureDetector>
+                ))}
                 {createEntry ? (
                     <View style={stylesLight.overLay}>
                         <View style={stylesLight.addMedContainer}>
-                            <View style={stylesLight.formNameDose}>
-                                <View>
-                                    <Text style={stylesLight.formHeaders}>Medication Name</Text>
-                                    <TextInput placeholder="Name..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setMedName(e)} style={stylesLight.input} />
-                                </View>
-                                <View>
-                                    <Text style={stylesLight.formHeaders}>Dosage</Text>
-                                    <TextInput placeholder="Dose..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setDosage(e)} style={stylesLight.input} />
-                                </View>
-                                <View>
-                                    <Text style={stylesLight.formHeaders}>Repeats: </Text>
-                                    <TextInput placeholder="Num..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setFetchRepeat(e)} style={stylesLight.input}/>
-                                </View>
-                            </View>    
+                            <View>
+                                <Text style={stylesLight.formHeaders}>Medication Name</Text>
+                                <TextInput placeholder="Name..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setMedName(e)} style={stylesLight.input} />
+                            </View>
+                            <View>
+                                <Text style={stylesLight.formHeaders}>Dosage</Text>
+                                <TextInput placeholder="Dose..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setDosage(e)} style={stylesLight.input} />
+                            </View>
+                            <View>
+                                <Text style={stylesLight.formHeaders}>Repeats: </Text>
+                                <TextInput placeholder="Num..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setFetchRepeat(e)} style={stylesLight.input}/>
+                            </View> 
                             <View style={stylesLight.formFetchDate}>
                                 <View>
                                     <Text style={stylesLight.formHeaders}>Date of First Pick-Up: </Text>
@@ -482,6 +529,38 @@ function MedicationLogs() {
                 ) : (
                     <View></View>
                 )}
+                {action ? (
+                    <View style={stylesLight.overLay}>
+                        <View style={[stylesLight.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
+                            <Pressable style={stylesLight.edit}>
+                                <Text style={stylesLight.editText}>Edit</Text>
+                            </Pressable>
+                            <Pressable onPress={() => deleteItem(item)} style={stylesLight.delete}>
+                                <Text style={stylesLight.deleteText}>Delete</Text>
+                            </Pressable>
+                            <Pressable onPress={() => setAction(false)} style={stylesLight.cancel}>
+                                <Text style={stylesLight.cancelText}>Cancel</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                ) : (
+                    <View></View>
+                )}
+                {viewImg ? (
+                    <View style={stylesLight.overLay}>
+                        <View style={stylesLight.viewImageContainer}> 
+                            <Pressable onPress={() => setViewImg(false)} style={stylesLight.close}>
+                                <Octicons name="x" size={30} color={'#585858'}/>
+                            </Pressable>
+                            {image !== "" ? <Image source={{uri: image}} style={stylesLight.viewPill}/> : <Image source={""} style={stylesLight.pillImage}/>}
+                            <Pressable onPress={pickImage} style={stylesLight.cancel}>
+                                <Text style={stylesLight.cancelText}>{image === "" ? "Add" : "Change"}</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                    ) : (
+                    <View></View>
+                )}
             </LinearGradient>
         </SafeAreaView>
     )
@@ -499,16 +578,12 @@ const stylesLight = StyleSheet.create({
         left: "5%",
         top: "30%"        
     },
-    backText: {
-        fontFamily: "Economica-Bold",
-        fontSize: 20,         
-    },
     headerContainer: {
         marginBottom: 20,
         marginTop: 20,
     },
     header: {
-        fontFamily: "Economica-Bold",
+        fontFamily: "PTSans-Regular",
         fontSize: 40,
         marginLeft: "auto",
         marginRight: "auto"
@@ -518,12 +593,8 @@ const stylesLight = StyleSheet.create({
         right: "5%",
         top: "30%"                   
     },
-    addIcon: {
-        fontFamily: "Economica-Bold",
-        fontSize: 20,        
-    },
     medicationContainer: {
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#e3e3e3",
         padding: 20,
         paddingTop: 15,
         paddingBottom: 15,
@@ -531,20 +602,18 @@ const stylesLight = StyleSheet.create({
         marginLeft: "auto",
         marginRight: "auto",
         borderBottomWidth: 1,
-        borderBottomColor: "#9e9e9e", 
-        height: 135,  
+        borderBottomColor: "#9e9e9e",  
     },
     nameDose: {
         flexDirection: "row",
-        justifyContent: "space-between"
     },
     name: {
-        fontFamily: "Economica-Bold",
+        fontFamily: "PTSans-Regular",
         fontSize: 20,
         marginBottom: 8
     },
     dosage: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 15,
     },
     fetching: {
@@ -560,63 +629,48 @@ const stylesLight = StyleSheet.create({
     },
     nextDose: {
         alignItems: "center",
-        marginRight: 40
+        marginRight: 10
     },
     clickable: {
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#f2f2f2",
         padding: 10,
         elevation: 5,
         borderRadius: 10,
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 15,
     },
     nextDoseText: {
-        fontFamily: "Economica-Bold",
+        fontFamily: "PTSans-Regular",
         fontSize: 20,
     },
+    nextDoseTime: {
+        fontFamily: "Roboto-Regular",
+        fontSize: 15,
+        alignSelf: "flex-start"
+    },
     nextFetchText: {
-        fontFamily: "Economica-Bold",
+        fontFamily: "PTSans-Regular",
         fontSize: 20,
     },
     nextFetchTime: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 15,
-        marginTop: 8
     },
     pillImage: {
-        width: 50,
-        height: 50
+        width: 60,
+        height: 60,
+        borderWidth: 0.5,
+        borderColor: "#2b2b2b",
+        marginRight: 15,
+        borderRadius: 100
     },
     hiddenItems: {
         flexDirection: "row",
         justifyContent: "space-between",
         height: 135,
     },
-    deleteContainer: {
-        backgroundColor: "#940314",
-        width: "50%",
-    },
-    deleteText: {
-        fontFamily: "Sunflower-Light",
-        color: "#fff",
-        fontSize: 20,
-        marginLeft: 10,
-        marginTop: 50
-    },
-    editContainer: {
-        backgroundColor: "#039464ff",
-        width: "50%",
-    },
-    editText: {
-        fontFamily: "Sunflower-Light",
-        color: "#fff",
-        fontSize: 20,
-        textAlign: "right",
-        marginRight: 10,
-        marginTop: 50
-    },
     input: {
-        backgroundColor: "#fff",
+        backgroundColor: "#e3e3e3",
         borderWidth: 0.5,
         borderColor: "#4d4d4d",
         borderRadius: 10,
@@ -628,9 +682,9 @@ const stylesLight = StyleSheet.create({
         position: "absolute",
         right: "5%",
         left: "5%",
-        top: "10%",
+        top: "5%",
         padding: 20,
-        backgroundColor: "#fff",
+        backgroundColor: "#e3e3e3",
         elevation: 5,
         borderRadius: 10,
         zIndex: 1,
@@ -645,20 +699,19 @@ const stylesLight = StyleSheet.create({
         backgroundColor: "rgba(139, 139, 139, 0.5)"
     },
     click: {
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#f2f2f2",
         marginLeft: "auto",
         marginRight: "auto",
         padding: 10,
         elevation: 5,
         borderRadius: 10,
         textAlign: "center",
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 15
     },
     formHeaders: {
-        fontFamily: "Economica-Bold",
+        fontFamily: "PTSans-Regular",
         fontSize: 20,
-        textAlign: "center"
     },
     formNameDose: {
         flexDirection: "row",
@@ -688,13 +741,89 @@ const stylesLight = StyleSheet.create({
         marginBottom:10
     },
     timeStyle: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 15
     },
     dateStyle: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 15,
         marginTop: 5 
+    },
+    edit: {
+        backgroundColor: "#1f9615ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        borderRadius: 10,
+    },
+    editText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    delete: {
+        backgroundColor: "#be2206ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    deleteText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    actionContainer: {
+        backgroundColor: '#e3e3e3',
+        padding: 20,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 10
+    },
+    cancelText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18
+    },
+    cancel: {
+        backgroundColor: "#f2f2f2",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    checkButton: {
+        backgroundColor: "#f2f2f2",
+        padding: 3,
+        borderRadius: 40,
+        elevation: 5,
+    },
+    viewImageContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "5%",
+        padding: 20,
+        backgroundColor: "#e3e3e3",
+        elevation: 5,
+        borderRadius: 10,
+    },
+    viewPill: {
+        width: 300,
+        height: 300,
+        alignSelf: "center",
+        borderRadius: 10
+    },
+    close: {
+        alignSelf: "flex-end",
+        marginBottom: 10,
     }
 })
 

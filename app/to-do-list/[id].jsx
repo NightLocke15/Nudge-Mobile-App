@@ -19,14 +19,14 @@ function MakeList() {
 
     //Renders the relevent information based on the type of list
     return (
-        <SafeAreaView style={stylesLight.container}>
+        <SafeAreaView style={styles.container}>
             {localUserInfo[0].lists[index].type === "Normal" ? 
             <NormalList id={index}/> : <TimedList id={index} />}
         </SafeAreaView>
     )
 }
 
-const stylesLight = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1,
     },

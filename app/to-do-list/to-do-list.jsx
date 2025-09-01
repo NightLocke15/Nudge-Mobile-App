@@ -1,17 +1,19 @@
+import { ThemeContext } from "@/AppContexts/ThemeContext";
 import { UserContext } from "@/AppContexts/UserContext";
+import { Octicons } from "@react-native-vector-icons/octicons";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from "expo-router";
 import { useContext, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import { Gesture, GestureDetector, TextInput } from "react-native-gesture-handler";
 import 'react-native-get-random-values';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { SwipeListView } from "react-native-swipe-list-view";
 import { v4 as uuidv4 } from 'uuid';
 
 function ToDoList() {
     //Accessing user context and all the users that already exist
     const { localUser, localUserInfo, users, setUsers } = useContext(UserContext);
+    const {currentTheme, gradientColours } = useContext(ThemeContext);
 
     //Sets the boolean that activates the tile to create a new list
     const [chooseList, setChooseList] = useState(false);
@@ -21,6 +23,9 @@ function ToDoList() {
 
     //Sets the warning message for when a user tries to change the type of list when it already contains items
     const [warning, setWarning] = useState("");
+    const [action, setAction] = useState(false);
+    const [tapPostition, setTapPosition] = useState({x: 0, y: 0})
+    const [item, setItem] = useState();
 
     //Router used to navigate back to the home page
     const router = useRouter();
@@ -99,29 +104,6 @@ function ToDoList() {
         setUsers(userChange);
     }
 
-    //Renders the lists in the swipe list view ***(Subject to change, looking into options other than swiping)***
-    const itemRendered = ({item}) => {
-        return (
-            <View key={item.id} style={stylesLight.listItemContainer}>
-                <Pressable onPress={() => goToList(item.id)} onLongPress={() => setType(item.name)} style={stylesLight.listItem}>
-                    <Text style={stylesLight.listItemName}>{item.name}</Text>
-                    <Text style={stylesLight.listItemType}>{item.type}</Text>
-                </Pressable>
-            </View>
-        )
-    }
-
-    //Rendering of hidden button behind tile that deletes the list ***(Subject to change, looking into options other than swiping)***
-    const hiddenItemRendered = (data, rowMap) => {
-        return (
-            <View style={stylesLight.deleteContainer}>
-                <Pressable onPress={() => deleteItem(data.item)}>
-                    <Text style={stylesLight.delete}>Delete</Text>
-                </Pressable>                
-            </View>
-        )       
-    }
-
     //Delete the item from the user's information
     const deleteItem = (item) => {
         const userChange = users.map((user) => {
@@ -138,7 +120,20 @@ function ToDoList() {
         });
 
         setUsers(userChange);
+        setAction(false);
     }
+
+    const singleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(1).onStart(() => {
+        goToList(item)
+    }).runOnJS(true);
+    const doubleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(2).onStart((event) => {
+        setItem(item);
+        setTapPosition({x: event.absoluteX , y: event.absoluteY})
+        setAction(true);
+    }).runOnJS(true);
+    const longPress = (item) => Gesture.LongPress().onEnd(() => {
+        setType(item)
+    }).runOnJS(true);
     
     // Title: Mastering the Swipe: Building a Swipeable List App with React Native and LayoutAnimation
     // Author: William Schulte
@@ -147,25 +142,30 @@ function ToDoList() {
     // Availability: https://medium.com/@wsvuefanatic/how-to-build-a-list-app-with-react-native-swipelistview-and-layout-animation-a3b6171faa50
     return (
         <SafeAreaView style={stylesLight.container}>
-            <LinearGradient style={stylesLight.contentContainer} colors={["#ffffff", "#aaaaaa"]}>
+            <LinearGradient style={stylesLight.contentContainer} colors={gradientColours}>
                 <View style={stylesLight.headerContainer}>
                     <Pressable onPress={() => router.navigate("/home")} style={stylesLight.back}>
-                        <Text style={stylesLight.backText}>Home</Text>
+                        <Octicons name="home" size={25} color={'#585858'}/>
                     </Pressable>
-                    <Text style={stylesLight.header}>TO-DO LISTS</Text>
+                    <Text style={stylesLight.header}>To-Do Lists</Text>
                     <Pressable onPress={() => setChooseList(!chooseList)} style={stylesLight.add}>
-                        <Text style={stylesLight.addIcon}>{chooseList ? "" : "Add"}</Text>
+                        <Octicons name="plus" size={25} color={'#585858'}/>
                     </Pressable>
                 </View>   
                 <View style={stylesLight.headings}>
                     <Text style={stylesLight.headingsTextName}>Name</Text>
                     <Text style={stylesLight.headingsTextType}>Type</Text>
-                </View>          
-                <SwipeListView data={localUserInfo[0] && localUserInfo[0].lists} 
-                renderItem={itemRendered} 
-                renderHiddenItem={hiddenItemRendered} 
-                leftOpenValue={100} 
-                disableLeftSwipe={true} />       
+                </View>   
+                {localUserInfo[0] && localUserInfo[0].lists.map((list) => (
+                    <GestureDetector key={list.id} gesture={Gesture.Exclusive(doubleTap(list), singleTap(list.id), longPress(list.name))}>
+                        <View style={stylesLight.listItemContainer}>
+                            <View style={stylesLight.listItem}>
+                                <Text style={stylesLight.listItemName}>{list.name}</Text>
+                                <Text style={stylesLight.listItemType}>{list.type}</Text>
+                            </View>                            
+                        </View>
+                    </GestureDetector>
+                ))}           
                 {chooseList ? (
                     <View style={stylesLight.overLay}>
                         <View style={stylesLight.addListContainer}>
@@ -190,6 +190,20 @@ function ToDoList() {
                         </View>
                     </View>                    
                 )}
+                {action ? (
+                    <View style={stylesLight.overLay}>
+                        <View style={[stylesLight.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
+                            <Pressable onPress={() => deleteItem(item)} style={stylesLight.delete}>
+                                <Text style={stylesLight.deleteText}>Delete</Text>
+                            </Pressable>
+                            <Pressable onPress={() => setAction(false)} style={stylesLight.cancel}>
+                                <Text style={stylesLight.cancelText}>Cancel</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                ) : (
+                    <View></View>
+                )}
             </LinearGradient>
         </SafeAreaView>
     )
@@ -207,16 +221,12 @@ const stylesLight = StyleSheet.create({
         left: "5%",
         top: "30%"        
     },
-    backText: {
-        fontFamily: "Economica-Bold",
-        fontSize: 20,         
-    },
     headerContainer: {
         marginBottom: 20,
         marginTop: 20,
     },
     header: {
-        fontFamily: "Economica-Bold",
+        fontFamily: "PTSans-Regular",
         fontSize: 40,
         marginLeft: "auto",
         marginRight: "auto"
@@ -226,12 +236,8 @@ const stylesLight = StyleSheet.create({
         right: "5%",
         top: "30%"                   
     },
-    addIcon: {
-        fontFamily: "Economica-Bold",
-        fontSize: 20,        
-    },
     input: {
-        backgroundColor: "#fff",
+        backgroundColor: "#e3e3e3",
         borderWidth: 0.5,
         borderColor: "#4d4d4d",
         borderRadius: 10,
@@ -244,7 +250,7 @@ const stylesLight = StyleSheet.create({
         left: "5%",
         top: "10%",
         padding: 20,
-        backgroundColor: "#fff",
+        backgroundColor: "#e3e3e3",
         elevation: 5,
         borderRadius: 10,
         zIndex: 1
@@ -259,7 +265,7 @@ const stylesLight = StyleSheet.create({
         backgroundColor: "rgba(139, 139, 139, 0.5)"
     },
     done: {
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#f2f2f2",
         marginLeft: "auto",
         marginRight: "auto",
         padding: 10,
@@ -269,7 +275,7 @@ const stylesLight = StyleSheet.create({
     },
     doneText: {
         textAlign: "center",
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 18
     },
     warningContainer: {
@@ -278,7 +284,7 @@ const stylesLight = StyleSheet.create({
         left: "5%",
         top: "10%",
         padding: 20,
-        backgroundColor: "#fff",
+        backgroundColor: "#e3e3e3",
         elevation: 5,
         borderRadius: 10,
         zIndex: 1,
@@ -286,13 +292,13 @@ const stylesLight = StyleSheet.create({
         borderColor: "#940314"
     },
     warningText: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 20,
         color: "#940314",
         marginBottom: 10
     },
     okay: {
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#f2f2f2",
         marginLeft: "auto",
         marginRight: "auto",
         padding: 10,
@@ -302,11 +308,11 @@ const stylesLight = StyleSheet.create({
     },
     okayText: {
         textAlign: "center",
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 18
     },
     listItemContainer: {
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#e3e3e3",
         padding: 10,
         paddingTop: 15,
         paddingBottom: 15,
@@ -321,12 +327,12 @@ const stylesLight = StyleSheet.create({
         justifyContent: "space-between"
     },
     listItemName: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 20,
         marginLeft: 5
     },
     listItemType: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 20,
         marginRight: 5
     },
@@ -341,29 +347,51 @@ const stylesLight = StyleSheet.create({
         padding: 5
     },
     headingsTextName: {
-        fontFamily: "Economica-Bold",
+        fontFamily: "PTSans-Regular",
         fontSize: 25,
         marginLeft: 10
     },
     headingsTextType: {
-        fontFamily: "Economica-Bold",
+        fontFamily: "PTSans-Regular",
         fontSize: 25,
         marginRight: 10
     },
-    deleteContainer: {
-        backgroundColor: "#940314",
-        padding: 10,
-        paddingTop: 15,
-        paddingBottom: 15,
-        width: "100%",
+    delete: {
+        backgroundColor: "#be2206ff",
         marginLeft: "auto",
         marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
     },
-    delete: {
-        fontFamily: "Sunflower-Light",
-        color: "#fff",
-        fontSize: 20,
-    }
+    deleteText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    actionContainer: {
+        backgroundColor: '#e3e3e3',
+        padding: 20,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 10
+    },
+    cancelText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18
+    },
+    cancel: {
+        backgroundColor: "#f2f2f2",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
 });
 
 export default ToDoList;

@@ -1,3 +1,4 @@
+import ThemeProvider from "@/AppContexts/ThemeContext";
 import UserProvider from "@/AppContexts/UserContext";
 import { useFonts } from 'expo-font';
 import { Stack } from "expo-router";
@@ -35,16 +36,20 @@ function RootLayout() {
         <GestureHandlerRootView>
             <SafeAreaProvider>
                 <UserProvider>
-                    <Stack screenOptions={{ headerShown: false, headerTitle: "NUDGE", headerStyle: {backgroundColor: "#fff"}, headerShadowVisible: false}}>
-                        <Stack.Screen name="index" />
-                        <Stack.Screen name="home" />
-                        <Stack.Screen name="account/login" />
-                        <Stack.Screen name="to-do-list/to-do-list" />
-                        <Stack.Screen name="calendar/calendar" />
-                        <Stack.Screen name="logs/diaryLogs" />
-                        <Stack.Screen name="logs/peopleLogs" />
-                        <Stack.Screen name="logs/medicationLogs" />                        
-                    </Stack>
+                    <ThemeProvider>
+                        <Stack screenOptions={{ headerShown: false, headerTitle: "NUDGE", headerStyle: {backgroundColor: "#fff"}, headerShadowVisible: false}}>
+                            <Stack.Screen name="index" />
+                            <Stack.Screen name="home" />
+                            <Stack.Screen name="account/login" />
+                            <Stack.Screen name="to-do-list/to-do-list" />
+                            <Stack.Screen name="calendar/calendar" />
+                            <Stack.Screen name="logs/diaryLogs" />
+                            <Stack.Screen name="logs/peopleLogs" />
+                            <Stack.Screen name="logs/medicationLogs" />    
+                            <Stack.Screen name="clock/clock" />     
+                            <Stack.Screen name="settings/settings" />                     
+                        </Stack>
+                    </ThemeProvider>
                 </UserProvider>            
             </SafeAreaProvider>
         </GestureHandlerRootView>        

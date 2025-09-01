@@ -1,5 +1,7 @@
+import { ThemeContext } from '@/AppContexts/ThemeContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from "expo-router";
+import { useContext } from 'react';
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -7,6 +9,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 function WelcomeScreen() {
     //Router to routhe the user to the home page
     const router = useRouter();
+    const {currentTheme, gradientColours } = useContext(ThemeContext);
 
     //Routes the user from the splash screen to the home page
     function getStarted() {
@@ -15,7 +18,7 @@ function WelcomeScreen() {
 
     return (
         <SafeAreaView style={stylesLight.mainContainer}>  
-            <LinearGradient style={stylesLight.contentContainer} colors={["#e3e3e3", "#aaaaaa"]}>
+            <LinearGradient style={stylesLight.contentContainer} colors={gradientColours}>
                 <View style={stylesLight.logoContainer}>
                     <Text style={stylesLight.logo}>NUDGE</Text> 
                 </View>

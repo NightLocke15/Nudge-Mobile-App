@@ -18,7 +18,7 @@ function MakeLog() {
 
     //Return the log dependent on the current log's type
     return (
-        <SafeAreaView style = {stylesLight.container}>
+        <SafeAreaView style = {styles.container}>
             {localUserInfo[0].logs[index].type === "Diary" ? 
             <Diary id={index} /> :
             <People id={index} />}
@@ -26,7 +26,7 @@ function MakeLog() {
     )
 }
 
-const stylesLight = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1
     },

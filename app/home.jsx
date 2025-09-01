@@ -1,3 +1,4 @@
+import { ThemeContext } from "@/AppContexts/ThemeContext";
 import { UserContext } from "@/AppContexts/UserContext";
 import { Lucide } from "@react-native-vector-icons/lucide";
 import { Octicons } from "@react-native-vector-icons/octicons";
@@ -12,6 +13,8 @@ function Home() {
     //Accesses user context in order to determine if the user has logged in or not
     const { authenticated, logout, localUserInfo } = useContext(UserContext);
 
+    const {currentTheme, gradientColours } = useContext(ThemeContext);
+
     //Router that allows the user to navigate to the different pages in the app
     const router = useRouter();
 
@@ -24,11 +27,11 @@ function Home() {
     return (
         <SafeAreaView style={stylesLight.container}>
             {JSON.parse(authenticated) ? 
-            (<LinearGradient style={stylesLight.contentContainer} colors={["#e3e3e3", "#aaaaaa"]}>
+            (<LinearGradient style={stylesLight.contentContainer} colors={gradientColours}>
                 <View style={stylesLight.homeHeaderContainer}>
                     <Text style={stylesLight.homeHeader}>NUDGE</Text>
                 </View>
-                <Pressable style={stylesLight.settings}>
+                <Pressable style={stylesLight.settings} onPress={() => router.navigate('/settings/settings')}>
                     <Octicons style={stylesLight.icon} name="gear" size={25} color={'#585858'}/>
                 </Pressable>
                 <View style={stylesLight.menuContainer}>
@@ -135,7 +138,7 @@ const stylesLight = StyleSheet.create({
     homeHeaderContainer: {
         marginLeft: "auto",
         marginRight: "auto",
-        marginTop: 20
+        marginTop: 20,
     },
     homeHeader: {
         fontFamily: "PTSans-Regular",

@@ -1,3 +1,4 @@
+import { ThemeContext } from "@/AppContexts/ThemeContext";
 import { UserContext } from "@/AppContexts/UserContext";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from "expo-router";
@@ -8,7 +9,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 function Login() {
     //Access to the user context and all the existing users
-    const { login, users, setLocalUser } = useContext(UserContext);
+    const { login, users, setLocalUser, setLocalUserInfo } = useContext(UserContext);
+    const {currentTheme, gradientColours } = useContext(ThemeContext);
 
     //Stores the details that the user provides so it can be checked against existing details
     const [email, setEmail] = useState("");
@@ -38,9 +40,9 @@ function Login() {
 
     return (
         <SafeAreaView style={stylesLight.container}>
-            <LinearGradient style={stylesLight.contentContainer} colors={["#ffffff", "#aaaaaa"]}>
+            <LinearGradient style={stylesLight.contentContainer} colors={gradientColours}>
                 <View style={stylesLight.headerContainer}>
-                    <Text style={stylesLight.header}>WELCOME BACK!</Text>
+                    <Text style={stylesLight.header}>Welcome Back!</Text>
                 </View>                
                 {message ? <Text style={stylesLight.message}>You're Email or Password is incorrect.</Text> : <Text style={stylesLight.message}></Text>}
                 <View style={stylesLight.formContainer}>
@@ -81,8 +83,9 @@ const stylesLight = StyleSheet.create({
         marginTop: 180,
     },
     header: {
-        fontFamily: "Economica-Bold",
-        fontSize: 65
+        fontFamily: "PTSans-Regular",
+        fontSize: 65,
+        textAlign: "center"
     },
     formContainer: {
         flex: "40%",
@@ -90,7 +93,7 @@ const stylesLight = StyleSheet.create({
         marginRight: 30,
     },
     label: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 18
     },
     input: {
@@ -102,7 +105,7 @@ const stylesLight = StyleSheet.create({
         width: "100%",
         elevation: 5,
         marginBottom: 25,
-        backgroundColor: "#fff"
+        backgroundColor: "#e3e3e3"
     },
     accountContainer: {
         flex: "40%",
@@ -111,23 +114,23 @@ const stylesLight = StyleSheet.create({
         marginBottom: 150
     },
     clickable: {
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#f2f2f2",
         padding: 15,
         borderRadius: 25,
         elevation: 5,
         marginBottom: 20
     },
     clickableText: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 20,
         textAlign: "center"
     },
     createLabel: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 18
     },
     createLink: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 18,
         color: "#1966ff",
         textDecorationLine: "underline",
@@ -135,7 +138,7 @@ const stylesLight = StyleSheet.create({
     },
     message: {
         flex: "3%",
-        fontFamily: "Sunflower-Medium",
+        fontFamily: "Roboto-Regular",
         fontSize: 17,
         margin: "auto",
         marginBottom: 15,

@@ -1,18 +1,20 @@
+import { ThemeContext } from "@/AppContexts/ThemeContext";
 import { UserContext } from "@/AppContexts/UserContext";
+import { Octicons } from "@react-native-vector-icons/octicons";
+import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useContext, useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import { Gesture, GestureDetector, TextInput } from "react-native-gesture-handler";
 import 'react-native-get-random-values';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { SwipeListView } from "react-native-swipe-list-view";
 import { v4 as uuidv4 } from 'uuid';
 
 function PeopleLogs() {
     //Accessing user context and all the users that already exist
     const { users, setUsers, localUserInfo, localUser } = useContext(UserContext);
-    const [currentItemID, setCurrentItemID] = useState(0);
+    const {currentTheme, gradientColours } = useContext(ThemeContext);
 
     //Router used to navigate back to the home page as well as navigate to the specific log chosen
     const router = useRouter();
@@ -22,7 +24,11 @@ function PeopleLogs() {
 
     //Store the information of the person being added
     const [personName, setPersonName] = useState("");
-    const [personRelationship, setPersonRelationship] = useState("");    
+    const [personRelationship, setPersonRelationship] = useState("");   
+    const [image, setImage] = useState(""); 
+    const [item, setItem] = useState();
+    const [action, setAction] = useState(false);
+    const [tapPostition, setTapPosition] = useState({x: 0, y: 0})
 
     //Warning boolean that activates a warning tile when trying to delete a log (Experimental: Will most likely add this to other logs as well)
     const [warning, setWarning] = useState(false);
@@ -36,7 +42,7 @@ function PeopleLogs() {
             if (user.idnum === localUser) {
                 return {
                     ...user,
-                    logs: [...user.logs, {id: uuidv4(), personName: personName, relationship: personRelationship, number: "", birthday: "", likes: [], dislikes: [], type: "People", notes: ""}]
+                    logs: [...user.logs, {id: uuidv4(), personName: personName, relationship: personRelationship, image: image, number: "", birthday: "", likes: [], dislikes: [], type: "People", notes: ""}]
                 }
             }
             else {
@@ -49,7 +55,7 @@ function PeopleLogs() {
         setPersonName("");
         setPersonRelationship("");
         setAddPerson(false);
-        console.log(localUserInfo[0] && localUserInfo[0].logs.filter((log) => log.type === "People"));
+        setImage("");
     }
 
     //Uses the router to dynamically navigate to the person chosen's information in the [id] page
@@ -58,55 +64,26 @@ function PeopleLogs() {
     }
 
     //Function that changes the state of the warning when trying to delete a log item
-    function deleteWarning(item) {
+    function deleteWarning() {
         setWarning(true);
-        setCurrentItemID(item.id);
+        setAction(false);
     }
 
     //Triggers the editing of the log item and sets the relevant information to be edited
     function triggerEditing(item) {
         setPersonName(item.personName);
         setPersonRelationship(item.relationship);
-        setCurrentItemID(item.id);
-        console.log(item.id);
+        setImage(item.image);
         setEditing(true);
         setAddPerson(true);
-    }
-
-    //Renders the person log in the swipe list view ***(Subject to change, looking into options other than swiping)***
-    const renderPeople = ({item}) => {
-        return (
-            <Pressable key={item.id} onPress={() => goToPerson(item.id)}>
-                <View style={stylesLight.peopleContainer}>
-                    <Image source={require('../images/photo.png')} style={stylesLight.peoplePhoto}/>
-                    <View style={stylesLight.infoContainer}>
-                        <Text style={stylesLight.name}>{item.personName}</Text>
-                        <Text style={stylesLight.relationship}>{item.relationship}</Text>
-                    </View>                
-                </View>
-            </Pressable>            
-        ) 
-    }
-
-    //Rendering of hidden button behind tile that deletes the log and on the other side it edits it ***(Subject to change, looking into options other than swiping)***
-    const hiddenRender = (data, rowmap) => {
-        return (
-            <View style={stylesLight.hiddenItems}>
-                <Pressable style={stylesLight.deleteContainer} onPress={() => deleteWarning(data.item)}>
-                    <Text style={stylesLight.deleteText}>Delete</Text>
-                </Pressable>
-                <Pressable style={stylesLight.editContainer} onPress={() => triggerEditing(data.item)}>
-                    <Text style={stylesLight.editText}>Edit</Text>
-                </Pressable>
-            </View>
-        )
+        setAction(false);
     }
 
     //Delete the item from the user's information
-    const deleteItem = (itemID) => {
+    const deleteItem = (item) => {
         const usersReVamp = users.map((user, index) => {
             if (user.idnum === localUser) {
-                const newLogs = user.logs.filter((log) => log.id !== itemID);
+                const newLogs = user.logs.filter((log) => log.id !== item.id);
                 return {
                     ...user,
                     logs: newLogs
@@ -121,11 +98,11 @@ function PeopleLogs() {
     }
 
     //Edits the item and replaces the original that needs to be changed at the correct index
-    const editItem = (itemID) => {
+    const editItem = (item) => {
         const usersReVamp = users.map((user, index) => {
             if (user.idnum === localUser) {
                 const newLogs = user.logs;
-                newLogs.splice(itemID, 1, {...user.logs[user.logs.findIndex((log) => log.id === itemID)], personName: personName, relationship: personRelationship});
+                newLogs.splice(user.logs.findIndex((log) => log.id === item.id), 1, {...user.logs[user.logs.findIndex((log) => log.id === item.id)], personName: personName, relationship: personRelationship, image: image});
                 return {
                     ...user,
                     logs: newLogs
@@ -144,24 +121,53 @@ function PeopleLogs() {
         setPersonRelationship("");
     }
 
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+        });
+
+        console.log(result);
+
+        if (!result.canceled) {
+            setImage(result.assets[0].uri);
+        }
+    };
+
+    const singleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(1).onStart(() => {
+        goToPerson(item)
+    }).runOnJS(true);
+    const doubleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(2).onStart((event) => {
+        setItem(item);
+        setTapPosition({x: event.absoluteX , y: event.absoluteY})
+        setAction(true);
+    }).runOnJS(true);
+
     return (
         <SafeAreaView style={stylesLight.container}>
-            <LinearGradient colors={["#ffffff", "#aaaaaa"]} style={stylesLight.contentContainer}>
+            <LinearGradient colors={gradientColours} style={stylesLight.contentContainer}>
                 <View style={stylesLight.headerContainer}>
                     <Pressable onPress={() => router.navigate("/home")} style={stylesLight.back}>
-                        <Text style={stylesLight.backText}>Home</Text>
+                        <Octicons name="home" size={25} color={'#585858'}/>
                     </Pressable>
-                    <Text style={stylesLight.header}>PEOPLE</Text>
+                    <Text style={stylesLight.header}>People</Text>
                     <Pressable onPress={() => setAddPerson(true)}  style={stylesLight.add}>
-                        <Text style={stylesLight.addIcon}>Add</Text>
+                        <Octicons name="plus" size={25} color={'#585858'}/>
                     </Pressable>
                 </View>
-                <SwipeListView data={localUserInfo[0] && localUserInfo[0].logs.filter((log) => log.type === "People")} 
-                    renderItem={renderPeople} 
-                    renderHiddenItem={hiddenRender}
-                    rightOpenValue={-100}
-                    leftOpenValue={100}
-                />
+                {localUserInfo[0] && localUserInfo[0].logs.filter((log) => log.type === "People").map((person) => (
+                    <GestureDetector key={person.id} gesture={Gesture.Exclusive(doubleTap(person), singleTap(person.id))}>
+                        <View style={stylesLight.peopleContainer}>
+                            <Image source={{uri: person.image}} style={stylesLight.peoplePhoto}/>
+                            <View style={stylesLight.infoContainer}>
+                                <Text style={stylesLight.name}>{person.personName}</Text>
+                                <Text style={stylesLight.relationship}>{person.relationship}</Text>
+                            </View>                
+                        </View>
+                    </GestureDetector>
+                ))}
                 {addPerson ? (
                     <View style={stylesLight.overLay}>
                         <View style={stylesLight.addPersonContainer}>
@@ -169,7 +175,13 @@ function PeopleLogs() {
                             <TextInput placeholder="Name..." placeholderTextColor="#9e9e9e" value={personName} onChangeText={(e) => setPersonName(e)} style={stylesLight.input} />
                             <Text style={stylesLight.heading}>Relationship:</Text>
                             <TextInput placeholder="Relationship..." placeholderTextColor="#9e9e9e" value={personRelationship} onChangeText={(e) => setPersonRelationship(e)} style={stylesLight.input} />
-                            <Pressable onPress={!editing ? addPersonBasicDetails : () => editItem(currentItemID)} style={stylesLight.click}>
+                            <View>
+                                {image !== "" ? <Image source={{uri: image}} style={stylesLight.peoplePhotoChoose}/> : <View></View>}
+                                <Pressable onPress={pickImage} style={stylesLight.click}>
+                                    <Text style={stylesLight.clickText}>{image === "" ? "Add Photo" : "Change Photo"}</Text>
+                                </Pressable>
+                            </View>                            
+                            <Pressable onPress={!editing ? addPersonBasicDetails : () => editItem(item)} style={stylesLight.click}>
                                 <Text style={stylesLight.clickText}>Done</Text>
                             </Pressable>
                         </View>
@@ -182,8 +194,8 @@ function PeopleLogs() {
                         <View style={stylesLight.warningContainer}>
                             <Text style={stylesLight.warningText}>Are you sure you want to delete this person?</Text>
                             <View style={stylesLight.buttonContainer}>
-                                <Pressable onPress={() => deleteItem(currentItemID)} style={stylesLight.deleteButt}>
-                                    <Text style={stylesLight.deleteButtText}>Delete</Text>
+                                <Pressable onPress={() => deleteItem(item)} style={stylesLight.delete}>
+                                    <Text style={stylesLight.deleteText}>Delete</Text>
                                 </Pressable>
                                 <Pressable onPress={() => setWarning(false)} style={stylesLight.click}>
                                     <Text style={stylesLight.clickText}>Cancel</Text>
@@ -191,6 +203,23 @@ function PeopleLogs() {
                             </View>                            
                         </View>
                     </View>                    
+                ) : (
+                    <View></View>
+                )}
+                {action ? (
+                    <View style={stylesLight.overLay}>
+                        <View style={[stylesLight.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
+                            <Pressable onPress={() => triggerEditing(item)} style={stylesLight.edit}>
+                                <Text style={stylesLight.editText}>Edit</Text>
+                            </Pressable>
+                            <Pressable onPress={() => deleteWarning(item)} style={stylesLight.delete}>
+                                <Text style={stylesLight.deleteText}>Delete</Text>
+                            </Pressable>
+                            <Pressable onPress={() => setAction(false)} style={stylesLight.cancel}>
+                                <Text style={stylesLight.cancelText}>Cancel</Text>
+                            </Pressable>
+                        </View>
+                    </View>
                 ) : (
                     <View></View>
                 )}
@@ -211,16 +240,12 @@ const stylesLight = StyleSheet.create({
         left: "5%",
         top: "30%"        
     },
-    backText: {
-        fontFamily: "Economica-Bold",
-        fontSize: 20,         
-    },
     headerContainer: {
         marginBottom: 20,
         marginTop: 20,
     },
     header: {
-        fontFamily: "Economica-Bold",
+        fontFamily: "PTSans-Regular",
         fontSize: 40,
         marginLeft: "auto",
         marginRight: "auto"
@@ -230,12 +255,8 @@ const stylesLight = StyleSheet.create({
         right: "5%",
         top: "30%"                   
     },
-    addIcon: {
-        fontFamily: "Economica-Bold",
-        fontSize: 20,        
-    },
     peopleContainer: {
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#e3e3e3",
         padding: 20,
         paddingTop: 15,
         paddingBottom: 15,
@@ -254,49 +275,82 @@ const stylesLight = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#323232"
     },
+    peoplePhotoChoose: {
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        borderWidth: 1,
+        borderColor: "#323232",
+        marginLeft: "auto",
+        marginRight: "auto",
+        marginTop: 5,
+        marginBottom: 5
+    },
     infoContainer: {
         marginLeft: 10
     },
     name: {
-        fontFamily: "Economica-Bold",
+        fontFamily: "PTSans-Regular",
         fontSize: 30,
         marginTop: 10
     },
     relationship: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 18,
         marginTop: 5,
     },
-    editContainer: {
-        backgroundColor: "#039464ff",
-        height: 110,
-         width: "50%",
+    edit: {
+        backgroundColor: "#1f9615ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        borderRadius: 10,
     },
     editText: {
-        fontFamily: "Sunflower-Light",
-        color: "#fff",
-        fontSize: 20,
-        textAlign: "right",
-        marginRight: 10,
-        marginTop: 45
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
     },
-    deleteContainer: {
-        backgroundColor: "#940314",
-        height: 110,
-        width: "50%",
+    delete: {
+        backgroundColor: "#be2206ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
     },
     deleteText: {
-        fontFamily: "Sunflower-Light",
-        color: "#fff",
-        fontSize: 20,
-        marginLeft: 10,
-        marginTop: 45
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
     },
-    hiddenItems: {
-        flexDirection: "row"
+    actionContainer: {
+        backgroundColor: '#e3e3e3',
+        padding: 20,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 10
+    },
+    cancelText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18
+    },
+    cancel: {
+        backgroundColor: "#f2f2f2",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
     },
     input: {
-        backgroundColor: "#fff",
+        backgroundColor: "#e3e3e3",
         borderWidth: 0.5,
         borderColor: "#4d4d4d",
         borderRadius: 10,
@@ -310,7 +364,7 @@ const stylesLight = StyleSheet.create({
         left: "5%",
         top: "10%",
         padding: 20,
-        backgroundColor: "#fff",
+        backgroundColor: "#e3e3e3",
         elevation: 5,
         borderRadius: 10,
         zIndex: 1,
@@ -325,7 +379,7 @@ const stylesLight = StyleSheet.create({
         backgroundColor: "rgba(139, 139, 139, 0.5)"
     },
     click: {
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#f2f2f2",
         marginLeft: "auto",
         marginRight: "auto",
         padding: 10,
@@ -334,7 +388,7 @@ const stylesLight = StyleSheet.create({
     },
     clickText: {
         textAlign: "center",
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 15
     },
     warningContainer: {
@@ -343,13 +397,13 @@ const stylesLight = StyleSheet.create({
         left: "5%",
         top: "20%",
         padding: 20,
-        backgroundColor: "#fff",
+        backgroundColor: "#e3e3e3",
         elevation: 5,
         borderRadius: 10,
         zIndex: 1,
     },
     warningText: {
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 20,
         textAlign: "center"
     },
@@ -357,12 +411,12 @@ const stylesLight = StyleSheet.create({
         flexDirection: "row"
     },
     heading: {
-        fontFamily: "Economica-Bold",
+        fontFamily: "PTSans-Regular",
         fontSize: 20,
         marginBottom: 5
     },
     click: {
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#f2f2f2",
         marginLeft: "auto",
         marginRight: "auto",
         padding: 10,
@@ -372,23 +426,8 @@ const stylesLight = StyleSheet.create({
     },
     clickText: {
         textAlign: "center",
-        fontFamily: "Sunflower-Light",
+        fontFamily: "Roboto-Regular",
         fontSize: 18
-    },
-    deleteButt: {
-        backgroundColor: "#940314",
-        marginLeft: "auto",
-        marginRight: "auto",
-        padding: 10,
-        elevation: 5,
-        marginTop: 10,
-        borderRadius: 10,
-    },
-    deleteButtText: {
-        textAlign: "center",
-        fontFamily: "Sunflower-Light",
-        fontSize: 18,
-        color: "#fff"
     },
 });
 
