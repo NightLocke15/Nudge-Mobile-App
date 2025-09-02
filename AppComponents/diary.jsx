@@ -139,40 +139,40 @@ function Diary(props) {
         }).runOnJS(true);
 
     return (
-        <LinearGradient style={stylesLight.contentContainer} colors={gradientColours}>
-            <View style={stylesLight.headerContainer}>
-                <Pressable onPress={() => router.dismissTo('/logs/diaryLogs')} style={stylesLight.back}>
-                    <Octicons name="arrow-left" size={25} color={'#585858'}/>
+        <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>
+            <View style={currentTheme.includes("Light") ? stylesLight.headerContainer : stylesDark.headerContainer}>
+                <Pressable onPress={() => router.dismissTo('/logs/diaryLogs')} style={currentTheme.includes("Light") ? stylesLight.back : stylesDark.back}>
+                    <Octicons name="arrow-left" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                 </Pressable>  
-                <View style={stylesLight.headingContainer}>
+                <View style={currentTheme.includes("Light") ? stylesLight.headingContainer : stylesDark.headingContainer}>
                     <GestureDetector gesture={Gesture.Exclusive(doubleTap())}>
-                        <Text style={stylesLight.header}>{localUserInfo[0].logs[id].name}</Text>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.header : stylesDark.header}>{localUserInfo[0].logs[id].name}</Text>
                     </GestureDetector>                        
-                    <Text style={stylesLight.logDate}>{localUserInfo[0].logs[id].date}</Text>
-                    <View style={stylesLight.save}>
-                        <Text style={stylesLight.saveText}>{saving ? "Saving..." : "Saved!"}</Text>
+                    <Text style={currentTheme.includes("Light") ? stylesLight.logDate : stylesDark.logDate}>{localUserInfo[0].logs[id].date}</Text>
+                    <View style={currentTheme.includes("Light") ? stylesLight.save : stylesDark.save}>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.saveText : stylesDark.saveText}>{saving ? "Saving..." : "Saved!"}</Text>
                     </View> 
                 </View> 
-                <Pressable onPress={() => setAddOptions(true)} style={stylesLight.add}>
-                    <Octicons name="plus" size={25} color={'#585858'}/>
+                <Pressable onPress={() => setAddOptions(true)} style={currentTheme.includes("Light") ? stylesLight.add : stylesDark.add}>
+                    <Octicons name="plus" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                 </Pressable>            
             </View>    
             {localUserInfo[0] && localUserInfo[0].logs[id].images !== undefined ? (
-                <View style={stylesLight.imagesContainer}>  
-                    {localUserInfo[0] && localUserInfo[0].logs[id].images.map((image) => (<Image key={image.id} source={{ uri: image.uri }} style={stylesLight.image} />))}
+                <View style={currentTheme.includes("Light") ? stylesLight.imagesContainer : stylesDark.imagesContainer}>  
+                    {localUserInfo[0] && localUserInfo[0].logs[id].images.map((image) => (<Image key={image.id} source={{ uri: image.uri }} style={currentTheme.includes("Light") ? stylesLight.image : stylesDark.image} />))}
                 </View>
             ) : (
                 <View></View>
             )}
             
                                 
-            <TextInput multiline placeholder="Enter Log..." value={text} onChangeText={(e) => setText(e)} style={stylesLight.noteInput}/>
+            <TextInput multiline placeholder="Enter Log..." placeholderTextColor={"#9e9e9e"} value={text} onChangeText={(e) => setText(e)} style={currentTheme.includes("Light") ? stylesLight.noteInput : stylesDark.noteInput}/>
             {nameEdit ? (
-                <View style={stylesLight.overLay}>
-                    <View style={stylesLight.editNameContainer}>
-                        <TextInput placeholder="Name..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setName(e)} value={name} maxLength={15} style={stylesLight.input}/>
-                        <Pressable onPress={editName} style={stylesLight.click}>
-                            <Text style={stylesLight.clickText}>Done</Text>
+                <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <View style={currentTheme.includes("Light") ? stylesLight.editNameContainer : stylesDark.editNameContainer}>
+                        <TextInput placeholder="Name..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setName(e)} value={name} maxLength={15} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input}/>
+                        <Pressable onPress={editName} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
                         </Pressable>
                     </View>
                 </View>
@@ -180,16 +180,16 @@ function Diary(props) {
                 <View></View>
             )}
             {addOptions ? (
-                <View style={stylesLight.overLay}>
-                    <View style={stylesLight.optionsContainer}>
-                        <Pressable onPress={pickImage} style={stylesLight.click}>
-                            <Text style={stylesLight.clickText}>Image</Text>
+                <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <View style={currentTheme.includes("Light") ? stylesLight.optionsContainer : stylesDark.optionsContainer}>
+                        <Pressable onPress={pickImage} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Image</Text>
                         </Pressable>
-                        <Pressable style={stylesLight.click}>
-                            <Text style={stylesLight.clickText}>Voice Note</Text>
+                        <Pressable style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Voice Note</Text>
                         </Pressable>
-                        <Pressable onPress={() => setAddOptions(false)} style={stylesLight.click}>
-                            <Text style={stylesLight.clickText}>Cancel</Text>
+                        <Pressable onPress={() => setAddOptions(false)} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Cancel</Text>
                         </Pressable>
                     </View>
                 </View>
@@ -197,13 +197,13 @@ function Diary(props) {
                 <View></View>
             )}
             {action ? (
-                <View style={stylesLight.overLay}>
-                    <View style={[stylesLight.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
-                        <Pressable onPress={activateEditing} style={stylesLight.edit}>
-                            <Text style={stylesLight.editText}>Edit</Text>
+                <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
+                        <Pressable onPress={activateEditing} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                         </Pressable>
-                        <Pressable onPress={() => setAction(false)} style={stylesLight.cancel}>
-                            <Text style={stylesLight.cancelText}>Cancel</Text>
+                        <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>Cancel</Text>
                         </Pressable>
                     </View>
                 </View>
@@ -229,6 +229,7 @@ const stylesLight = StyleSheet.create({
     },
     header: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 40,
         marginLeft: "auto",
         marginRight: "auto"
@@ -239,12 +240,14 @@ const stylesLight = StyleSheet.create({
     },
     saveText: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 20,      
         marginLeft: "auto",
         marginRight: "auto"  
     },
     logDate: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 16,
         marginTop: 2,
         marginLeft: "auto",
@@ -255,10 +258,12 @@ const stylesLight = StyleSheet.create({
         marginLeft: "auto",
         marginRight: "auto",
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 18
     },
     input: {
         backgroundColor: "#e3e3e3",
+        color: "#242424",
         borderWidth: 0.5,
         borderColor: "#4d4d4d",
         borderRadius: 10,
@@ -297,6 +302,7 @@ const stylesLight = StyleSheet.create({
     clickText: {
         textAlign: "center",
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 18
     },
     imagesContainer: {
@@ -357,6 +363,161 @@ const stylesLight = StyleSheet.create({
     cancelText: {
         textAlign: "center",
         fontFamily: "Roboto-Regular",
+        color: "#242424",
+        fontSize: 18
+    },
+});
+
+const stylesDark = StyleSheet.create({
+    contentContainer: {
+        flex: 1
+    },
+    back: {
+        position: "absolute",
+        left: "5%",
+        top: "30%"        
+    },
+    headerContainer: {
+        marginBottom: 20,
+        marginTop: 20,
+    },
+    header: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 40,
+        marginLeft: "auto",
+        marginRight: "auto"
+    },
+    headingContainer: {
+        marginLeft: "auto",
+        marginRight: "auto"
+    },
+    saveText: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 20,      
+        marginLeft: "auto",
+        marginRight: "auto"  
+    },
+    logDate: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 16,
+        marginTop: 2,
+        marginLeft: "auto",
+        marginRight: "auto"
+    },
+    noteInput: {
+        width: "95%",
+        marginLeft: "auto",
+        marginRight: "auto",
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 18
+    },
+    input: {
+        backgroundColor: "#2b2b2b",
+        color: "#e3e3e3",
+        borderWidth: 0.5,
+        borderColor: "#4d4d4d",
+        borderRadius: 10,
+        padding: 10,
+        elevation: 5
+    },
+    editNameContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "10%",
+        padding: 20,
+        backgroundColor: "#2b2b2b",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1
+    },
+    overLay: {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        right: 0,
+        left: 0,
+        flex: 1,
+        backgroundColor: "rgba(139, 139, 139, 0.5)"
+    },
+    click: {
+        backgroundColor: "#3a3a3a",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    clickText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 18
+    },
+    imagesContainer: {
+        flexDirection: "row",
+        flexWrap: 'wrap',
+        justifyContent: "space-between",
+        padding: 10,
+    },
+    image: {
+        width: 175,
+        height: 175,
+        marginBottom: 10,
+        borderRadius: 10,
+    },
+    add: {
+        position: "absolute",
+        right: "5%",
+        top: "30%"
+    },
+    optionsContainer: {
+        backgroundColor: "#2b2b2b",
+        position: "absolute",
+        padding: 20,
+        borderRadius: 10,
+        bottom: 0,
+        width: "100%"
+    },
+    actionContainer: {
+        backgroundColor: '#2b2b2b',
+        padding: 20,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 10
+    },
+    edit: {
+        backgroundColor: "#1f9615ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        borderRadius: 10,
+    },
+    editText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    cancel: {
+        backgroundColor: "#3a3a3a",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    cancelText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
         fontSize: 18
     },
 });

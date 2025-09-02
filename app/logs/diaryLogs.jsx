@@ -117,34 +117,34 @@ function DiaryLogs() {
     }).runOnJS(true);
 
     return (
-        <SafeAreaView style={stylesLight.container}>
-            <LinearGradient style={stylesLight.contentContainer} colors={gradientColours}>
-                <View style={stylesLight.headerContainer}>
-                    <Pressable onPress={() => router.navigate("/home")} style={stylesLight.back}>
-                        <Octicons name="home" size={25} color={'#585858'}/>
+        <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
+            <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>
+                <View style={currentTheme.includes("Light") ? stylesLight.headerContainer : stylesDark.headerContainer}>
+                    <Pressable onPress={() => router.navigate("/home")} style={currentTheme.includes("Light") ? stylesLight.back : stylesDark.back}>
+                        <Octicons name="home" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                     </Pressable>
-                    <Text style={stylesLight.header}>Diary</Text>
-                    <Pressable onPress={addLog} style={stylesLight.add}>
-                        <Octicons name="plus" size={25} color={'#585858'}/>
+                    <Text style={currentTheme.includes("Light") ? stylesLight.header : stylesDark.header}>Diary</Text>
+                    <Pressable onPress={addLog} style={currentTheme.includes("Light") ? stylesLight.add : stylesDark.add}>
+                        <Octicons name="plus" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                     </Pressable>
                 </View>  
-                <View style={stylesLight.diaryLogContainer}>
+                <View style={currentTheme.includes("Light") ? stylesLight.diaryLogContainer : stylesDark.diaryLogContainer}>
                     {localUserInfo[0] && localUserInfo[0].logs.filter((log) => log.type === "Diary").map((log) => (
                         <GestureDetector key={log.id} gesture={Gesture.Exclusive(doubleTap(log), singleTap(log.id))}>
-                            <View style={stylesLight.logContainer}>
-                                <Text style={stylesLight.logName}>{log.name}</Text>
-                                <Text style={stylesLight.logDate}>{log.date}</Text>
-                                <Text numberOfLines={5} ellipsizeMode="tail" style={stylesLight.logText}>{log.text}</Text>
+                            <View style={currentTheme.includes("Light") ? stylesLight.logContainer : stylesDark.logContainer}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.logName : stylesDark.logName}>{log.name}</Text>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.logDate : stylesDark.logDate}>{log.date}</Text>
+                                <Text numberOfLines={5} ellipsizeMode="tail" style={currentTheme.includes("Light") ? stylesLight.logText : stylesDark.logText}>{log.text}</Text>
                             </View>
                         </GestureDetector>
                     ))}
                 </View>
                 {editing ? (
-                    <View style={stylesLight.overLay}>
-                        <View style={stylesLight.editNameContainer}>
-                            <TextInput placeholder="Name..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setLogName(e)} value={logName} maxLength={15} style={stylesLight.input} />
-                            <Pressable onPress={editLogName} style={stylesLight.done}>
-                                <Text style={stylesLight.doneText}>Done</Text>
+                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                        <View style={currentTheme.includes("Light") ? stylesLight.editNameContainer : stylesDark.editNameContainer}>
+                            <TextInput placeholder="Name..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setLogName(e)} value={logName} maxLength={15} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
+                            <Pressable onPress={editLogName} style={currentTheme.includes("Light") ? stylesLight.done : stylesDark.done}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.doneText : stylesDark.doneText}>Done</Text>
                             </Pressable>
                         </View>
                     </View>                    
@@ -152,16 +152,16 @@ function DiaryLogs() {
                     <View></View>
                 )}
                 {action ? (
-                    <View style={stylesLight.overLay}>
-                        <View style={[stylesLight.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
-                            <Pressable onPress={() => triggerEditing(item)} style={stylesLight.edit}>
-                                <Text style={stylesLight.editText}>Edit</Text>
+                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                        <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
+                            <Pressable onPress={() => triggerEditing(item)} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                             </Pressable>
-                            <Pressable onPress={() => deleteLog(item)} style={stylesLight.delete}>
-                                <Text style={stylesLight.deleteText}>Delete</Text>
+                            <Pressable onPress={() => deleteLog(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                             </Pressable>
-                            <Pressable onPress={() => setAction(false)} style={stylesLight.cancel}>
-                                <Text style={stylesLight.cancelText}>Cancel</Text>
+                            <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>Cancel</Text>
                             </Pressable>
                         </View>
                     </View>
@@ -191,6 +191,7 @@ const stylesLight = StyleSheet.create({
     },
     header: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 40,
         marginLeft: "auto",
         marginRight: "auto"
@@ -217,12 +218,14 @@ const stylesLight = StyleSheet.create({
     },
     logName: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 21,
         paddingLeft: 10,
         paddingTop: 8
     },
     logText: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 13,
         paddingLeft: 10,
         paddingRight: 10,
@@ -230,12 +233,14 @@ const stylesLight = StyleSheet.create({
     },
     logDate: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         paddingLeft: 10,
         fontSize: 16,
         marginTop: 2
     },
     input: {
         backgroundColor: "#e3e3e3",
+        color: "#242424",
         borderWidth: 0.5,
         borderColor: "#4d4d4d",
         borderRadius: 10,
@@ -274,6 +279,7 @@ const stylesLight = StyleSheet.create({
     doneText: {
         textAlign: "center",
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 18
     },
     edit: {
@@ -315,10 +321,173 @@ const stylesLight = StyleSheet.create({
     cancelText: {
         textAlign: "center",
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 18
     },
     cancel: {
         backgroundColor: "#f2f2f2",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+})
+
+const stylesDark = StyleSheet.create({
+    container: {
+        flex: 1
+    },
+    contentContainer: {
+        flex: 1
+    },
+    back: {
+        position: "absolute",
+        left: "5%",
+        top: "30%"        
+    },
+    headerContainer: {
+        marginBottom: 20,
+        marginTop: 20,
+    },
+    header: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 40,
+        marginLeft: "auto",
+        marginRight: "auto"
+    },
+    add: {        
+        position: "absolute",
+        right: "5%",
+        top: "30%"                   
+    },
+    diaryLogContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: "space-between",
+        width: "90%",
+        alignSelf: "center"
+    },
+    logContainer: {
+        backgroundColor: "#2b2b2b",
+        elevation: 5,
+        borderRadius: 10,
+        marginBottom: 10,
+        height: 150,
+        width: "45%",
+    },
+    logName: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 21,
+        paddingLeft: 10,
+        paddingTop: 8
+    },
+    logText: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 13,
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingTop: 6
+    },
+    logDate: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        paddingLeft: 10,
+        fontSize: 16,
+        marginTop: 2
+    },
+    input: {
+        backgroundColor: "#2b2b2b",
+        color: "#e3e3e3",
+        borderWidth: 0.5,
+        borderColor: "#000000",
+        borderRadius: 10,
+        padding: 10,
+        elevation: 5
+    },
+    editNameContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "10%",
+        padding: 20,
+        backgroundColor: "#2b2b2b",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1
+    },
+    overLay: {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        right: 0,
+        left: 0,
+        flex: 1,
+        backgroundColor: "rgba(139, 139, 139, 0.5)"
+    },
+    done: {
+        backgroundColor: "#3a3a3a",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    doneText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 18
+    },
+    edit: {
+        backgroundColor: "#1f9615ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        borderRadius: 10,
+    },
+    editText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    delete: {
+        backgroundColor: "#be2206ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    deleteText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    actionContainer: {
+        backgroundColor: '#2b2b2b',
+        padding: 20,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 10
+    },
+    cancelText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 18
+    },
+    cancel: {
+        backgroundColor: "#3a3a3a",
         marginLeft: "auto",
         marginRight: "auto",
         padding: 10,

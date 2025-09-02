@@ -77,35 +77,35 @@ function CreateAccount() {
     }
 
     return (
-        <SafeAreaView style={stylesLight.container}>
-            <LinearGradient style={stylesLight.contentContainer} colors={gradientColours}>                
-                <View style={stylesLight.headerContainer}>
-                    <Text style={stylesLight.header}>Welcome!</Text>
+        <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
+            <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>                
+                <View style={currentTheme.includes("Light") ? stylesLight.headerContainer : stylesDark.headerContainer}>
+                    <Text style={currentTheme.includes("Light") ? stylesLight.header : stylesDark.header}>Welcome!</Text>
                 </View>                
-                <View style={stylesLight.formContainer}>
+                <View style={currentTheme.includes("Light") ? stylesLight.formContainer : stylesDark.formContainer}>
                     <View>
-                        <Text style={stylesLight.label}>Username</Text>
-                        <TextInput style={stylesLight.input} placeholder="Username..." placeholderTextColor="#9e9e9e" onChangeText={(e) => checkUsername(e)}/>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.label : stylesDark.label}>Username</Text>
+                        <TextInput style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} placeholder="Username..." placeholderTextColor="#9e9e9e" onChangeText={(e) => checkUsername(e)}/>
                     </View>
                     <View>
-                        <Text style={stylesLight.label}>Email Address</Text>
-                        <TextInput style={stylesLight.input} placeholder="Email Address..." placeholderTextColor="#9e9e9e" onChangeText={(e) => checkEmail(e)}/>
-                        <Text style={stylesLight.message}>{emailMessage}</Text>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.label : stylesDark.label}>Email Address</Text>
+                        <TextInput style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} placeholder="Email Address..." placeholderTextColor="#9e9e9e" onChangeText={(e) => checkEmail(e)}/>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.message : stylesDark.message}>{emailMessage}</Text>
                     </View>
                     <View>
-                        <Text style={stylesLight.label}>Password</Text>
-                        <TextInput style={stylesLight.input} placeholder="Password..." placeholderTextColor="#9e9e9e" onChangeText={(e) => checkPasssword(e)}/>
-                        <Text style={stylesLight.passwordMessage}>Password should contain at least 8 characters, 1 number and 1 special character.</Text>
-                        <Text style={stylesLight.message}>{passwordMessage}</Text>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.label : stylesDark.label}>Password</Text>
+                        <TextInput style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} placeholder="Password..." placeholderTextColor="#9e9e9e" onChangeText={(e) => checkPasssword(e)}/>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.passwordMessage : stylesDark.passwordMessage}>Password should contain at least 8 characters, 1 number and 1 special character.</Text>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.message : stylesDark.message}>{passwordMessage}</Text>
                     </View>
                 </View>     
-                <View style={stylesLight.accountContainer}>
-                    <Pressable style={stylesLight.clickable} onPress={() => createAccount(chosenUsername, chosenPassword, chosenEmail)}>
-                        <Text style={stylesLight.clickableText}>Create Account</Text>
+                <View style={currentTheme.includes("Light") ? stylesLight.accountContainer : stylesDark.accountContainer}>
+                    <Pressable style={currentTheme.includes("Light") ? stylesLight.clickable : stylesDark.clickable} onPress={() => createAccount(chosenUsername, chosenPassword, chosenEmail)}>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.clickableText : stylesDark.clickableText}>Create Account</Text>
                     </Pressable>
-                    <Text style={stylesLight.loginLabel}>Already have an Account?</Text>
+                    <Text style={currentTheme.includes("Light") ? stylesLight.loginLabel : stylesDark.loginLabel}>Already have an Account?</Text>
                     <Pressable onPress={() => router.navigate('/account/login')}>
-                        <Text style={stylesLight.loginLink}>Log In</Text>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.loginLink : stylesDark.loginLink}>Log In</Text>
                     </Pressable>
                 </View>                                     
             </LinearGradient>            
@@ -128,6 +128,7 @@ const stylesLight = StyleSheet.create({
     },
     header: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 70
     },
     formContainer: {
@@ -137,12 +138,14 @@ const stylesLight = StyleSheet.create({
     },
     label: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 18,
         marginTop: 20
     },
     input: {
         border: 0.5,
         borderColor: "#4d4d4d",
+        color: "#242424",
         borderRadius: 10,
         height: 40,
         padding: 5,
@@ -161,6 +164,7 @@ const stylesLight = StyleSheet.create({
     },
     passwordMessage: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 12,
         marginLeft: "auto",
         marginRight: "auto",
@@ -181,11 +185,103 @@ const stylesLight = StyleSheet.create({
     },
     clickableText: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 18,
         textAlign: "center"
     },
     loginLabel: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
+        fontSize: 18
+    },
+    loginLink: {
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: "#1966ff",
+        textDecorationLine: "underline",
+        textAlign: "center"
+    }
+});
+
+const stylesDark = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+    contentContainer: {
+        flex: 1,
+    },
+    headerContainer: {
+        marginLeft: "auto",
+        marginRight: "auto",
+        marginTop: 100,
+        marginBottom: 30
+    },
+    header: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 70
+    },
+    formContainer: {
+        flex: "20%",
+        marginLeft: 30,
+        marginRight: 30,
+    },
+    label: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 18,
+        marginTop: 20
+    },
+    input: {
+        border: 0.5,
+        borderColor: "#000000",
+        color: "#e3e3e3",
+        borderRadius: 10,
+        height: 40,
+        padding: 5,
+        width: "100%",
+        elevation: 5,
+        backgroundColor: "#2b2b2b"
+    },
+    message: {
+        flex: "3%",
+        fontFamily: "Roboto-Regular",
+        fontSize: 15,
+        marginLeft: "auto",
+        marginRight: "auto",
+        marginTop: 8,
+        color: "#e70000"
+    },
+    passwordMessage: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 12,
+        marginLeft: "auto",
+        marginRight: "auto",
+        marginTop: 10
+    },
+    accountContainer: {
+        flex: "20%",
+        marginLeft: "auto",
+        marginRight: "auto",
+        marginTop: 40
+    },
+    clickable: {
+        backgroundColor: "#3a3a3a",
+        padding: 15,
+        borderRadius: 25,
+        elevation: 5,
+        marginBottom: 15
+    },
+    clickableText: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 18,
+        textAlign: "center"
+    },
+    loginLabel: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
         fontSize: 18
     },
     loginLink: {

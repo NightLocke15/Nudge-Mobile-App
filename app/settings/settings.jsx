@@ -3,8 +3,8 @@ import { UserContext } from "@/AppContexts/UserContext";
 import { Octicons } from "@react-native-vector-icons/octicons";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from "expo-router";
-import { useContext, useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { useCallback, useContext, useState } from "react";
+import { Alert, Linking, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SelectList } from "react-native-dropdown-select-list";
 import { Pressable } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -95,6 +95,18 @@ function Settings() {
         logout();
     }
 
+    
+    const handlePress = useCallback(async () => {
+        const supported = await Linking.canOpenURL("https://lucide.dev");
+
+        if (supported) {
+            await Linking.openURL("https://lucide.dev");
+        } 
+        else {
+            Alert.alert(`Don't know how to open this URL: ${"https://lucide.dev"}`);
+        }
+    });
+
     return (
         <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
             <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>
@@ -104,7 +116,7 @@ function Settings() {
                     </Pressable>
                     <Text style={currentTheme.includes("Light") ? stylesLight.header : stylesDark.header}>Settings</Text>
                 </View>
-                <View style={currentTheme.includes("Light") ? stylesLight.settingsContainer : stylesDark.settingsContainer}>
+                <ScrollView style={currentTheme.includes("Light") ? stylesLight.settingsContainer : stylesDark.settingsContainer}>
                     <Text style={currentTheme.includes("Light") ? stylesLight.headerAccount : stylesDark.headerAccount}>Theme:</Text>
                     <View style={currentTheme.includes("Light") ? stylesLight.dropdown : stylesDark.dropdown}>
                         <SelectList 
@@ -114,6 +126,9 @@ function Settings() {
                             placeholder={currentTheme}
                             dropdownTextStyles={{color: currentTheme.includes("Light") ? "#242424" : "#e3e3e3"}}
                             inputStyles={{color: currentTheme.includes("Light") ? "#242424" : "#e3e3e3"}}
+                            arrowicon={<Octicons name="chevron-down" size={18} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>}
+                            closeicon={<Octicons name="x" size={18} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>}
+                            search={false}
                         />
                     </View>
                     <Text style={currentTheme.includes("Light") ? stylesLight.headerAccount : stylesDark.headerAccount}>Account:</Text>
@@ -152,8 +167,14 @@ function Settings() {
                     </View>  
                     <Pressable onPress={enableLogOut} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
                         <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Log Out</Text>
-                    </Pressable>                  
-                </View> 
+                    </Pressable>  
+                    <View style={currentTheme.includes("Light") ? stylesLight.legalContainer : stylesDark.legalContainer}>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.legalText : stylesDark.legalText}>Some icons by Lucide, licensed under ISC and MIT.</Text>
+                        <Pressable onPress={handlePress}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.link : stylesDark.link}>(https://lucide.dev)</Text>
+                        </Pressable>
+                    </View>
+                </ScrollView> 
                 {editing === "username" ? (
                     <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={currentTheme.includes("Light") ? stylesLight.editContainer : stylesDark.editContainer}>
@@ -328,6 +349,19 @@ const stylesLight = StyleSheet.create({
         color: "#242424",
         fontSize: 18
     },
+    legalContainer: {
+        padding: 10,
+    },
+    legalText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        color: "#242424",
+    },
+    link: {
+        color: "#1966ff",
+        textAlign: "center",
+        textDecorationLine: "underline",
+    }
 });
 
 const stylesDark = StyleSheet.create({
@@ -448,6 +482,22 @@ const stylesDark = StyleSheet.create({
         color: "#e3e3e3",
         fontSize: 18
     },
+    legalContainer: {
+        padding: 10,
+    },
+    legalText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+    },
+    button: {
+        backgroundColor: "transparent"
+    },
+    link: {
+        color: "#1966ff",
+        textAlign: "center",
+        textDecorationLine: "underline",
+    }
 });
 
 export default Settings;

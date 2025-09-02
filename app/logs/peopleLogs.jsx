@@ -146,43 +146,43 @@ function PeopleLogs() {
     }).runOnJS(true);
 
     return (
-        <SafeAreaView style={stylesLight.container}>
-            <LinearGradient colors={gradientColours} style={stylesLight.contentContainer}>
-                <View style={stylesLight.headerContainer}>
-                    <Pressable onPress={() => router.navigate("/home")} style={stylesLight.back}>
-                        <Octicons name="home" size={25} color={'#585858'}/>
+        <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
+            <LinearGradient colors={gradientColours} style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer}>
+                <View style={currentTheme.includes("Light") ? stylesLight.headerContainer : stylesDark.headerContainer}>
+                    <Pressable onPress={() => router.navigate("/home")} style={currentTheme.includes("Light") ? stylesLight.back : stylesDark.back}>
+                        <Octicons name="home" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                     </Pressable>
-                    <Text style={stylesLight.header}>People</Text>
-                    <Pressable onPress={() => setAddPerson(true)}  style={stylesLight.add}>
-                        <Octicons name="plus" size={25} color={'#585858'}/>
+                    <Text style={currentTheme.includes("Light") ? stylesLight.header : stylesDark.header}>People</Text>
+                    <Pressable onPress={() => setAddPerson(true)}  style={currentTheme.includes("Light") ? stylesLight.add : stylesDark.add}>
+                        <Octicons name="plus" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                     </Pressable>
                 </View>
                 {localUserInfo[0] && localUserInfo[0].logs.filter((log) => log.type === "People").map((person) => (
                     <GestureDetector key={person.id} gesture={Gesture.Exclusive(doubleTap(person), singleTap(person.id))}>
-                        <View style={stylesLight.peopleContainer}>
-                            <Image source={{uri: person.image}} style={stylesLight.peoplePhoto}/>
-                            <View style={stylesLight.infoContainer}>
-                                <Text style={stylesLight.name}>{person.personName}</Text>
-                                <Text style={stylesLight.relationship}>{person.relationship}</Text>
+                        <View style={currentTheme.includes("Light") ? stylesLight.peopleContainer : stylesDark.peopleContainer}>
+                            <Image source={{uri: person.image}} style={currentTheme.includes("Light") ? stylesLight.peoplePhoto : stylesDark.peoplePhoto}/>
+                            <View style={currentTheme.includes("Light") ? stylesLight.infoContainer : stylesDark.infoContainer}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.name : stylesDark.name}>{person.personName}</Text>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.relationship : stylesDark.relationship}>{person.relationship}</Text>
                             </View>                
                         </View>
                     </GestureDetector>
                 ))}
                 {addPerson ? (
-                    <View style={stylesLight.overLay}>
-                        <View style={stylesLight.addPersonContainer}>
-                            <Text style={stylesLight.heading}>Person Name:</Text>
-                            <TextInput placeholder="Name..." placeholderTextColor="#9e9e9e" value={personName} onChangeText={(e) => setPersonName(e)} style={stylesLight.input} />
-                            <Text style={stylesLight.heading}>Relationship:</Text>
-                            <TextInput placeholder="Relationship..." placeholderTextColor="#9e9e9e" value={personRelationship} onChangeText={(e) => setPersonRelationship(e)} style={stylesLight.input} />
+                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                        <View style={currentTheme.includes("Light") ? stylesLight.addPersonContainer : stylesDark.addPersonContainer}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.heading : stylesDark.heading}>Person Name:</Text>
+                            <TextInput placeholder="Name..." placeholderTextColor="#9e9e9e" value={personName} onChangeText={(e) => setPersonName(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
+                            <Text style={currentTheme.includes("Light") ? stylesLight.heading : stylesDark.heading}>Relationship:</Text>
+                            <TextInput placeholder="Relationship..." placeholderTextColor="#9e9e9e" value={personRelationship} onChangeText={(e) => setPersonRelationship(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
                             <View>
-                                {image !== "" ? <Image source={{uri: image}} style={stylesLight.peoplePhotoChoose}/> : <View></View>}
-                                <Pressable onPress={pickImage} style={stylesLight.click}>
-                                    <Text style={stylesLight.clickText}>{image === "" ? "Add Photo" : "Change Photo"}</Text>
+                                {image !== "" ? <Image source={{uri: image}} style={currentTheme.includes("Light") ? stylesLight.peoplePhotoChoose : stylesDark.peoplePhotoChoose}/> : <View></View>}
+                                <Pressable onPress={pickImage} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>{image === "" ? "Add Photo" : "Change Photo"}</Text>
                                 </Pressable>
                             </View>                            
-                            <Pressable onPress={!editing ? addPersonBasicDetails : () => editItem(item)} style={stylesLight.click}>
-                                <Text style={stylesLight.clickText}>Done</Text>
+                            <Pressable onPress={!editing ? addPersonBasicDetails : () => editItem(item)} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
                             </Pressable>
                         </View>
                     </View>                    
@@ -190,15 +190,15 @@ function PeopleLogs() {
                     <View></View>
                 )}
                 {warning ? (
-                    <View style={stylesLight.overLay}>
-                        <View style={stylesLight.warningContainer}>
-                            <Text style={stylesLight.warningText}>Are you sure you want to delete this person?</Text>
-                            <View style={stylesLight.buttonContainer}>
-                                <Pressable onPress={() => deleteItem(item)} style={stylesLight.delete}>
-                                    <Text style={stylesLight.deleteText}>Delete</Text>
+                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                        <View style={currentTheme.includes("Light") ? stylesLight.warningContainer : stylesDark.warningContainer}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.warningText : stylesDark.warningText}>Are you sure you want to delete this person?</Text>
+                            <View style={currentTheme.includes("Light") ? stylesLight.buttonContainer : stylesDark.buttonContainer}>
+                                <Pressable onPress={() => deleteItem(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                                 </Pressable>
-                                <Pressable onPress={() => setWarning(false)} style={stylesLight.click}>
-                                    <Text style={stylesLight.clickText}>Cancel</Text>
+                                <Pressable onPress={() => setWarning(false)} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Cancel</Text>
                                 </Pressable>
                             </View>                            
                         </View>
@@ -207,16 +207,16 @@ function PeopleLogs() {
                     <View></View>
                 )}
                 {action ? (
-                    <View style={stylesLight.overLay}>
-                        <View style={[stylesLight.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
-                            <Pressable onPress={() => triggerEditing(item)} style={stylesLight.edit}>
-                                <Text style={stylesLight.editText}>Edit</Text>
+                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                        <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
+                            <Pressable onPress={() => triggerEditing(item)} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                             </Pressable>
-                            <Pressable onPress={() => deleteWarning(item)} style={stylesLight.delete}>
-                                <Text style={stylesLight.deleteText}>Delete</Text>
+                            <Pressable onPress={() => deleteWarning(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                             </Pressable>
-                            <Pressable onPress={() => setAction(false)} style={stylesLight.cancel}>
-                                <Text style={stylesLight.cancelText}>Cancel</Text>
+                            <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>Cancel</Text>
                             </Pressable>
                         </View>
                     </View>
@@ -246,6 +246,7 @@ const stylesLight = StyleSheet.create({
     },
     header: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 40,
         marginLeft: "auto",
         marginRight: "auto"
@@ -291,11 +292,13 @@ const stylesLight = StyleSheet.create({
     },
     name: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 30,
         marginTop: 10
     },
     relationship: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 18,
         marginTop: 5,
     },
@@ -338,6 +341,7 @@ const stylesLight = StyleSheet.create({
     cancelText: {
         textAlign: "center",
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 18
     },
     cancel: {
@@ -351,6 +355,7 @@ const stylesLight = StyleSheet.create({
     },
     input: {
         backgroundColor: "#e3e3e3",
+        color: "#242424",
         borderWidth: 0.5,
         borderColor: "#4d4d4d",
         borderRadius: 10,
@@ -389,6 +394,7 @@ const stylesLight = StyleSheet.create({
     clickText: {
         textAlign: "center",
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 15
     },
     warningContainer: {
@@ -404,6 +410,7 @@ const stylesLight = StyleSheet.create({
     },
     warningText: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 20,
         textAlign: "center"
     },
@@ -412,6 +419,7 @@ const stylesLight = StyleSheet.create({
     },
     heading: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 20,
         marginBottom: 5
     },
@@ -427,6 +435,219 @@ const stylesLight = StyleSheet.create({
     clickText: {
         textAlign: "center",
         fontFamily: "Roboto-Regular",
+        color: "#242424",
+        fontSize: 18
+    },
+});
+
+const stylesDark = StyleSheet.create({
+    container: {
+        flex: 1
+    },
+    contentContainer: {
+        flex: 1
+    },
+    back: {
+        position: "absolute",
+        left: "5%",
+        top: "30%"        
+    },
+    headerContainer: {
+        marginBottom: 20,
+        marginTop: 20,
+    },
+    header: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 40,
+        marginLeft: "auto",
+        marginRight: "auto"
+    },
+    add: {        
+        position: "absolute",
+        right: "5%",
+        top: "30%"                   
+    },
+    peopleContainer: {
+        backgroundColor: "#2b2b2b",
+        padding: 20,
+        paddingTop: 15,
+        paddingBottom: 15,
+        width: "100%",
+        marginLeft: "auto",
+        marginRight: "auto",
+        borderBottomWidth: 1,
+        borderBottomColor: "#9e9e9e", 
+        flexDirection: "row",
+        height: 110
+    },
+    peoplePhoto: {
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        borderWidth: 1,
+        borderColor: "#9e9e9e"
+    },
+    peoplePhotoChoose: {
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        borderWidth: 1,
+        borderColor: "#9e9e9e",
+        marginLeft: "auto",
+        marginRight: "auto",
+        marginTop: 5,
+        marginBottom: 5
+    },
+    infoContainer: {
+        marginLeft: 10
+    },
+    name: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 30,
+        marginTop: 10
+    },
+    relationship: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 18,
+        marginTop: 5,
+    },
+    edit: {
+        backgroundColor: "#1f9615ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        borderRadius: 10,
+    },
+    editText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    delete: {
+        backgroundColor: "#be2206ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    deleteText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    actionContainer: {
+        backgroundColor: '#2b2b2b',
+        padding: 20,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 10
+    },
+    cancelText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 18
+    },
+    cancel: {
+        backgroundColor: "#3a3a3a",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    input: {
+        backgroundColor: "#2b2b2b",
+        color: "#e3e3e3",
+        borderWidth: 0.5,
+        borderColor: "#000000",
+        borderRadius: 10,
+        padding: 10,
+        elevation: 5,
+        marginBottom: 5,
+    },
+    addPersonContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "10%",
+        padding: 20,
+        backgroundColor: "#2b2b2b",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1,
+    },
+    overLay: {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        right: 0,
+        left: 0,
+        flex: 1,
+        backgroundColor: "rgba(139, 139, 139, 0.5)"
+    },
+    click: {
+        backgroundColor: "#3a3a3a",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        borderRadius: 10,
+    },
+    clickText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 15
+    },
+    warningContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "20%",
+        padding: 20,
+        backgroundColor: "#2b2b2b",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1,
+    },
+    warningText: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 20,
+        textAlign: "center"
+    },
+    buttonContainer: {
+        flexDirection: "row"
+    },
+    heading: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 20,
+        marginBottom: 5
+    },
+    click: {
+        backgroundColor: "#3a3a3a",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    clickText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
         fontSize: 18
     },
 });

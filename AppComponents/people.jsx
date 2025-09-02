@@ -223,7 +223,8 @@ function People(props) {
                 })
                 return {
                     ...user,
-                    logs: newLogs
+                    logs: newLogs,
+                    events: [...user.events, {id: uuidv4(), eventName: `${user.logs[id].personName}'s Birthday!`, type: "Birthday", date: currDate}]
                 }
             }   
             else {
@@ -249,76 +250,76 @@ function People(props) {
     }
 
     return (
-        <LinearGradient style={stylesLight.contentContainer} colors={gradientColours}>            
-            <View style={stylesLight.headerContainer}>
+        <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>            
+            <View style={currentTheme.includes("Light") ? stylesLight.headerContainer : stylesDark.headerContainer}>
                 <Pressable onPress={() => router.dismissTo("/logs/peopleLogs")} style={stylesLight.back}>
-                    <Octicons name="arrow-left" size={25} color={'#585858'}/>
+                    <Octicons name="arrow-left" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                 </Pressable>
-                <Text style={stylesLight.header}>{localUserInfo[0] && localUserInfo[0].logs[id].personName}</Text>
+                <Text style={currentTheme.includes("Light") ? stylesLight.header : stylesDark.header}>{localUserInfo[0] && localUserInfo[0].logs[id].personName}</Text>
             </View>
             <ScrollView>
-                <Image source={{uri: localUserInfo[0] && localUserInfo[0].logs[id].image}} style={stylesLight.peoplePhoto}/>
-                <View style={stylesLight.infoContainer}>
-                    <Text style={stylesLight.heading}>Name: </Text>
-                    <View style={stylesLight.miniContainer}>
-                        <Text style={stylesLight.text}>{localUserInfo[0] && localUserInfo[0].logs[id].personName}</Text>
-                        <Pressable onPress={() => triggerEditing(localUserInfo[0] && localUserInfo[0].logs[id].personName, "personName")} style={stylesLight.clickOther}>
-                            <Text>Edit</Text>
+                <Image source={{uri: localUserInfo[0] && localUserInfo[0].logs[id].image}} style={currentTheme.includes("Light") ? stylesLight.peoplePhoto : stylesDark.peoplePhoto}/>
+                <View style={currentTheme.includes("Light") ? stylesLight.infoContainer : stylesDark.infoContainer}>
+                    <Text style={currentTheme.includes("Light") ? stylesLight.heading : stylesDark.heading}>Name: </Text>
+                    <View style={currentTheme.includes("Light") ? stylesLight.miniContainer : stylesDark.miniContainer}>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.text : stylesDark.text}>{localUserInfo[0] && localUserInfo[0].logs[id].personName}</Text>
+                        <Pressable onPress={() => triggerEditing(localUserInfo[0] && localUserInfo[0].logs[id].personName, "personName")} style={currentTheme.includes("Light") ? stylesLight.clickOther : stylesDark.clickOther}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Edit</Text>
                         </Pressable>
                     </View>                
-                    <Text style={stylesLight.heading}>Relationship: </Text>
-                    <View style={stylesLight.miniContainer}>
-                        <Text style={stylesLight.text}>{localUserInfo[0] && localUserInfo[0].logs[id].relationship}</Text>
-                        <Pressable onPress={() => triggerEditing(localUserInfo[0] && localUserInfo[0].logs[id].relationship, "relationship")} style={stylesLight.clickOther}>
-                            <Text>Edit</Text>
+                    <Text style={currentTheme.includes("Light") ? stylesLight.heading : stylesDark.heading}>Relationship: </Text>
+                    <View style={currentTheme.includes("Light") ? stylesLight.miniContainer : stylesDark.miniContainer}>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.text : stylesDark.text}>{localUserInfo[0] && localUserInfo[0].logs[id].relationship}</Text>
+                        <Pressable onPress={() => triggerEditing(localUserInfo[0] && localUserInfo[0].logs[id].relationship, "relationship")} style={currentTheme.includes("Light") ? stylesLight.clickOther : stylesDark.clickOther}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Edit</Text>
                         </Pressable>
                     </View>                
-                    <Text style={stylesLight.heading}>Birthday: </Text> 
-                    <View style={stylesLight.miniContainer}>
-                        <Text style={stylesLight.text}>{localUserInfo[0] && localUserInfo[0].logs[id].birthday === "" ? "" : `${localUserInfo[0].logs[id].birthday.substring(8)} ${month[localUserInfo[0].logs[id].birthday.substring(6,7) - 1]}`}</Text>
-                        <Pressable onPress={showDatePicker} style={stylesLight.clickOther}>
-                            <Text>Edit</Text>
+                    <Text style={currentTheme.includes("Light") ? stylesLight.heading : stylesDark.heading}>Birthday: </Text> 
+                    <View style={currentTheme.includes("Light") ? stylesLight.miniContainer : stylesDark.miniContainer}>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.text : stylesDark.text}>{localUserInfo[0] && localUserInfo[0].logs[id].birthday === "" ? "" : `${localUserInfo[0].logs[id].birthday.substring(8)} ${month[localUserInfo[0].logs[id].birthday.substring(6,7) - 1]}`}</Text>
+                        <Pressable onPress={showDatePicker} style={currentTheme.includes("Light") ? stylesLight.clickOther : stylesDark.clickOther}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Edit</Text>
                         </Pressable>
                     </View>    
-                    <Text style={stylesLight.heading}>Number:</Text>
-                    <View style={stylesLight.miniHeaderContainer}>
-                        <Text style={stylesLight.text}>{localUserInfo[0] && localUserInfo[0].logs[id].number}</Text>
-                        <Pressable onPress={() => triggerEditing(localUserInfo[0] && localUserInfo[0].logs[id].number, "number")} style={stylesLight.clickOther}>
-                            <Text>Edit</Text>
+                    <Text style={currentTheme.includes("Light") ? stylesLight.heading : stylesDark.heading}>Number:</Text>
+                    <View style={currentTheme.includes("Light") ? stylesLight.miniHeaderContainer : stylesDark.miniHeaderContainer}>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.text : stylesDark.text}>{localUserInfo[0] && localUserInfo[0].logs[id].number}</Text>
+                        <Pressable onPress={() => triggerEditing(localUserInfo[0] && localUserInfo[0].logs[id].number, "number")} style={currentTheme.includes("Light") ? stylesLight.clickOther : stylesDark.clickOther}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Edit</Text>
                         </Pressable>
                     </View>
-                    <View style={stylesLight.miniHeaderContainer}>
-                        <Text style={stylesLight.heading}>Likes: </Text>
-                        <Pressable onPress={() => triggerAdd("likes")} style={stylesLight.clickOther}>
-                            <Text>Edit</Text>
+                    <View style={currentTheme.includes("Light") ? stylesLight.miniHeaderContainer : stylesDark.miniHeaderContainer}>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.heading : stylesDark.heading}>Likes: </Text>
+                        <Pressable onPress={() => triggerAdd("likes")} style={currentTheme.includes("Light") ? stylesLight.clickOther : stylesDark.clickOther}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Edit</Text>
                         </Pressable>
                     </View>    
                     {localUserInfo[0] && localUserInfo[0].logs[id].likes.map((like) => (
                         <View key={like.id}>
-                            <Text style={[stylesLight.text, {marginBottom: 10}]}>- {like.item}</Text>
+                            <Text style={[currentTheme.includes("Light") ? stylesLight.text : stylesDark.text, {marginBottom: 10}]}>- {like.item}</Text>
                         </View>
                     ))}   
-                    <View style={stylesLight.miniHeaderContainer}>
-                        <Text style={stylesLight.heading}>Dislikes: </Text>
-                        <Pressable onPress={() => triggerAdd("dislikes")} style={stylesLight.clickOther}>
-                            <Text>Edit</Text>
+                    <View style={currentTheme.includes("Light") ? stylesLight.miniHeaderContainer : stylesDark.miniHeaderContainer}>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.heading : stylesDark.heading}>Dislikes: </Text>
+                        <Pressable onPress={() => triggerAdd("dislikes")} style={currentTheme.includes("Light") ? stylesLight.clickOther : stylesDark.clickOther}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Edit</Text>
                         </Pressable>
                     </View>                
                     {localUserInfo[0] && localUserInfo[0].logs[id].dislikes.map((like) => (
                         <View key={like.id}>
-                            <Text style={[stylesLight.text, {marginBottom: 10}]}>- {like.item}</Text>
+                            <Text style={[currentTheme.includes("Light") ? stylesLight.text : stylesDark.text, {marginBottom: 10}]}>- {like.item}</Text>
                         </View>
                     ))} 
-                    <Text style={stylesLight.heading}>Notes: </Text>
-                    <TextInput placeholder="Add a Note..." placeholderTextColor="#9e9e9e" multiline value={text} onChangeText={(e) => setText(e)} />
+                    <Text style={currentTheme.includes("Light") ? stylesLight.heading : stylesDark.heading}>Notes: </Text>
+                    <TextInput placeholder="Add a Note..." placeholderTextColor="#9e9e9e" multiline value={text} onChangeText={(e) => setText(e)} style={{color: "#e3e3e3", fontSize: 16, fontFamily: "Roboto-Regular"}} />
                 </View>                  
             </ScrollView>
             {editing ? (
-                <View style={stylesLight.overLay}>
-                    <View style={stylesLight.editContainer}>
-                        <TextInput  placeholder="Type..." placeholderTextColor="#9e9e9e" value={singleElement} onChangeText={(e) => setSingleElement(e)} style={stylesLight.input}/>
-                        <Pressable onPress={() => editSingleElement(singleElement, toEdit)} style={stylesLight.click}>
-                            <Text style={stylesLight.clickText}>Done</Text>
+                <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <View style={currentTheme.includes("Light") ? stylesLight.editContainer : stylesDark.editContainer}>
+                        <TextInput  placeholder="Type..." placeholderTextColor="#9e9e9e" value={singleElement} onChangeText={(e) => setSingleElement(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input}/>
+                        <Pressable onPress={() => editSingleElement(singleElement, toEdit)} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
                         </Pressable>
                     </View>
                 </View>
@@ -326,26 +327,26 @@ function People(props) {
                 <View></View>
             )}   
             {adding ? (
-                <View style={stylesLight.overLay}>
-                    <View style={stylesLight.editContainer}>
+                <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <View style={currentTheme.includes("Light") ? stylesLight.editContainer : stylesDark.editContainer}>
                         {listToAdd && listToAdd.map((like) => (
                             <View key={like.id}>
-                                <View>
-                                    <Text style={[stylesLight.text, {marginBottom: 10}]}>- {like.item}</Text>
-                                </View>
-                                <Pressable onPress={() => deleteFromList(like.id)}>
-                                    <Text>Delete</Text>
-                                </Pressable>
+                                <View  style={currentTheme.includes("Light") ? stylesLight.listView : stylesDark.listView}>
+                                    <Text style={[currentTheme.includes("Light") ? stylesLight.text : stylesDark.text, {marginBottom: 10}]}>- {like.item}</Text>
+                                    <Pressable onPress={() => deleteFromList(like.id)} style={currentTheme.includes("Light") ? stylesLight.clickOther : stylesDark.clickOther}>
+                                        <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Delete</Text>
+                                    </Pressable>
+                                </View>                                
                             </View>
                         ))} 
-                        <View style={stylesLight.addContainer}>
-                            <TextInput  placeholder="Type..." placeholderTextColor="#9e9e9e" multiline value={listItem} onChangeText={(e) => setListItem(e)} style={[stylesLight.input, {width: "80%"}]}/>
+                        <View style={currentTheme.includes("Light") ? stylesLight.addContainer : stylesDark.addContainer}>
+                            <TextInput  placeholder="Type..." placeholderTextColor="#9e9e9e" multiline value={listItem} onChangeText={(e) => setListItem(e)} style={[currentTheme.includes("Light") ? stylesLight.input : stylesDark.input, {width: "80%"}]}/>
                             <Pressable onPress={addListItems}>
-                                <Text style={[stylesLight.clickText, stylesLight.click]}>Add</Text>
+                                <Text style={[currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText, currentTheme.includes("Light") ? stylesLight.click : stylesDark.click]}>Add</Text>
                             </Pressable>
                         </View>                        
-                        <Pressable onPress={() => addToList(sectionAdding)} style={stylesLight.click}>
-                            <Text style={stylesLight.clickText}>Done</Text>
+                        <Pressable onPress={() => addToList(sectionAdding)} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
                         </Pressable>
                     </View>
                 </View>
@@ -372,6 +373,7 @@ const stylesLight = StyleSheet.create({
     },
     header: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 40,
         marginLeft: "auto",
         marginRight: "auto"
@@ -385,6 +387,7 @@ const stylesLight = StyleSheet.create({
     },
     heading: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 22,
         marginBottom: 5
     },
@@ -400,6 +403,7 @@ const stylesLight = StyleSheet.create({
     },
     text: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 16,
     },
     miniHeaderContainer: {
@@ -447,10 +451,12 @@ const stylesLight = StyleSheet.create({
     clickText: {
         textAlign: "center",
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 15
     },
     input: {
-        backgroundColor: "#fff",
+        backgroundColor: "#e3e3e3",
+        color: "#242424",
         borderWidth: 0.5,
         borderColor: "#4d4d4d",
         borderRadius: 10,
@@ -459,6 +465,126 @@ const stylesLight = StyleSheet.create({
         marginBottom: 10,
     },
     addContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between"
+    },
+    listView: {
+        flexDirection: "row",
+        justifyContent: "space-between"
+    }
+})
+
+const stylesDark = StyleSheet.create({
+    contentContainer: {
+        flex: 1,
+    },
+    back: {
+        position: "absolute",
+        left: "5%",
+        top: "30%"        
+    },
+    headerContainer: {
+        marginBottom: 20,
+        marginTop: 20,
+    },
+    header: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 40,
+        marginLeft: "auto",
+        marginRight: "auto"
+    },
+    peoplePhoto: {
+        height: 150,
+        width: 150,
+        borderRadius: 75,
+        marginLeft: "auto",
+        marginRight: "auto",
+    },
+    heading: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 22,
+        marginBottom: 5
+    },
+    infoContainer: {
+        paddingLeft: 15,
+        paddingRight: 15,
+        paddingTop: 10
+    },
+    miniContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginBottom: 10
+    },
+    text: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 16,
+    },
+    miniHeaderContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
+    editContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "10%",
+        padding: 20,
+        backgroundColor: "#2b2b2b",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1,
+    },
+    overLay: {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        right: 0,
+        left: 0,
+        flex: 1,
+        backgroundColor: "rgba(139, 139, 139, 0.5)"
+    },
+    click: {
+        backgroundColor: "#3a3a3a",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        borderRadius: 10,
+    },
+    clickOther: {
+        backgroundColor: "#3a3a3a",
+        paddingTop: 5,
+        paddingBottom: 5,
+        paddingLeft: 10,
+        paddingRight: 10,
+        elevation: 5,
+        borderRadius: 15,
+        marginBottom: 10
+    },
+    clickText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 15
+    },
+    input: {
+        backgroundColor: "#2b2b2b",
+        color: "#e3e3e3",
+        borderWidth: 0.5,
+        borderColor: "#4d4d4d",
+        borderRadius: 10,
+        padding: 10,
+        elevation: 5,
+        marginBottom: 10,
+    },
+    addContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between"
+    },
+    listView: {
         flexDirection: "row",
         justifyContent: "space-between"
     }

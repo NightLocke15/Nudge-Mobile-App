@@ -1,17 +1,17 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { useColorScheme } from "react-native";
 import { UserContext } from "./UserContext";
 
 export const ThemeContext = createContext();
 
 function ThemeProvider({children}) {
     const { authenticated, localUserInfo, localUser, users, setUsers } = useContext(UserContext);
+    const phoneTheme = useColorScheme();
 
     const [currentTheme, setCurrentTheme] = useState("Light - Gradient")
 
     useEffect(() => {
-        if (authenticated) {
-            setCurrentTheme(localUserInfo[0].preferredTheme);
-        }
+        setCurrentTheme(phoneTheme === "light" ? "Light - Gradient" : "Dark - Gradient");
     }, [])
 
     function changePrefTheme(theme) {

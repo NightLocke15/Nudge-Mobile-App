@@ -178,38 +178,38 @@ function NormalList(props) {
     const longPress = (item) => Gesture.LongPress().onEnd(() => completeListItem(item.id)).runOnJS(true);
     
     return (        
-        <LinearGradient style={stylesLight.contentContainer} colors={gradientColours}>
-            <View style={stylesLight.headerContainer}>
-                <Pressable onPress={() => router.dismissTo("/to-do-list/to-do-list")} style={stylesLight.back}>
-                    <Octicons name="arrow-left" size={25} color={'#585858'}/>
+        <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>
+            <View style={currentTheme.includes("Light") ? stylesLight.headerContainer : stylesDark.headerContainer}>
+                <Pressable onPress={() => router.dismissTo("/to-do-list/to-do-list")} style={currentTheme.includes("Light") ? stylesLight.back : stylesDark.back}>
+                    <Octicons name="arrow-left" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                 </Pressable>
-                <Text style={stylesLight.header}>{localUserInfo[0].lists[id].name}</Text>
+                <Text style={currentTheme.includes("Light") ? stylesLight.header : stylesDark.header}>{localUserInfo[0].lists[id].name}</Text>
             </View>   
-            <View style={stylesLight.addContainer}>
-                <TextInput placeholder="Add List Item..." placeholderTextColor="#9e9e9e" value={listItem} onChangeText={(e) => setListItem(e)} style={stylesLight.input}/>
-                <Pressable onPress={editing ? finishEdit : addItem}  style={stylesLight.add}>
-                    {editing ? <Octicons name="check" size={25} color={'#585858'}/> : <Octicons name="plus" size={25} color={'#585858'}/>}
+            <View style={currentTheme.includes("Light") ? stylesLight.addContainer : stylesDark.addContainer}>
+                <TextInput placeholder="Add List Item..." placeholderTextColor="#9e9e9e" value={listItem} onChangeText={(e) => setListItem(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input}/>
+                <Pressable onPress={editing ? finishEdit : addItem}  style={currentTheme.includes("Light") ? stylesLight.add : stylesDark.add}>
+                    {editing ? <Octicons name="check" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/> : <Octicons name="plus" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>}
                 </Pressable>
             </View>   
             {localUserInfo[0].lists[id] && localUserInfo[0].lists[id].listItems.map((item) => (
                 <GestureDetector key={item.id} gesture={Gesture.Exclusive(doubleTap(item), longPress(item))}>
-                    <View key={item.id} style={stylesLight.listItemContainer}>
-                        <Octicons style={stylesLight.check} name={item.completed ? "check-circle" : "circle"} size={20} color={'#585858'}/>
-                        <Text style={item.completed ? stylesLight.listItemNameComplete : stylesLight.listItemNameUncomplete}>{item.item}</Text>                
+                    <View key={item.id} style={currentTheme.includes("Light") ? stylesLight.listItemContainer : stylesDark.listItemContainer}>
+                        <Octicons style={currentTheme.includes("Light") ? stylesLight.check : stylesDark.check} name={item.completed ? "check-circle" : "circle"} size={20} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
+                        <Text style={item.completed ? (currentTheme.includes("Light") ? stylesLight.listItemNameComplete : stylesDark.listItemNameComplete) : (currentTheme.includes("Light") ? stylesLight.listItemNameUncomplete : stylesDark.listItemNameUncomplete)}>{item.item}</Text>                
                     </View>
                 </GestureDetector>
             ))}
             {action ? (
-                <View style={stylesLight.overLay}>
-                    <View style={[stylesLight.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
-                        <Pressable onPress={() => editItem(item)} style={stylesLight.edit}>
-                            <Text style={stylesLight.editText}>Edit</Text>
+                <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
+                        <Pressable onPress={() => editItem(item)} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                         </Pressable>
-                        <Pressable onPress={() => deleteItem(item)} style={stylesLight.delete}>
-                            <Text style={stylesLight.deleteText}>Delete</Text>
+                        <Pressable onPress={() => deleteItem(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                         </Pressable>
-                        <Pressable onPress={() => setAction(false)} style={stylesLight.cancel}>
-                            <Text style={stylesLight.cancelText}>Cancel</Text>
+                        <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>Cancel</Text>
                         </Pressable>
                     </View>
                 </View>
@@ -230,6 +230,7 @@ const stylesLight = StyleSheet.create({
     },
     header: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 40,
         marginLeft: "auto",
         marginRight: "auto"
@@ -248,7 +249,8 @@ const stylesLight = StyleSheet.create({
         marginBottom: 10
     },
     input: {
-        backgroundColor: "#f2f2f2",
+        backgroundColor: "#e3e3e3",
+        color: "#242424",
         borderWidth: 0.5,
         borderColor: "#2b2b2b",
         borderRadius: 10,
@@ -263,7 +265,7 @@ const stylesLight = StyleSheet.create({
         borderRadius: 10,
     },
     listItemContainer: {
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#e3e3e3",
         padding: 10,
         paddingTop: 15,
         paddingBottom: 15,
@@ -276,6 +278,7 @@ const stylesLight = StyleSheet.create({
     },
     listItemNameUncomplete: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 20,
         marginLeft: 5
     },
@@ -347,6 +350,146 @@ const stylesLight = StyleSheet.create({
     cancelText: {
         textAlign: "center",
         fontFamily: "Roboto-Regular",
+        color: "#242424",
+        fontSize: 18
+    },
+    check: {
+        marginTop: "auto",
+        marginBottom: "auto"
+    }
+})
+
+const stylesDark = StyleSheet.create({
+    contentContainer: {
+        flex: 1,
+    },
+    headerContainer: {
+        marginBottom: 20,
+        marginTop: 20,
+    },
+    header: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 40,
+        marginLeft: "auto",
+        marginRight: "auto"
+    },
+    back: {
+        position: "absolute",
+        left: "5%",
+        top: "30%"        
+    },
+    addContainer: {
+        width: "95%",
+        marginLeft: "auto",
+        marginRight: "auto",
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+        marginBottom: 10
+    },
+    input: {
+        backgroundColor: "#2b2b2b",
+        borderWidth: 0.5,
+        borderColor: "#000000",
+        color: "#e3e3e3",
+        borderRadius: 10,
+        padding: 10,
+        elevation: 5,
+        flex: 10,
+    },
+    add: {
+        flex: 1,
+        marginLeft: 10,
+        padding: 10,
+        borderRadius: 10,
+    },
+    listItemContainer: {
+        backgroundColor: "#2b2b2b",
+        padding: 10,
+        paddingTop: 15,
+        paddingBottom: 15,
+        width: "100%",
+        marginLeft: "auto",
+        marginRight: "auto",
+        borderBottomWidth: 1,
+        borderBottomColor: "#9e9e9e",   
+        flexDirection: "row"
+    },
+    listItemNameUncomplete: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 20,
+        marginLeft: 5
+    },
+    listItemNameComplete: {
+        fontFamily: "Roboto-Regular",
+        fontSize: 20,
+        marginLeft: 5,
+        color: "#818181",
+        textDecorationLine: "line-through",
+    },
+    hiddenContainer: {
+        flexDirection: "row",
+        justifyContent: "space-evenly"
+    },
+    delete: {
+        backgroundColor: "#be2206ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    deleteText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    edit: {
+        backgroundColor: "#1f9615ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        borderRadius: 10,
+    },
+    editText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    overLay: {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        right: 0,
+        left: 0,
+        flex: 1,
+        backgroundColor: "rgba(139, 139, 139, 0.5)"
+    },
+    actionContainer: {
+        backgroundColor: '#2b2b2b',
+        padding: 20,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 10
+    },
+    cancel: {
+        backgroundColor: "#3a3a3a",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    cancelText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
         fontSize: 18
     },
     check: {

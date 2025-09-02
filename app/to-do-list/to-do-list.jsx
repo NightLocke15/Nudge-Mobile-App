@@ -141,37 +141,37 @@ function ToDoList() {
     // Date Accessed: 7 July 2025
     // Availability: https://medium.com/@wsvuefanatic/how-to-build-a-list-app-with-react-native-swipelistview-and-layout-animation-a3b6171faa50
     return (
-        <SafeAreaView style={stylesLight.container}>
-            <LinearGradient style={stylesLight.contentContainer} colors={gradientColours}>
-                <View style={stylesLight.headerContainer}>
-                    <Pressable onPress={() => router.navigate("/home")} style={stylesLight.back}>
-                        <Octicons name="home" size={25} color={'#585858'}/>
+        <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
+            <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>
+                <View style={currentTheme.includes("Light") ? stylesLight.headerContainer : stylesDark.headerContainer}>
+                    <Pressable onPress={() => router.navigate("/home")} style={currentTheme.includes("Light") ? stylesLight.back : stylesDark.back}>
+                        <Octicons name="home" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                     </Pressable>
-                    <Text style={stylesLight.header}>To-Do Lists</Text>
-                    <Pressable onPress={() => setChooseList(!chooseList)} style={stylesLight.add}>
-                        <Octicons name="plus" size={25} color={'#585858'}/>
+                    <Text style={currentTheme.includes("Light") ? stylesLight.header : stylesDark.header}>To-Do Lists</Text>
+                    <Pressable onPress={() => setChooseList(!chooseList)} style={currentTheme.includes("Light") ? stylesLight.add : stylesDark.add}>
+                        <Octicons name="plus" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                     </Pressable>
                 </View>   
-                <View style={stylesLight.headings}>
-                    <Text style={stylesLight.headingsTextName}>Name</Text>
-                    <Text style={stylesLight.headingsTextType}>Type</Text>
+                <View style={currentTheme.includes("Light") ? stylesLight.headings : stylesDark.headings}>
+                    <Text style={currentTheme.includes("Light") ? stylesLight.headingsTextName : stylesDark.headingsTextName}>Name</Text>
+                    <Text style={currentTheme.includes("Light") ? stylesLight.headingsTextType : stylesDark.headingsTextType}>Type</Text>
                 </View>   
                 {localUserInfo[0] && localUserInfo[0].lists.map((list) => (
                     <GestureDetector key={list.id} gesture={Gesture.Exclusive(doubleTap(list), singleTap(list.id), longPress(list.name))}>
-                        <View style={stylesLight.listItemContainer}>
-                            <View style={stylesLight.listItem}>
-                                <Text style={stylesLight.listItemName}>{list.name}</Text>
-                                <Text style={stylesLight.listItemType}>{list.type}</Text>
+                        <View style={currentTheme.includes("Light") ? stylesLight.listItemContainer : stylesDark.listItemContainer}>
+                            <View style={currentTheme.includes("Light") ? stylesLight.listItem : stylesDark.listItem}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.listItemName : stylesDark.listItemName}>{list.name}</Text>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.listItemType : stylesDark.listItemType}>{list.type}</Text>
                             </View>                            
                         </View>
                     </GestureDetector>
                 ))}           
                 {chooseList ? (
-                    <View style={stylesLight.overLay}>
-                        <View style={stylesLight.addListContainer}>
-                        <TextInput placeholder="Name your list..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setNewListName(e)} maxLength={15} style={stylesLight.input} />
-                        <Pressable onPress={newList} style={stylesLight.done}>
-                            <Text style={stylesLight.doneText}>Done</Text>
+                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                        <View style={currentTheme.includes("Light") ? stylesLight.addListContainer : stylesDark.addListContainer}>
+                        <TextInput placeholder="Name your list..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setNewListName(e)} maxLength={15} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
+                        <Pressable onPress={newList} style={currentTheme.includes("Light") ? stylesLight.done : stylesDark.done}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.doneText : stylesDark.doneText}>Done</Text>
                         </Pressable>
                         </View>
                     </View>                
@@ -181,23 +181,23 @@ function ToDoList() {
                 {warning === "" ? (
                     <View></View>
                 ) : (
-                    <View style={stylesLight.overLay}>
-                        <View style={stylesLight.warningContainer}>
-                        <Text style={stylesLight.warningText}>{warning}</Text>
-                        <Pressable onPress={() => setWarning("")} style={stylesLight.okay}>
-                            <Text style={stylesLight.okayText}>Okay</Text>
+                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                        <View style={currentTheme.includes("Light") ? stylesLight.warningContainer : stylesDark.warningContainer}>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.warningText : stylesDark.warningText}>{warning}</Text>
+                        <Pressable onPress={() => setWarning("")} style={currentTheme.includes("Light") ? stylesLight.okay : stylesDark.okay}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.okayText : stylesDark.okayText}>Okay</Text>
                         </Pressable>
                         </View>
                     </View>                    
                 )}
                 {action ? (
-                    <View style={stylesLight.overLay}>
-                        <View style={[stylesLight.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
-                            <Pressable onPress={() => deleteItem(item)} style={stylesLight.delete}>
-                                <Text style={stylesLight.deleteText}>Delete</Text>
+                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                        <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
+                            <Pressable onPress={() => deleteItem(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                             </Pressable>
-                            <Pressable onPress={() => setAction(false)} style={stylesLight.cancel}>
-                                <Text style={stylesLight.cancelText}>Cancel</Text>
+                            <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>Cancel</Text>
                             </Pressable>
                         </View>
                     </View>
@@ -227,6 +227,7 @@ const stylesLight = StyleSheet.create({
     },
     header: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 40,
         marginLeft: "auto",
         marginRight: "auto"
@@ -238,6 +239,7 @@ const stylesLight = StyleSheet.create({
     },
     input: {
         backgroundColor: "#e3e3e3",
+        color: "#242424",
         borderWidth: 0.5,
         borderColor: "#4d4d4d",
         borderRadius: 10,
@@ -276,6 +278,7 @@ const stylesLight = StyleSheet.create({
     doneText: {
         textAlign: "center",
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 18
     },
     warningContainer: {
@@ -309,6 +312,7 @@ const stylesLight = StyleSheet.create({
     okayText: {
         textAlign: "center",
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 18
     },
     listItemContainer: {
@@ -328,11 +332,13 @@ const stylesLight = StyleSheet.create({
     },
     listItemName: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 20,
         marginLeft: 5
     },
     listItemType: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 20,
         marginRight: 5
     },
@@ -348,11 +354,13 @@ const stylesLight = StyleSheet.create({
     },
     headingsTextName: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 25,
         marginLeft: 10
     },
     headingsTextType: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 25,
         marginRight: 10
     },
@@ -381,10 +389,205 @@ const stylesLight = StyleSheet.create({
     cancelText: {
         textAlign: "center",
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 18
     },
     cancel: {
         backgroundColor: "#f2f2f2",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+});
+
+const stylesDark = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+    contentContainer: {
+        flex: 1,
+    },
+    back: {
+        position: "absolute",
+        left: "5%",
+        top: "30%"        
+    },
+    headerContainer: {
+        marginBottom: 20,
+        marginTop: 20,
+    },
+    header: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 40,
+        marginLeft: "auto",
+        marginRight: "auto"
+    },
+    add: {        
+        position: "absolute",
+        right: "5%",
+        top: "30%"                   
+    },
+    input: {
+        backgroundColor: "#2b2b2b",
+        color: "#e3e3e3",
+        borderWidth: 0.5,
+        borderColor: "#4d4d4d",
+        borderRadius: 10,
+        padding: 10,
+        elevation: 5
+    },
+    addListContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "10%",
+        padding: 20,
+        backgroundColor: "#2b2b2b",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1
+    },
+    overLay: {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        right: 0,
+        left: 0,
+        flex: 1,
+        backgroundColor: "rgba(139, 139, 139, 0.5)"
+    },
+    done: {
+        backgroundColor: "#3a3a3a",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    doneText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 18
+    },
+    warningContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "10%",
+        padding: 20,
+        backgroundColor: "#2b2b2b",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1,
+        borderWidth: 1,
+        borderColor: "#940314"
+    },
+    warningText: {
+        fontFamily: "Roboto-Regular",
+        fontSize: 20,
+        color: "#940314",
+        marginBottom: 10
+    },
+    okay: {
+        backgroundColor: "#3a3a3a",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    okayText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 18
+    },
+    listItemContainer: {
+        backgroundColor: "#2b2b2b",
+        padding: 10,
+        paddingTop: 15,
+        paddingBottom: 15,
+        width: "100%",
+        marginLeft: "auto",
+        marginRight: "auto",
+        borderBottomWidth: 1,
+        borderBottomColor: "#9e9e9e",   
+    },
+    listItem: {
+        flexDirection: "row",
+        justifyContent: "space-between"
+    },
+    listItemName: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 20,
+        marginLeft: 5
+    },
+    listItemType: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 20,
+        marginRight: 5
+    },
+    headings: {
+        width: "100%",
+        marginRight: "auto",
+        marginLeft: "auto",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        borderBottomWidth: 0.5,
+        borderBottomColor: "#9e9e9e",
+        padding: 5
+    },
+    headingsTextName: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 25,
+        marginLeft: 10
+    },
+    headingsTextType: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 25,
+        marginRight: 10
+    },
+    delete: {
+        backgroundColor: "#be2206ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    deleteText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    actionContainer: {
+        backgroundColor: '#2b2b2b',
+        padding: 20,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 10
+    },
+    cancelText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 18
+    },
+    cancel: {
+        backgroundColor: "#3a3a3a",
         marginLeft: "auto",
         marginRight: "auto",
         padding: 10,

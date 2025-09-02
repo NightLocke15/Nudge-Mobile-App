@@ -393,7 +393,12 @@ function MedicationLogs() {
 
     function viewImage(item) {
         setViewImg(true);
-        setItem(item)
+        setImage(item.image);
+    }
+
+    function closeImage() {
+        setViewImg(false);
+        setImage("");
     }
 
     const doubleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(2).onStart((event) => {
@@ -403,48 +408,48 @@ function MedicationLogs() {
     }).runOnJS(true);
 
     return (
-        <SafeAreaView style={stylesLight.container}>
-            <LinearGradient colors={gradientColours} style={stylesLight.contentContainer}>
-                <View style={stylesLight.headerContainer}>
-                    <Pressable onPress={() => router.navigate("/home")} style={stylesLight.back}>
-                        <Octicons name="home" size={25} color={'#585858'}/>
+        <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
+            <LinearGradient colors={gradientColours} style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer}>
+                <View style={currentTheme.includes("Light") ? stylesLight.headerContainer : stylesDark.headerContainer}>
+                    <Pressable onPress={() => router.navigate("/home")} style={currentTheme.includes("Light") ? stylesLight.back : stylesDark.back}>
+                        <Octicons name="home" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                     </Pressable>
-                    <Text style={stylesLight.header}>Medication</Text>
-                    <Pressable onPress={() => setCreateEntry(true)} style={stylesLight.add}>
-                        <Octicons name="plus" size={25} color={'#585858'}/>
+                    <Text style={currentTheme.includes("Light") ? stylesLight.header : stylesDark.header}>Medication</Text>
+                    <Pressable onPress={() => setCreateEntry(true)} style={currentTheme.includes("Light") ? stylesLight.add : stylesDark.add}>
+                        <Octicons name="plus" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                     </Pressable>
                 </View>  
                 {localUserInfo[0] && localUserInfo[0].logs.filter((log) => log.type === "Medication").map((med) => (
                     <GestureDetector key={med.id} gesture={Gesture.Exclusive(doubleTap(med))}>
-                        <View style={stylesLight.medicationContainer}>
-                            <View style={stylesLight.nameDose}>
+                        <View style={currentTheme.includes("Light") ? stylesLight.medicationContainer : stylesDark.medicationContainer}>
+                            <View style={currentTheme.includes("Light") ? stylesLight.nameDose : stylesDark.nameDose}>
                                 <Pressable onPress={() => viewImage(med)}>
-                                    {med.image !== "" ? <Image source={{uri: med.image}} style={stylesLight.pillImage}/> : <Image source={""} style={stylesLight.pillImage}/>}
+                                    {med.image !== "" ? <Image source={{uri: med.image}} style={currentTheme.includes("Light") ? stylesLight.pillImage : stylesDark.pillImage}/> : <Image source={""} style={currentTheme.includes("Light") ? stylesLight.pillImage : stylesDark.pillImage}/>}
                                 </Pressable>                                
-                                <View style={stylesLight.nameContainer}>
-                                    <Text style={stylesLight.name}>{med.name}</Text>
-                                    <Text style={stylesLight.dosage}>{med.dosage}</Text>
+                                <View style={currentTheme.includes("Light") ? stylesLight.nameContainer : stylesDark.nameContainer}>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.name : stylesDark.name}>{med.name}</Text>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.dosage : stylesDark.dosage}>{med.dosage}</Text>
                                 </View>
                             </View>                                
-                            <View style={stylesLight.fetching}>
+                            <View style={currentTheme.includes("Light") ? stylesLight.fetching : stylesDark.fetching}>
                                 <View>
-                                    <Text style={stylesLight.nextFetchText}>Fetch: </Text>
-                                    <Text style={stylesLight.nextFetchTime}>{med.nextFetchDate.toLocaleDateString()}</Text>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.nextFetchText : stylesDark.nextFetchText}>Fetch: </Text>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.nextFetchTime : stylesDark.nextFetchTime}>{med.nextFetchDate.toLocaleDateString()}</Text>
                                 </View>                      
                                 {med.nextFetchDate.getDate() === todayDate.getDate() ? 
                                 (<Pressable onPress={() => fetchMeds(med.id)}>
-                                    <Text style={stylesLight.clickable}>Fetched</Text>
+                                    <Octicons name="check-circle" size={40} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'} style={currentTheme.includes("Light") ? stylesLight.checkButton : stylesDark.checkButton}/>
                                 </Pressable>) : 
                                 (<View></View>)}  
-                                <View style={stylesLight.doseContainer}>
-                                    <View style={stylesLight.nextDose}>
-                                        <Text style={stylesLight.nextDoseText}>{med.takeTimes.find((time) => time.taken === false) !== undefined ? "Next Dose:" : "Finished!"}</Text>
-                                        <Text style={stylesLight.nextDoseTime}>{med.takeTimes.find((time) => time.taken === false) !== undefined ? med.takeTimes.find((time) => time.taken === false).time : ""}</Text>
+                                <View style={currentTheme.includes("Light") ? stylesLight.doseContainer : stylesDark.doseContainer}>
+                                    <View style={currentTheme.includes("Light") ? stylesLight.nextDose : stylesDark.nextDose}>
+                                        <Text style={currentTheme.includes("Light") ? stylesLight.nextDoseText : stylesDark.nextDoseText}>{med.takeTimes.find((time) => time.taken === false) !== undefined ? "Next Dose:" : "Finished!"}</Text>
+                                        <Text style={currentTheme.includes("Light") ? stylesLight.nextDoseTime : stylesDark.nextDoseTime}>{med.takeTimes.find((time) => time.taken === false) !== undefined ? med.takeTimes.find((time) => time.taken === false).time : ""}</Text>
                                     </View>                        
                                     {med.takeTimes.find((time) => time.taken === false) === undefined ? 
                                     (<View></View>) : 
                                     (<Pressable onPress={() => takeMeds(med.id, med.takeTimes.find((time) => time.taken === false).id)}>
-                                        <Octicons name="check-circle" size={40} color={'#585858'} style={stylesLight.checkButton}/>
+                                        <Octicons name="check-circle" size={40} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'} style={currentTheme.includes("Light") ? stylesLight.checkButton : stylesDark.checkButton}/>
                                     </Pressable>)}
                                 </View> 
                             </View>                                    
@@ -452,77 +457,87 @@ function MedicationLogs() {
                     </GestureDetector>
                 ))}
                 {createEntry ? (
-                    <View style={stylesLight.overLay}>
-                        <View style={stylesLight.addMedContainer}>
+                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                        <View style={currentTheme.includes("Light") ? stylesLight.addMedContainer : stylesDark.addMedContainer}>
                             <View>
-                                <Text style={stylesLight.formHeaders}>Medication Name</Text>
-                                <TextInput placeholder="Name..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setMedName(e)} style={stylesLight.input} />
+                                <Text style={currentTheme.includes("Light") ? stylesLight.formHeaders : stylesDark.formHeaders}>Medication Name</Text>
+                                <TextInput placeholder="Name..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setMedName(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
                             </View>
                             <View>
-                                <Text style={stylesLight.formHeaders}>Dosage</Text>
-                                <TextInput placeholder="Dose..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setDosage(e)} style={stylesLight.input} />
+                                <Text style={currentTheme.includes("Light") ? stylesLight.formHeaders : stylesDark.formHeaders}>Dosage</Text>
+                                <TextInput placeholder="Dose..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setDosage(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
                             </View>
                             <View>
-                                <Text style={stylesLight.formHeaders}>Repeats: </Text>
-                                <TextInput placeholder="Num..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setFetchRepeat(e)} style={stylesLight.input}/>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.formHeaders : stylesDark.formHeaders}>Repeats: </Text>
+                                <TextInput placeholder="Num..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setFetchRepeat(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input}/>
                             </View> 
-                            <View style={stylesLight.formFetchDate}>
+                            <View style={currentTheme.includes("Light") ? stylesLight.formFetchDate : stylesDark.formFetchDate}>
                                 <View>
-                                    <Text style={stylesLight.formHeaders}>Date of First Pick-Up: </Text>
-                                    <Text style={stylesLight.dateStyle}>{fetchDate.toLocaleDateString()}</Text>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.formHeaders : stylesDark.formHeaders}>Date of First Pick-Up: </Text>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.dateStyle : stylesDark.dateStyle}>{fetchDate.toLocaleDateString()}</Text>
                                 </View> 
                                 <View>
                                     <Pressable onPress={showFetchDatePicker}>
-                                        <Text style={stylesLight.click}>Change Date</Text>
+                                        <Text style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>Change Date</Text>
                                     </Pressable>
                                 </View>
                             </View> 
-                            <Text style={stylesLight.formHeaders}>Fetch: </Text>
-                            <View style={stylesLight.dropdown}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.formHeaders : stylesDark.formHeaders}>Fetch: </Text>
+                            <View style={currentTheme.includes("Light") ? stylesLight.dropdown : stylesDark.dropdown}>
                                 <SelectList 
                                     setSelected={(e) => setFetchOption(e)}
                                     data={repeatlist}
                                     save="value"
                                     placeholder="Choose... (eg. daily)"
+                                    dropdownTextStyles={{color: currentTheme.includes("Light") ? "#242424" : "#e3e3e3"}}
+                                    inputStyles={{color: currentTheme.includes("Light") ? "#242424" : "#e3e3e3"}}
+                                    arrowicon={<Octicons name="chevron-down" size={18} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>}
+                                    closeicon={<Octicons name="x" size={18} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>}
+                                    search={false}
                                 />
                             </View>
                             
-                            <View style={stylesLight.formFetchDate}>
+                            <View style={currentTheme.includes("Light") ? stylesLight.formFetchDate : stylesDark.formFetchDate}>
                                 <View>
-                                    <Text style={stylesLight.formHeaders}>Date of First Dose: </Text>
-                                    <Text style={stylesLight.dateStyle}>{startDate.toLocaleDateString()}</Text>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.formHeaders : stylesDark.formHeaders}>Date of First Dose: </Text>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.dateStyle : stylesDark.dateStyle}>{startDate.toLocaleDateString()}</Text>
                                 </View> 
                                 <View>
                                     <Pressable onPress={showStartDatePicker}>
-                                        <Text style={stylesLight.click}>Change Date</Text>
+                                        <Text style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>Change Date</Text>
                                     </Pressable>
                                 </View>
                             </View> 
-                            <Text style={stylesLight.formHeaders}>Take:</Text>
-                            <View style={stylesLight.dropdown}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.formHeaders : stylesDark.formHeaders}>Take:</Text>
+                            <View style={currentTheme.includes("Light") ? stylesLight.dropdown : stylesDark.dropdown}>
                                 <SelectList 
                                     setSelected={(e) => setRepeat(e)}
                                     data={repeatlist}
                                     save="value"
                                     placeholder="Choose... (eg. daily)"
+                                    dropdownTextStyles={{color: currentTheme.includes("Light") ? "#242424" : "#e3e3e3"}}
+                                    inputStyles={{color: currentTheme.includes("Light") ? "#242424" : "#e3e3e3"}}
+                                    arrowicon={<Octicons name="chevron-down" size={18} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>}
+                                    closeicon={<Octicons name="x" size={18} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>}
+                                    search={false}
                                 />
                             </View>                            
                             {times && times.map((time) => (
-                                <View key={time.id} style={stylesLight.timeStyleContainer}>
-                                    <Text style={stylesLight.timeStyle}>{time.time}</Text>
+                                <View key={time.id} style={currentTheme.includes("Light") ? stylesLight.timeStyleContainer : stylesDark.timeStyleContainer}>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.timeStyle : stylesDark.timeStyle}>{time.time}</Text>
                                     <Pressable onPress={() => removeTime(time.id)}>
-                                        <Text>Remove</Text>
+                                        <Text style={currentTheme.includes("Light") ? stylesLight.timeStyle : stylesDark.timeStyle}>Remove</Text>
                                     </Pressable>
                                 </View>                                
                             ))}
-                            <View style={stylesLight.formAddTime}>
-                                <TextInput placeholder="Time (eg. 14:00)..." placeholderTextColor="#9e9e9e" value={oneTime} onChangeText={(e) => setOneTime(e)} style={stylesLight.input} />
+                            <View style={currentTheme.includes("Light") ? stylesLight.formAddTime : stylesDark.formAddTime}>
+                                <TextInput placeholder="Time (eg. 14:00)..." placeholderTextColor="#9e9e9e" value={oneTime} onChangeText={(e) => setOneTime(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
                                 <Pressable onPress={addTime}>
-                                    <Text style={stylesLight.click}>Add Time To Take</Text>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>Add Time To Take</Text>
                                 </Pressable>
                             </View>                            
                             <Pressable onPress={addMedLog}>
-                                <Text style={[stylesLight.click, {marginTop: 5}]}>Done</Text>
+                                <Text style={[currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, {marginTop: 5}]}>Done</Text>
                             </Pressable>
                         </View>
                     </View>                    
@@ -530,16 +545,16 @@ function MedicationLogs() {
                     <View></View>
                 )}
                 {action ? (
-                    <View style={stylesLight.overLay}>
-                        <View style={[stylesLight.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
-                            <Pressable style={stylesLight.edit}>
-                                <Text style={stylesLight.editText}>Edit</Text>
+                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                        <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
+                            <Pressable style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                             </Pressable>
-                            <Pressable onPress={() => deleteItem(item)} style={stylesLight.delete}>
-                                <Text style={stylesLight.deleteText}>Delete</Text>
+                            <Pressable onPress={() => deleteItem(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                             </Pressable>
-                            <Pressable onPress={() => setAction(false)} style={stylesLight.cancel}>
-                                <Text style={stylesLight.cancelText}>Cancel</Text>
+                            <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>Cancel</Text>
                             </Pressable>
                         </View>
                     </View>
@@ -547,14 +562,14 @@ function MedicationLogs() {
                     <View></View>
                 )}
                 {viewImg ? (
-                    <View style={stylesLight.overLay}>
-                        <View style={stylesLight.viewImageContainer}> 
-                            <Pressable onPress={() => setViewImg(false)} style={stylesLight.close}>
-                                <Octicons name="x" size={30} color={'#585858'}/>
+                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                        <View style={currentTheme.includes("Light") ? stylesLight.viewImageContainer : stylesDark.viewImageContainer}> 
+                            <Pressable onPress={closeImage} style={currentTheme.includes("Light") ? stylesLight.close : stylesDark.close}>
+                                <Octicons name="x" size={30} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                             </Pressable>
-                            {image !== "" ? <Image source={{uri: image}} style={stylesLight.viewPill}/> : <Image source={""} style={stylesLight.pillImage}/>}
-                            <Pressable onPress={pickImage} style={stylesLight.cancel}>
-                                <Text style={stylesLight.cancelText}>{image === "" ? "Add" : "Change"}</Text>
+                            {image !== "" ? <Image source={{uri: image}} style={currentTheme.includes("Light") ? stylesLight.viewPill : stylesDark.viewPill}/> : <Image source={""} style={currentTheme.includes("Light") ? stylesLight.viewPill : stylesDark.viewPill}/>}
+                            <Pressable onPress={pickImage} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>{image === "" ? "Add" : "Change"}</Text>
                             </Pressable>
                         </View>
                     </View>
@@ -584,6 +599,7 @@ const stylesLight = StyleSheet.create({
     },
     header: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 40,
         marginLeft: "auto",
         marginRight: "auto"
@@ -609,11 +625,13 @@ const stylesLight = StyleSheet.create({
     },
     name: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 20,
         marginBottom: 8
     },
     dosage: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 15,
     },
     fetching: {
@@ -637,23 +655,28 @@ const stylesLight = StyleSheet.create({
         elevation: 5,
         borderRadius: 10,
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 15,
     },
     nextDoseText: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 20,
     },
     nextDoseTime: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 15,
         alignSelf: "flex-start"
     },
     nextFetchText: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 20,
     },
     nextFetchTime: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 15,
     },
     pillImage: {
@@ -671,6 +694,7 @@ const stylesLight = StyleSheet.create({
     },
     input: {
         backgroundColor: "#e3e3e3",
+        color: "#242424",
         borderWidth: 0.5,
         borderColor: "#4d4d4d",
         borderRadius: 10,
@@ -707,10 +731,12 @@ const stylesLight = StyleSheet.create({
         borderRadius: 10,
         textAlign: "center",
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 15
     },
     formHeaders: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 20,
     },
     formNameDose: {
@@ -742,10 +768,12 @@ const stylesLight = StyleSheet.create({
     },
     timeStyle: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 15
     },
     dateStyle: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 15,
         marginTop: 5 
     },
@@ -788,6 +816,7 @@ const stylesLight = StyleSheet.create({
     cancelText: {
         textAlign: "center",
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 18
     },
     cancel: {
@@ -812,6 +841,281 @@ const stylesLight = StyleSheet.create({
         top: "5%",
         padding: 20,
         backgroundColor: "#e3e3e3",
+        elevation: 5,
+        borderRadius: 10,
+    },
+    viewPill: {
+        width: 300,
+        height: 300,
+        alignSelf: "center",
+        borderRadius: 10
+    },
+    close: {
+        alignSelf: "flex-end",
+        marginBottom: 10,
+    }
+})
+
+const stylesDark = StyleSheet.create({
+    container: {
+        flex: 1
+    },
+    contentContainer: {
+        flex: 1
+    },
+    back: {
+        position: "absolute",
+        left: "5%",
+        top: "30%"        
+    },
+    headerContainer: {
+        marginBottom: 20,
+        marginTop: 20,
+    },
+    header: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 40,
+        marginLeft: "auto",
+        marginRight: "auto"
+    },
+    add: {        
+        position: "absolute",
+        right: "5%",
+        top: "30%"                   
+    },
+    medicationContainer: {
+        backgroundColor: "#2b2b2b",
+        padding: 20,
+        paddingTop: 15,
+        paddingBottom: 15,
+        width: "100%",
+        marginLeft: "auto",
+        marginRight: "auto",
+        borderBottomWidth: 1,
+        borderBottomColor: "#9e9e9e",  
+    },
+    nameDose: {
+        flexDirection: "row",
+    },
+    name: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 20,
+        marginBottom: 8
+    },
+    dosage: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 15,
+    },
+    fetching: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginTop: 10
+    },
+    nameContainer: {
+        alignSelf: "flex-start"
+    },
+    doseContainer: {
+        flexDirection: "row",
+    },
+    nextDose: {
+        alignItems: "center",
+        marginRight: 10
+    },
+    clickable: {
+        backgroundColor: "#3a3a3a",
+        padding: 10,
+        elevation: 5,
+        borderRadius: 10,
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 15,
+    },
+    nextDoseText: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 20,
+    },
+    nextDoseTime: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 15,
+        alignSelf: "flex-start"
+    },
+    nextFetchText: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 20,
+    },
+    nextFetchTime: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 15,
+    },
+    pillImage: {
+        width: 60,
+        height: 60,
+        borderWidth: 0.5,
+        borderColor: "#9e9e9e",
+        marginRight: 15,
+        borderRadius: 100
+    },
+    hiddenItems: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        height: 135,
+    },
+    input: {
+        backgroundColor: "#2b2b2b",
+        color: "#e3e3e3",
+        borderWidth: 0.5,
+        borderColor: "#000000",
+        borderRadius: 10,
+        padding: 10,
+        elevation: 5,
+        marginBottom: 5,
+    },
+    addMedContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "5%",
+        padding: 20,
+        backgroundColor: "#2b2b2b",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1,
+    },
+    overLay: {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        right: 0,
+        left: 0,
+        flex: 1,
+        backgroundColor: "rgba(139, 139, 139, 0.5)"
+    },
+    click: {
+        backgroundColor: "#3a3a3a",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        borderRadius: 10,
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 15
+    },
+    formHeaders: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 20,
+    },
+    formNameDose: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginBottom: 10
+    },
+    formFetchStuff: {
+        flexDirection: "row"
+    },
+    formAddTime: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
+    formFetchDate: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginBottom: 10
+    },
+    dropdown: {
+        marginBottom: 10,
+        marginTop: 5
+    },
+    timeStyleContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        borderBottomWidth: 0.5,
+        marginBottom:10
+    },
+    timeStyle: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 15
+    },
+    dateStyle: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 15,
+        marginTop: 5 
+    },
+    edit: {
+        backgroundColor: "#1f9615ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        borderRadius: 10,
+    },
+    editText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    delete: {
+        backgroundColor: "#be2206ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    deleteText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    actionContainer: {
+        backgroundColor: '#e3e3e3',
+        padding: 20,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 10
+    },
+    cancelText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 18
+    },
+    cancel: {
+        backgroundColor: "#3a3a3a",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    checkButton: {
+        backgroundColor: "#3a3a3a",
+        padding: 3,
+        borderRadius: 40,
+        elevation: 5,
+    },
+    viewImageContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "5%",
+        padding: 20,
+        backgroundColor: "#2b2b2b",
         elevation: 5,
         borderRadius: 10,
     },
