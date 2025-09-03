@@ -8,7 +8,7 @@ import { useContext, useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Calendar } from 'react-native-calendars';
 import { SelectList } from "react-native-dropdown-select-list";
-import { TextInput } from "react-native-gesture-handler";
+import { Gesture, GestureDetector, TextInput } from "react-native-gesture-handler";
 import 'react-native-get-random-values';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { v4 as uuidv4 } from 'uuid';
@@ -33,7 +33,36 @@ function CalendarFunc() {
     const [durationHrs, setDurationHrs] = useState('');
     const [durationMins, setDurationMins] = useState('');
 
+    const [item, setItem] = useState();
+    const [action, setAction] = useState(false);
+    const [tapPostition, setTapPosition] = useState({x: 0, y: 0})
+    const [viewEvent, setViewEvent] = useState(false);
+
     const eventTypesList = ['Birthday', 'Meeting', 'Appointment', 'Other'];
+    const arrayRange = (start, end, step = 1) => Array.from({length: end - start / step + 1}, (_, i) => start + i * step);
+    const numberRange = arrayRange(0,23);
+    const timeSlotNumbers = numberRange.map((number) => number < 10 ? `0${number}:00` : `${number}:00`)
+
+    const cardHeight = (hours, mins) => {
+        let heightAddition;
+        if (mins > 0 && mins <= 15) {
+            heightAddition = 20;
+        }
+        else if (mins > 15 && mins <= 30) {
+            heightAddition = 40;
+        }
+        else if (mins > 30 && mins <= 45) {
+            heightAddition = 60;
+        }
+        else if (mins > 45 && mins <= 60) {
+            heightAddition = 80;
+        }
+        else {
+            heightAddition = 0;
+        }
+
+        return hours === 0 && mins === 0 ? 50 : (80 * hours) + heightAddition;
+    }
 
     useEffect(() => {
         const todayDate = new Date();
@@ -99,15 +128,15 @@ function CalendarFunc() {
 
     function addEvent() {
         const usersReVamp = users.map((user, index) => {
-        if (user.idnum === localUser) {
-            return {
-                ...user,
-                events: [...user.events, {id: uuidv4(), eventName: event, type: eventType, date: selectedDay, description: eventDesc, place: place, time: time, hours: durationHrs, mins: durationMins}]
+            if (user.idnum === localUser) {
+                return {
+                    ...user,
+                    events: [...user.events, {id: uuidv4(), eventName: event, type: eventType, date: selectedDay, description: eventDesc, place: place, time: time, hours: durationHrs, mins: durationMins}]
+                }
             }
-        }
-        else {
-            return user;
-        }
+            else {
+                return user;
+            }
         });
         setUsers(usersReVamp);
         setEvent('');
@@ -121,14 +150,42 @@ function CalendarFunc() {
         setSelectedDay('');
     }
 
+    function deleteEvent(eventItem) {
+        const userRevamp = users.map((user, index) => {
+            if (user.idnum === localUser) {
+                const newEvents = user.events.filter((event) => event.id !== eventItem.id);
+                return {
+                    ...user,
+                    events: newEvents,
+                }
+            } 
+            else {
+                return user;
+            }
+        });
+        setUsers(userRevamp);
+        setAction(false);
+        setSelectedDay('');
+    }
+
+    const singleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(1).onStart(() => {
+        setItem(item);
+        setViewEvent(true);
+        }).runOnJS(true);
+    const doubleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(2).onStart((event) => {
+        setItem(item);
+        setTapPosition({x: event.absoluteX > 260 ? 260 : event.absoluteX, y: event.absoluteY > 530 ? 530 : event.absoluteY})
+        setAction(true);
+    }).runOnJS(true);
+
     return (
-        <SafeAreaView style={stylesLight.container}>
-            <LinearGradient style={stylesLight.contentContainer} colors={gradientColours}>
-                <View style={stylesLight.headerContainer}>
-                    <Pressable onPress={() => router.dismissTo("/home")} style={stylesLight.back}>
-                        <Octicons name="home" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'} style={currentTheme.includes("Light") ? stylesLight.checkButton : stylesDark.checkButton}/>
+        <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
+            <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>
+                <View style={currentTheme.includes("Light") ? stylesLight.headerContainer : stylesDark.headerContainer}>
+                    <Pressable onPress={() => router.dismissTo("/home")} style={currentTheme.includes("Light") ? stylesLight.back : stylesDark.back}>
+                        <Octicons name="home" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                     </Pressable>
-                    <Text style={stylesLight.header}>Calendar</Text>
+                    <Text style={currentTheme.includes("Light") ? stylesLight.header : stylesDark.header}>Calendar</Text>
                 </View>
                 <Calendar 
                     onDayPress={(day) => daySelect(day.dateString)}
@@ -137,60 +194,88 @@ function CalendarFunc() {
                     markedDates={dynamicDateList}
                     theme={{
                         calendarBackground: 'transparent',
-                        selectedDayBackgroundColor: '#e3e3e3',
-                        selectedDayTextColor: '#242424',
+                        selectedDayBackgroundColor: currentTheme.includes("Light") ? '#e3e3e3' : '#2b2b2b',
+                        selectedDayTextColor: currentTheme.includes("Light") ? '#242424' : '#e3e3e3',
                         todayTextColor: '#eb0b0bff',
-                        textDisabledColor: '#9e9e9e',
-                        textSectionTitleColor: '#242424',
+                        textDisabledColor: currentTheme.includes("Light") ? '#9e9e9e' : '#666666ff',
+                        textSectionTitleColor: currentTheme.includes("Light") ? '#242424' : '#e3e3e3',
                         textDayFontFamily: "Roboto-Regular",
                         textMonthFontFamily: "PTSans-Regular",
                         textDayHeaderFontFamily: "PTSans-Regular",
                         textMonthFontSize: 20,
+                        dayTextColor: currentTheme.includes("Light") ? '#242424' : '#e3e3e3',
+                        monthTextColor: currentTheme.includes("Light") ? '#242424' : '#e3e3e3',
                     }}
                     renderArrow={(dir) => (
-                        <Octicons name={dir === 'left' ? "chevron-left" : "chevron-right"} size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'} style={currentTheme.includes("Light") ? stylesLight.checkButton : stylesDark.checkButton}/>
+                        <Octicons name={dir === 'left' ? "chevron-left" : "chevron-right"} size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                     )} 
                 />
                 {selectedDay ? (
-                    <View style={stylesLight.eventsContainer}>
-                        <View style={stylesLight.eventsHeader}>
-                            <View style={stylesLight.dateContainer}>
-                                <Text style={stylesLight.dateContainerText}>{selectedDay && selectedDay === today ? 'Today' : `${selectedDay}`}</Text>
-                                <Pressable style={stylesLight.add} onPress={() => setCreating(true)}>
-                                    <Octicons name="plus" size={20} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'} style={currentTheme.includes("Light") ? stylesLight.checkButton : stylesDark.checkButton}/>
+                    <View style={currentTheme.includes("Light") ? stylesLight.eventsContainer : stylesDark.eventsContainer}>
+                        <View style={currentTheme.includes("Light") ? stylesLight.eventsHeader : stylesDark.eventsHeader}>
+                            <View style={currentTheme.includes("Light") ? stylesLight.dateContainer : stylesDark.dateContainer}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.dateContainerText : stylesDark.dateContainerText}>{selectedDay && selectedDay === today ? 'Today' : `${selectedDay}`}</Text>
+                                <Pressable style={currentTheme.includes("Light") ? stylesLight.add : stylesDark.add} onPress={() => setCreating(true)}>
+                                    <Octicons name="plus" size={20} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                                 </Pressable>
                             </View>
-                            <View style={stylesLight.weatherContainer}>
+                            <View style={currentTheme.includes("Light") ? stylesLight.weatherContainer : stylesDark.weatherContainer}>
                                 <View>
-                                    <Text style={stylesLight.weatherHeader}>Weather</Text>
-                                    <Text style={stylesLight.weatherDesc}>Ideal for short sleeves</Text>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.weatherHeader : stylesDark.weatherHeader}>Weather</Text>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.weatherDesc : stylesDark.weatherDesc}>Ideal for short sleeves</Text>
                                 </View>
-                                <View style={stylesLight.weatherContainer}>
+                                <View style={currentTheme.includes("Light") ? stylesLight.weatherContainer : stylesDark.weatherContainer}>
                                     <Lucide name="sun" size={25} color={'#f1b022ff'}/>
-                                    <Text style={stylesLight.temp}>21C</Text>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.temp : stylesDark.temp}>21C</Text>
                                 </View>                                
                             </View>
                         </View>
-                        
-                        <ScrollView>
-                            {todaysEvents.map((event) => {
+                        {todaysEvents.some((event) => event.type === "Birthday") ? (
+                            todaysEvents.map((event) => {
                                 if (event.type === "Birthday") {
                                     return (
-                                        <View key={event.id}>
-                                            <Text>{event.eventName}</Text>
+                                        <View key={event.id} style={currentTheme.includes("Light") ? stylesLight.birthdayCard : stylesDark.birthdayCard}>
+                                            <Lucide name="sparkles" size={25} color={'#eed237ff'}/>
+                                            <Text style={stylesLight.birthdayText}>{event.eventName}</Text>
+                                            <Lucide name="sparkles" size={25} color={'#eed237ff'}/>
                                         </View>
                                     )                                    
                                 }
-                                else {
-                                    return (
-                                        <View key={event.id}>
-                                            <Text>{event.eventName}</Text>
-                                            <Text>{event.time}</Text>
-                                        </View>
-                                    ) 
-                                }
-                                                                
-                            })}
+                            })
+                        ) : (
+                            <View></View>
+                        )}
+                        <ScrollView>
+                            {timeSlotNumbers.map((num) => (
+                                <View key={num} style={currentTheme.includes("Light") ? stylesLight.timeSlotContainer : stylesDark.timeSlotContainer}>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.timeSlot : stylesDark.timeSlot}>{num}</Text>
+                                    {todaysEvents.map((event) => {
+                                        if (event.time.slice(0,2) === num.slice(0,2)) {
+                                            return (
+                                                <GestureDetector  key={event.id} gesture={Gesture.Exclusive(doubleTap(event), singleTap(event))}>
+                                                    <View style={[currentTheme.includes("Light") ? stylesLight.eventCard : stylesDark.eventCard, {
+                                                        position: "absolute", 
+                                                        zIndex: 2, 
+                                                        left: 50, 
+                                                        top: Number(event.time.slice(-2)) === 0 ? 30 : Number(event.time.slice(-2)) === 15 ? 50 : Number(event.time.slice(-2)) === 30 ? 70 : 90, 
+                                                        height: cardHeight(Number(event.hours), Number(event.mins)),
+                                                        borderColor: event.type === 'Meeting' ? '#06c406ff' : event.type === 'Appointment' ? '#c4065fff' : '#c4a106ff',
+                                                    }]}>
+                                                        <Text style={currentTheme.includes("Light") ? stylesLight.eventCardText : stylesDark.eventCardText}>{event.eventName}</Text>
+                                                        <Text style={currentTheme.includes("Light") ? stylesLight.eventCardTime : stylesDark.eventCardTime}>
+                                                            {event.hours === "" ? `${event.time}` : 
+                                                            `${event.time} - ${Number(event.time.slice(0, 2)) + Number(event.hours) < 10 ? `0${Number(event.time.slice(0, 2)) + Number(event.hours)}:${event.mins === "" ? "00" : 
+                                                                `${Number(event.time.slice(-2)) + Number(event.mins) < 10 ? `0${Number(event.time.slice(-2)) + Number(event.mins)}` : `${Number(event.time.slice(-2)) + Number(event.mins)}`}`}` : 
+                                                            `${Number(event.time.slice(0, 2)) + Number(event.hours)}:${event.mins === "" ? "00" : 
+                                                                `${Number(event.time.slice(-2)) + Number(event.mins) < 10 ? `0${Number(event.time.slice(-2)) + Number(event.mins)}` : `${Number(event.time.slice(-2)) + Number(event.mins)}`}`}`}`}
+                                                        </Text>
+                                                    </View>
+                                                </GestureDetector>                                                
+                                            )
+                                        }                                          
+                                    })}
+                                </View>
+                            ))}
                         </ScrollView>
                     </View>
                 ) : (
@@ -198,33 +283,80 @@ function CalendarFunc() {
                 )}
                 
                 {creating ? (
-                    <View style={stylesLight.overLay}>
-                        <View style={stylesLight.addEventContainer}>
-                            <Text>Event</Text>
-                            <TextInput placeholder="Event Name..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setEvent(e)} style={stylesLight.input} />
-                            <Text>Event Type</Text>
-                            <View style={stylesLight.dropdown}>
+                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                        <View style={currentTheme.includes("Light") ? stylesLight.addEventContainer : stylesDark.addEventContainer}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.createHeading : stylesDark.createHeading}>Event</Text>
+                            <TextInput placeholder="Event Name..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setEvent(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
+                            <Text style={currentTheme.includes("Light") ? stylesLight.createHeading : stylesDark.createHeading}>Event Type</Text>
+                            <View style={currentTheme.includes("Light") ? stylesLight.dropdown : stylesDark.dropdown}>
                                 <SelectList 
                                     setSelected={(e) => setEventType(e)}
                                     data={eventTypesList}
                                     save="value"
                                     placeholder="Choose..."
+                                    dropdownTextStyles={{color: currentTheme.includes("Light") ? "#242424" : "#e3e3e3"}}
+                                    inputStyles={{color: currentTheme.includes("Light") ? "#242424" : "#e3e3e3"}}
+                                    arrowicon={<Octicons name="chevron-down" size={18} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>}
+                                    closeicon={<Octicons name="x" size={18} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>}
+                                    search={false}
                                 />
                             </View>
-                            <Text>Place</Text>
-                            <TextInput placeholder="Place..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setPlace(e)} style={stylesLight.input} />
-                            <Text>Time</Text>
-                            <TextInput placeholder="Time... (eg. 14:00)" placeholderTextColor="#9e9e9e" onChangeText={(e) => setTime(e)} style={stylesLight.input} />
-                            <Text>Duration</Text>
-                            <TextInput placeholder="Hours..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setDurationHrs(e)} style={stylesLight.input} />
-                            <TextInput placeholder="Minutes..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setDurationMins(e)} style={stylesLight.input} />
-                            <Text>Description</Text>
-                            <TextInput placeholder="Description..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setEventDesc(e)} style={stylesLight.input} />
-                            <Pressable style={stylesLight.done} onPress={addEvent}>
-                                <Text style={stylesLight.doneText}>Done</Text>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.createHeading : stylesDark.createHeading}>Place</Text>
+                            <TextInput placeholder="Place..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setPlace(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
+                            <Text style={currentTheme.includes("Light") ? stylesLight.createHeading : stylesDark.createHeading}>Time</Text>
+                            <TextInput placeholder="Time... (eg. 14:00)" placeholderTextColor="#9e9e9e" onChangeText={(e) => setTime(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
+                            <Text style={currentTheme.includes("Light") ? stylesLight.createHeading : stylesDark.createHeading}>Duration</Text>
+                            <TextInput placeholder="Hours..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setDurationHrs(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
+                            <TextInput placeholder="Minutes..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setDurationMins(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
+                            <Text style={currentTheme.includes("Light") ? stylesLight.createHeading : stylesDark.createHeading}>Description</Text>
+                            <TextInput placeholder="Description..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setEventDesc(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
+                            <Pressable style={currentTheme.includes("Light") ? stylesLight.done : stylesDark.done} onPress={addEvent}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.doneText : stylesDark.doneText}>Done</Text>
                             </Pressable>
                         </View>
                     </View>                    
+                ) : (
+                    <View></View>
+                )}
+                {action ? (
+                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                        <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
+                            <Pressable onPress={() => deleteEvent(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
+                            </Pressable>
+                            <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>Cancel</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                ) : (
+                    <View></View>
+                )}
+                {viewEvent ? (
+                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                        <View style={currentTheme.includes("Light") ? stylesLight.viewEvent : stylesDark.viewEvent}>
+                            <Pressable onPress={() => setViewEvent(false)} style={currentTheme.includes("Light") ? stylesLight.close : stylesDark.close}>
+                                <Octicons name="x" size={20} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'} style={currentTheme.includes("Light") ? stylesLight.checkButton : stylesDark.checkButton}/>
+                            </Pressable>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.eventHeading : stylesDark.eventHeading}>{item.eventName}</Text>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.eventText : stylesDark.eventText}>{item.date}</Text>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.eventHeading : stylesDark.eventHeading}>Place: </Text>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.eventText : stylesDark.eventText}>{item.place}</Text>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.eventHeading : stylesDark.eventHeading}>Time: </Text>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.eventText : stylesDark.eventText}>
+                                {item.hours === "" ? `${item.time}` : 
+                                `${item.time} - ${Number(item.time.slice(0, 2)) + Number(item.hours) < 10 ? `0${Number(item.time.slice(0, 2)) + Number(item.hours)}:${item.mins === "" ? "00" : 
+                                    `${Number(item.time.slice(-2)) + Number(item.mins) < 10 ? `0${Number(item.time.slice(-2)) + Number(item.mins)}` : `${Number(item.time.slice(-2)) + Number(item.mins)}`}`}` : 
+                                `${Number(item.time.slice(0, 2)) + Number(item.hours)}:${item.mins === "" ? "00" : 
+                                    `${Number(item.time.slice(-2)) + Number(item.mins) < 10 ? `0${Number(item.time.slice(-2)) + Number(item.mins)}` : `${Number(item.time.slice(-2)) + Number(item.mins)}`}`}`}`}
+                            </Text>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.eventHeading : stylesDark.eventHeading}>Description: </Text>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.eventText : stylesDark.eventText}>{item.description}</Text>
+                            <Pressable style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
+                            </Pressable>
+                        </View>
+                    </View>
                 ) : (
                     <View></View>
                 )}
@@ -258,6 +390,7 @@ const stylesLight = StyleSheet.create({
     },
     input: {
         backgroundColor: "#e3e3e3",
+        color: "#242424",
         borderWidth: 0.5,
         borderColor: "#4d4d4d",
         borderRadius: 10,
@@ -307,6 +440,7 @@ const stylesLight = StyleSheet.create({
     },
     dateContainerText: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 22,
         marginBottom: 10
     },
@@ -339,17 +473,415 @@ const stylesLight = StyleSheet.create({
     },
     weatherHeader: {
         fontFamily: "PTSans-Regular",
+        color: "#242424",
         fontSize: 18,
         marginBottom: 5
     },
     weatherDesc: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 15,
     },
     temp: {
         fontFamily: "Roboto-Regular",
+        color: "#242424",
         fontSize: 18,
         marginLeft: 10
+    }, 
+    birthdayCard: {
+        backgroundColor: "#e3e3e3",
+        margin: 5, 
+        padding: 12,
+        borderWidth: 1,
+        borderColor: "#06a1c4",
+        borderRadius: 10,
+        flexDirection: "row",
+        justifyContent: "space-around"
+    },
+    birthdayText: {
+        fontFamily: "PTSans-Regular",
+        color: "#242424",
+        fontSize: 16,
+    },
+    timeSlotContainer: {
+        padding: 10,
+        height: 80
+    },
+    timeSlot: {
+        fontFamily: "Roboto-Regular",
+        fontSize: 15,
+        color: "#7c7c7cff",
+        borderBottomColor: "#7c7c7cff",
+        borderBottomWidth: 0.5
+    },
+    eventCard: {
+        backgroundColor: "#e3e3e3",
+        padding: 10,
+        borderWidth: 1,
+        borderRadius: 10,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        width: "85%",
+        alignItems: "center"
+    },
+    eventCardText: {
+        fontFamily: "PTSans-Regular",
+        color: "#242424",
+        fontSize: 16,
+    },
+    eventCardTime: {
+        fontFamily: "PTSans-Regular",
+        color: "#242424",
+        fontSize: 16,
+    },
+    edit: {
+        backgroundColor: "#1f9615ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        borderRadius: 10,
+    },
+    editText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    delete: {
+        backgroundColor: "#be2206ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    deleteText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    actionContainer: {
+        backgroundColor: '#e3e3e3',
+        padding: 20,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 10
+    },
+    cancelText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        color: "#242424",
+        fontSize: 18
+    },
+    cancel: {
+        backgroundColor: "#f2f2f2",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    viewEvent: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "10%",
+        padding: 20,
+        backgroundColor: "#e3e3e3",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1
+    },
+    close: {
+        position: "absolute",
+        right: 10,
+        top: 10,
+    },
+    eventHeading: {
+        fontFamily: "PTSans-Regular",
+        color: "#242424",
+        fontSize: 20,
+        marginBottom: 5,
+    },
+    eventText: {
+        fontFamily: "Roboto-Regular",
+        color: "#242424",
+        fontSize: 16,
+        marginBottom: 10,
+        borderBottomColor: "#9e9e9e",
+        borderBottomWidth: 0.5,
+        paddingBottom: 10
+    },
+    createHeading: {
+        fontFamily: "PTSans-Regular",
+        color: "#242424",
+        fontSize: 20,
+        marginBottom: 5,
+        marginTop: 5,
+    }
+})
+
+const stylesDark = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+    contentContainer: {
+        flex: 1
+    },
+    back: {
+        position: "absolute",
+        left: "5%",
+        top: "30%"        
+    },
+    headerContainer: {
+        marginBottom: 20,
+        marginTop: 20,
+    },
+    header: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 40,
+        marginLeft: "auto",
+        marginRight: "auto"
+    },
+    input: {
+        backgroundColor: "#2b2b2b",
+        color: "#e3e3e3",
+        borderWidth: 0.5,
+        borderColor: "#000000",
+        borderRadius: 10,
+        padding: 10,
+        elevation: 5,
+        marginBottom: 5,
+    },
+    addEventContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "10%",
+        padding: 20,
+        backgroundColor: "#2b2b2b",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1
+    },
+    overLay: {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        right: 0,
+        left: 0,
+        flex: 1,
+        backgroundColor: "rgba(139, 139, 139, 0.5)"
+    },
+    done: {
+        backgroundColor: "#3a3a3a",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    doneText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 18
+    },
+    dateContainer: {
+        alignItems: "center",
+        borderBottomWidth: 0.5,
+        borderBottomColor: "#9e9e9e"
+    },
+    dateContainerText: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 22,
+        marginBottom: 10
+    },
+    eventsContainer: {
+        backgroundColor: "#2b2b2b",
+        width: "90%",
+        marginLeft: "auto",
+        marginRight: "auto",
+        borderRadius: 10,
+        height: 340,
+        elevation: 5
+    },
+    add: {
+        position: "absolute",
+        right: 5,
+        top: 5,
+    },
+    eventsHeader: {
+        backgroundColor: "#2b2b2b",
+        width: "100%",
+        padding: 10,        
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        elevation: 3,
+    },
+    weatherContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        padding: 5,
+    },
+    weatherHeader: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 18,
+        marginBottom: 5
+    },
+    weatherDesc: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 15,
+    },
+    temp: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 18,
+        marginLeft: 10
+    }, 
+    birthdayCard: {
+        backgroundColor: "#2b2b2b",
+        margin: 5, 
+        padding: 12,
+        borderWidth: 1,
+        borderColor: "#06a1c4",
+        borderRadius: 10,
+        flexDirection: "row",
+        justifyContent: "space-around"
+    },
+    birthdayText: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 16,
+    },
+    timeSlotContainer: {
+        padding: 10,
+        height: 80
+    },
+    timeSlot: {
+        fontFamily: "Roboto-Regular",
+        fontSize: 15,
+        color: "#7c7c7cff",
+        borderBottomColor: "#7c7c7cff",
+        borderBottomWidth: 0.5
+    },
+    eventCard: {
+        backgroundColor: "#2b2b2b",
+        padding: 10,
+        borderWidth: 1,
+        borderRadius: 10,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        width: "85%",
+        alignItems: "center"
+    },
+    eventCardText: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 16,
+    },
+    eventCardTime: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 16,
+    },
+    edit: {
+        backgroundColor: "#1f9615ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        borderRadius: 10,
+    },
+    editText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    delete: {
+        backgroundColor: "#be2206ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    deleteText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    actionContainer: {
+        backgroundColor: '#2b2b2b',
+        padding: 20,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 10
+    },
+    cancelText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 18
+    },
+    cancel: {
+        backgroundColor: "#3a3a3a",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    viewEvent: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "10%",
+        padding: 20,
+        backgroundColor: "#2b2b2b",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1
+    },
+    close: {
+        position: "absolute",
+        right: 10,
+        top: 10,
+    },
+    eventHeading: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 20,
+        marginBottom: 5,
+    },
+    eventText: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 16,
+        marginBottom: 10,
+        borderBottomColor: "#9e9e9e",
+        borderBottomWidth: 0.5,
+        paddingBottom: 10
+    },
+    createHeading: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 18,
+        marginBottom: 5,
+        marginTop: 5,
     }
 })
 

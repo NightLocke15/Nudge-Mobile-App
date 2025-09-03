@@ -370,7 +370,7 @@ function TimedList(props) {
     const singleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(1).onStart(() => viewItem(item)).runOnJS(true);
     const doubleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(2).onStart((event) => {
         setItem(item);
-        setTapPosition({x: event.absoluteX , y: event.absoluteY})
+        setTapPosition({x: event.absoluteX > 260 ? 260 : event.absoluteX, y: event.absoluteY > 530 ? 530 : event.absoluteY})
         setAction(true);
     }).runOnJS(true);
     const longPress = (item) => Gesture.LongPress().onEnd(() => completeListItem(item.id)).runOnJS(true);
