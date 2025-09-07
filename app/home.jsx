@@ -55,12 +55,12 @@ function Home() {
                         <Lucide style={currentTheme.includes("Light") ? stylesLight.icon : stylesDark.icon} name="pill" size={50} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                         <Text style={currentTheme.includes("Light") ? stylesLight.buttonText : stylesDark.buttonText}>Medication</Text>
                     </Pressable>
-                    <Pressable style={currentTheme.includes("Light") ? stylesLight.button : stylesDark.button}>
+                    <Pressable style={currentTheme.includes("Light") ? stylesLight.button : stylesDark.button} onPress={() => router.navigate('/clock/clock')}>
                         <Octicons style={currentTheme.includes("Light") ? stylesLight.icon : stylesDark.icon} name="clock" size={50} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                         <Text style={currentTheme.includes("Light") ? stylesLight.buttonText : stylesDark.buttonText}>Clock</Text>
                     </Pressable>
                 </View>  
-                <Pressable style={currentTheme.includes("Light") ? stylesLight.emergencyButton : stylesDark.emergencyButton}>
+                <Pressable style={currentTheme.includes("Light") ? stylesLight.emergencyButton : stylesDark.emergencyButton} onPress={() => router.navigate('/emergency/emergency')}>
                     <View style={currentTheme.includes("Light") ? stylesLight.redBorder : stylesDark.redBorder}>
                         <Lucide style={currentTheme.includes("Light") ? stylesLight.emergencyIcon : stylesDark.emergencyIcon} name="activity" size={50} color={'#c00f0fff'}/>
                         <Text style={currentTheme.includes("Light") ? stylesLight.emergencyButtonText : stylesDark.emergencyButtonText}>EMERGENCY</Text>

@@ -47,7 +47,8 @@ function RootLayout() {
                             <Stack.Screen name="logs/peopleLogs" />
                             <Stack.Screen name="logs/medicationLogs" />    
                             <Stack.Screen name="clock/clock" />     
-                            <Stack.Screen name="settings/settings" />                     
+                            <Stack.Screen name="settings/settings" />  
+                            <Stack.Screen name="emergency/emergency" />                     
                         </Stack>
                     </ThemeProvider>
                 </UserProvider>            
