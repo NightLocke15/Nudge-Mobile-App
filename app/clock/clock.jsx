@@ -3,17 +3,37 @@ import { UserContext } from '@/AppContexts/UserContext';
 import Octicons from '@react-native-vector-icons/octicons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import 'react-native-get-random-values';
 import { SafeAreaView } from "react-native-safe-area-context";
+import { TimerPickerModal } from "react-native-timer-picker";
 
 function Clock() {
     //Accessing user context and all the users that already exist
     const { localUser, localUserInfo, users, setUsers } = useContext(UserContext);
     const {currentTheme, gradientColours } = useContext(ThemeContext);
+    const [timerAmounts, setTimerAmounts] = useState({hours: 0, minutes: 0, seconds: 0});
+    const [showTimerPickerT, setShowTimerPickerT] = useState(false);
+    const [timerReady, setTimerReady] = useState(false);
+    const [timerRunning, setTimerRunning] = useState(false);
 
     const router = useRouter();
+
+    useEffect(() => {
+
+    }, [timerRunning])
+
+    function confirmTimer(amount) {
+        setTimerAmounts(amount);
+        setShowTimerPickerT(false);
+        if (amount.hours !== 0 || amount.minutes !== 0 || amount.seconds !== 0) {
+            setTimerReady(true);
+        }
+        else {
+            setTimerReady(false);
+        }        
+    }
     
     return (
         <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
@@ -28,7 +48,23 @@ function Clock() {
                     </Pressable>
                 </View>
                 <Text style={currentTheme.includes("Light") ? stylesLight.heading : stylesDark.heading}>Timer</Text>
-
+                <Text>{timerAmounts.hours.toString().padStart(2, "0")}:{timerAmounts.minutes.toString().padStart(2, "0")}:{timerAmounts.seconds.toString().padStart(2, "0")}</Text>
+                <Pressable onPress={() => setShowTimerPickerT(true)}>
+                    <Text>Set Timer</Text>
+                </Pressable>
+                {timerReady ? (
+                    <Pressable>
+                        <Text>Start Timer</Text>
+                    </Pressable>
+                ) : (
+                    <View></View>
+                )}
+                <Text style={currentTheme.includes("Light") ? stylesLight.heading : stylesDark.heading}>Alarms</Text>
+                <TimerPickerModal
+                visible={showTimerPickerT}
+                setIsVisible={setShowTimerPickerT}
+                onConfirm={(amount) => confirmTimer(amount)}
+                LinearGradient={LinearGradient} />
             </LinearGradient>
         </SafeAreaView>
     )
