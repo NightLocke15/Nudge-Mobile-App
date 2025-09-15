@@ -132,6 +132,8 @@ function Settings() {
                         />
                     </View>
                     <Text style={currentTheme.includes("Light") ? stylesLight.headerAccount : stylesDark.headerAccount}>Account:</Text>
+                    <Text style={currentTheme.includes("Light") ? stylesLight.subHeaderAccount : stylesDark.subHeaderAccount}>User ID:</Text>
+                    <Text style={currentTheme.includes("Light") ? stylesLight.accountInfo : stylesDark.accountInfo}>{localUserInfo[0] && localUserInfo[0].idnum}</Text>
                     <Text style={currentTheme.includes("Light") ? stylesLight.subHeaderAccount : stylesDark.subHeaderAccount}>Username:</Text>
                     <View style={currentTheme.includes("Light") ? stylesLight.accountInfoContainer : stylesDark.accountInfoContainer}>
                         <Text style={currentTheme.includes("Light") ? stylesLight.accountInfo : stylesDark.accountInfo}>{localUserInfo[0] && localUserInfo[0].username}</Text>

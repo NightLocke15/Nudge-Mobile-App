@@ -382,7 +382,7 @@ function TimedList(props) {
                     <Octicons name="arrow-left" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                 </Pressable>
                 <Text style={currentTheme.includes("Light") ? stylesLight.header : stylesDark.header}>{localUserInfo[0].lists[id].name}</Text>
-                <Text style={currentTheme.includes("Light") ? stylesLight.timeText : stylesDark.timeText}>{`${time.getHours()}:${time.getMinutes() < 10 ? `0${time.getMinutes()}` : time.getMinutes()}`}</Text>
+                <Text style={currentTheme.includes("Light") ? stylesLight.timeText : stylesDark.timeText}>{time.getHours().toString().padStart(2, "0")}:{time.getMinutes().toString().padStart(2, "0")}</Text>
             </View>   
             <View style={currentTheme.includes("Light") ? stylesLight.timeContainer : stylesDark.timeContainer}>
                 <View style={currentTheme.includes("Light") ? stylesLight.timeTextContainer : stylesDark.timeTextContainer}>

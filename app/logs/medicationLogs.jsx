@@ -52,6 +52,8 @@ function MedicationLogs() {
 
     const [viewImg, setViewImg] = useState(false);
     const [image, setImage] = useState("");
+    const [warning, setWarning] = useState(false);
+    const [editing, setEditing] = useState(false);
 
     //Use effect that resets the time every minute. This is then used to check whether a new day has started so that the dosages taken can be reset
     useEffect(() => {
@@ -323,6 +325,11 @@ function MedicationLogs() {
         setUsers(usersReVamp);
     }
 
+    function triggerDelete() {
+        setWarning(true);
+        setAction(false);
+    }
+
     //Code that deletes the correct medication entry from the user's information
     const deleteItem = (item) => {
         const userChange = users.map((user) => {
@@ -339,7 +346,7 @@ function MedicationLogs() {
         }) 
 
         setUsers(userChange);
-        setAction(false);
+        setWarning(false);
     }
 
     //Takes out a dosage time that the ueser no longer wants (can only do this when creating the medication log or when editing)
@@ -391,9 +398,92 @@ function MedicationLogs() {
         setUsers(userList);
     }
 
-    function viewImage(item) {
+    function triggerEditing() {
+        setEditing(true);
+        setAction(false);
+        setCreateEntry(true);
+        setMedName(item.name);
+        setTimes(item.takeTimes);
+        setDosage(item.dosage);
+        setRepeat(item.takeSpan);
+        setStartDate(item.start);
+        setFetchDate(item.firstPickUp);
+        setFetchOption(item.fetchOption);
+        setFetchRepeat(item.repeats);
+    }
+
+    function editMed() {
+        const usersReVamp = users.map((user, index) => {
+        if (user.idnum === localUser) {
+            const newLogs = user.logs.map((log) => {
+                if (log.id === item.id) {
+                    const next = startDate;
+                    const nextFetch = fetchDate;
+
+                    //setting the repeats of meds taken
+                    if (repeat === "Daily") {
+                        next.setDate(startDate.getDate() + 1);
+                    }
+                    else if (repeat === "Weekly") {
+                        next.setDate(startDate.getDate() + 7);
+                    }
+                    else if (repeat === "Biweekly") {
+                        next.setDate(startDate.getDate() + 14);
+                    }
+                    else if (repeat === "Monthly") {
+                        next.setDate(startDate.getDate() + 28);
+                    }
+
+                    //setting the repeat on when to fetch the medication
+                    if (fetchOption === "Daily") {
+                        nextFetch.setDate(startDate.getDate() + 1);
+                    }
+                    else if (fetchOption === "Weekly") {
+                        nextFetch.setDate(startDate.getDate() + 7);
+                    }
+                    else if (fetchOption === "Biweekly") {
+                        nextFetch.setDate(startDate.getDate() + 14);
+                    }
+                    else if (fetchOption === "Monthly") {
+                        nextFetch.setDate(startDate.getDate() + 28);
+                    }
+
+                    //adds all the information stored to a log in the user's info
+                    return {
+                        ...log,
+                        name: medName,
+                            dosage: dosage, firstPickUp: fetchDate, fetchOption: fetchOption, nextFetchDate: nextFetch, repeats: fetchRepeat, start: startDate, 
+                            takeSpan: repeat, takeTimes: times, nextDose: next
+                    }
+                }
+                else {
+                    return log;
+                }
+            })
+            return {
+                ...user,
+                logs: newLogs
+            }            
+        }
+        else {
+            return user;
+        }
+        });
+        //reset all the storage
+        setUsers(usersReVamp);
+        setCreateEntry(false);
+        setTimes([]);
+        setMedName("");
+        setDosage("");
+        setRepeat("");
+        setStartDate(new Date());
+        setFetchDate(new Date());
+    }
+
+    function viewImage(medItem) {
         setViewImg(true);
-        setImage(item.image);
+        setItem(medItem);
+        setImage(medItem.image);
     }
 
     function closeImage() {
@@ -461,15 +551,15 @@ function MedicationLogs() {
                         <View style={currentTheme.includes("Light") ? stylesLight.addMedContainer : stylesDark.addMedContainer}>
                             <View>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.formHeaders : stylesDark.formHeaders}>Medication Name</Text>
-                                <TextInput placeholder="Name..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setMedName(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
+                                <TextInput placeholder="Name..." placeholderTextColor="#9e9e9e" value={medName} onChangeText={(e) => setMedName(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
                             </View>
                             <View>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.formHeaders : stylesDark.formHeaders}>Dosage</Text>
-                                <TextInput placeholder="Dose..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setDosage(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
+                                <TextInput placeholder="Dose..." placeholderTextColor="#9e9e9e" value={dosage} onChangeText={(e) => setDosage(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
                             </View>
                             <View>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.formHeaders : stylesDark.formHeaders}>Repeats: </Text>
-                                <TextInput placeholder="Num..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setFetchRepeat(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input}/>
+                                <TextInput placeholder="Num..." placeholderTextColor="#9e9e9e" value={fetchRepeat} onChangeText={(e) => setFetchRepeat(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input}/>
                             </View> 
                             <View style={currentTheme.includes("Light") ? stylesLight.formFetchDate : stylesDark.formFetchDate}>
                                 <View>
@@ -536,7 +626,7 @@ function MedicationLogs() {
                                     <Text style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>Add Time To Take</Text>
                                 </Pressable>
                             </View>                            
-                            <Pressable onPress={addMedLog}>
+                            <Pressable onPress={editing ? editMed : addMedLog}>
                                 <Text style={[currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, {marginTop: 5}]}>Done</Text>
                             </Pressable>
                         </View>
@@ -547,10 +637,10 @@ function MedicationLogs() {
                 {action ? (
                     <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
-                            <Pressable style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                            <Pressable onPress={triggerEditing} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                             </Pressable>
-                            <Pressable onPress={() => deleteItem(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                            <Pressable onPress={triggerDelete} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                             </Pressable>
                             <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
@@ -574,6 +664,23 @@ function MedicationLogs() {
                         </View>
                     </View>
                     ) : (
+                    <View></View>
+                )}
+                {warning ? (
+                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                        <View style={currentTheme.includes("Light") ? stylesLight.warningContainer : stylesDark.warningContainer}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.warningText : stylesDark.warningText}>Are you sure you want to delete this medication log?</Text>
+                            <View style={currentTheme.includes("Light") ? stylesLight.warningButtonContainer : stylesDark.warningButtonContainer}>
+                                <Pressable onPress={() => deleteItem(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
+                                </Pressable>
+                                <Pressable onPress={() => setWarning(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>Cancel</Text>
+                                </Pressable>
+                            </View>                            
+                        </View>
+                    </View>                    
+                ) : (
                     <View></View>
                 )}
             </LinearGradient>
@@ -853,7 +960,27 @@ const stylesLight = StyleSheet.create({
     close: {
         alignSelf: "flex-end",
         marginBottom: 10,
-    }
+    },
+    warningContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "20%",
+        padding: 20,
+        backgroundColor: "#e3e3e3",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1,
+    },
+    warningText: {
+        fontFamily: "Roboto-Regular",
+        color: "#242424",
+        fontSize: 20,
+        textAlign: "center"
+    },
+    warningButtonContainer: {
+        flexDirection: "row"
+    },
 })
 
 const stylesDark = StyleSheet.create({
@@ -1082,7 +1209,7 @@ const stylesDark = StyleSheet.create({
         color: '#e3e3e3'
     },
     actionContainer: {
-        backgroundColor: '#e3e3e3',
+        backgroundColor: '#2b2b2b',
         padding: 20,
         borderTopRightRadius: 10,
         borderBottomRightRadius: 10,
@@ -1128,7 +1255,27 @@ const stylesDark = StyleSheet.create({
     close: {
         alignSelf: "flex-end",
         marginBottom: 10,
-    }
+    },
+    warningContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "20%",
+        padding: 20,
+        backgroundColor: "#2b2b2b",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1,
+    },
+    warningText: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 20,
+        textAlign: "center"
+    },
+    warningButtonContainer: {
+        flexDirection: "row"
+    },
 })
 
 export default MedicationLogs;

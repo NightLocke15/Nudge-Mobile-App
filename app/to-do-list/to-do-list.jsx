@@ -30,6 +30,9 @@ function ToDoList() {
     //Router used to navigate back to the home page
     const router = useRouter();
 
+    const [editing, setEditing] = useState(false);
+    const [deleteWarning, setDeleteWarning] = useState(false);
+
     //Sets the state that triggers the tile to create a new list 
     function newList() {
         addList();
@@ -120,7 +123,47 @@ function ToDoList() {
         });
 
         setUsers(userChange);
+        setDeleteWarning(false);
+    }
+
+    function activateDeleting() {
+        setDeleteWarning(true);
         setAction(false);
+    }
+
+    function activateEditing() {
+        setEditing(true);
+        setNewListName(item.name);
+        setChooseList(true);
+        setAction(false);
+    }
+
+    function editListName() {
+         const userChange = users.map((user) => {
+            if (user.idnum === localUser) {
+                const newUserList = user.lists.map((list) => {
+                    if (list.id === item.id) {
+                        return {
+                            ...list,
+                            name: newListName,
+                        }
+                    }
+                    else {
+                        return list;
+                    }
+                })
+                return {
+                    ...user,
+                    lists: newUserList
+                }
+            }
+            else {
+                return user;
+            }
+        });
+
+        setUsers(userChange);
+        setChooseList(false);  
     }
 
     const singleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(1).onStart(() => {
@@ -169,8 +212,8 @@ function ToDoList() {
                 {chooseList ? (
                     <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={currentTheme.includes("Light") ? stylesLight.addListContainer : stylesDark.addListContainer}>
-                        <TextInput placeholder="Name your list..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setNewListName(e)} maxLength={15} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
-                        <Pressable onPress={newList} style={currentTheme.includes("Light") ? stylesLight.done : stylesDark.done}>
+                        <TextInput placeholder="Name your list..." value={newListName} placeholderTextColor="#9e9e9e" onChangeText={(e) => setNewListName(e)} maxLength={15} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
+                        <Pressable onPress={editing ? editListName : newList} style={currentTheme.includes("Light") ? stylesLight.done : stylesDark.done}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.doneText : stylesDark.doneText}>Done</Text>
                         </Pressable>
                         </View>
@@ -193,7 +236,10 @@ function ToDoList() {
                 {action ? (
                     <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
-                            <Pressable onPress={() => deleteItem(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                            <Pressable onPress={activateEditing} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
+                            </Pressable>
+                            <Pressable onPress={activateDeleting} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                             </Pressable>
                             <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
@@ -201,6 +247,23 @@ function ToDoList() {
                             </Pressable>
                         </View>
                     </View>
+                ) : (
+                    <View></View>
+                )}
+                {deleteWarning ? (
+                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                        <View style={currentTheme.includes("Light") ? stylesLight.deleteWarningContainer : stylesDark.deleteWarningContainer}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.deleteWarningText : stylesDark.deleteWarningText}>Are you sure you want to delete this list?</Text>
+                            <View style={currentTheme.includes("Light") ? stylesLight.buttonContainer : stylesDark.buttonContainer}>
+                                <Pressable onPress={() => deleteItem(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
+                                </Pressable>
+                                <Pressable onPress={() => setDeleteWarning(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>Cancel</Text>
+                                </Pressable>
+                            </View>                            
+                        </View>
+                    </View>                    
                 ) : (
                     <View></View>
                 )}
@@ -401,6 +464,40 @@ const stylesLight = StyleSheet.create({
         marginTop: 10,
         borderRadius: 10,
     },
+    edit: {
+        backgroundColor: "#1f9615ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        borderRadius: 10,
+    },
+    editText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    buttonContainer: {
+        flexDirection: "row"
+    },
+    deleteWarningContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "20%",
+        padding: 20,
+        backgroundColor: "#e3e3e3",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1,
+    },
+    deleteWarningText: {
+        fontFamily: "Roboto-Regular",
+        color: "#242424",
+        fontSize: 20,
+        textAlign: "center"
+    },
 });
 
 const stylesDark = StyleSheet.create({
@@ -594,6 +691,40 @@ const stylesDark = StyleSheet.create({
         elevation: 5,
         marginTop: 10,
         borderRadius: 10,
+    },
+    edit: {
+        backgroundColor: "#1f9615ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        borderRadius: 10,
+    },
+    editText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    buttonContainer: {
+        flexDirection: "row"
+    },
+    deleteWarningContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "20%",
+        padding: 20,
+        backgroundColor: "#2b2b2b",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1,
+    },
+    deleteWarningText: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 20,
+        textAlign: "center"
     },
 });
 

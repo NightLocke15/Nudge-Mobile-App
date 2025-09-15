@@ -24,6 +24,8 @@ function CalendarFunc() {
     const [today, setToday] = useState();
     const [todaysEvents, setTodaysEvents] = useState([]);
     const [creating, setCreating] = useState(false);
+    const [warning, setWarning] = useState(false);
+    const [editing, setEditing] = useState(false);
 
     const [event, setEvent] = useState('');
     const [eventType, setEventType] = useState('');
@@ -32,6 +34,7 @@ function CalendarFunc() {
     const [time, setTime] = useState('')
     const [durationHrs, setDurationHrs] = useState('');
     const [durationMins, setDurationMins] = useState('');
+    const [clockTime, setClockTime] = useState(new Date());
 
     const [item, setItem] = useState();
     const [action, setAction] = useState(false);
@@ -42,6 +45,7 @@ function CalendarFunc() {
     const arrayRange = (start, end, step = 1) => Array.from({length: end - start / step + 1}, (_, i) => start + i * step);
     const numberRange = arrayRange(0,23);
     const timeSlotNumbers = numberRange.map((number) => number < 10 ? `0${number}:00` : `${number}:00`)
+    
 
     const cardHeight = (hours, mins) => {
         let heightAddition;
@@ -63,6 +67,14 @@ function CalendarFunc() {
 
         return hours === 0 && mins === 0 ? 50 : (80 * hours) + heightAddition;
     }
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setClockTime(new Date());
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
 
     useEffect(() => {
         const todayDate = new Date();
@@ -150,6 +162,11 @@ function CalendarFunc() {
         setSelectedDay('');
     }
 
+    function triggerDelete() {
+        setAction(false);
+        setWarning(true);
+    }
+
     function deleteEvent(eventItem) {
         const userRevamp = users.map((user, index) => {
             if (user.idnum === localUser) {
@@ -164,7 +181,62 @@ function CalendarFunc() {
             }
         });
         setUsers(userRevamp);
-        setAction(false);
+        setSelectedDay('');
+        setWarning(false);
+    }
+
+    function triggerEdit() {
+        setViewEvent(false);
+        setCreating(true);
+        setEditing(true);
+        setEvent(item.eventName);
+        setEventType(item.eventType);
+        setPlace(item.place);
+        setTime(item.time);
+        setDurationHrs(item.hours);
+        setDurationMins(item.mins);
+        setEventDesc(item.description);
+    }
+
+    function editEvent() {
+        const userRevamp = users.map((user, index) => {
+            if (user.idnum === localUser) {
+                const newEvents = user.events.map((eventItem) => {
+                    if (eventItem.id === item.id) {
+                        return {
+                            ...eventItem,
+                            eventName: event, 
+                            type: eventType, 
+                            date: selectedDay, 
+                            description: eventDesc, 
+                            place: place, 
+                            time: time, 
+                            hours: durationHrs, 
+                            mins: durationMins
+                        }
+                    }
+                    else {
+                        return eventItem;
+                    }
+                });
+                return {
+                    ...user,
+                    events: newEvents,
+                }
+            } 
+            else {
+                return user;
+            }
+        });
+        setUsers(userRevamp);
+        setEvent('');
+        setEventType('');
+        setPlace('');
+        setTime('');
+        setEventDesc('');
+        setDurationHrs('');
+        setDurationMins('');
+        setCreating(false);
         setSelectedDay('');
     }
 
@@ -186,6 +258,7 @@ function CalendarFunc() {
                         <Octicons name="home" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                     </Pressable>
                     <Text style={currentTheme.includes("Light") ? stylesLight.header : stylesDark.header}>Calendar</Text>
+                    <Text style={currentTheme.includes("Light") ? stylesLight.timeText : stylesDark.timeText}>{clockTime.getHours().toString().padStart(2, "0")}:{clockTime.getMinutes().toString().padStart(2, "0")}</Text>
                 </View>
                 <Calendar 
                     onDayPress={(day) => daySelect(day.dateString)}
@@ -286,7 +359,7 @@ function CalendarFunc() {
                     <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={currentTheme.includes("Light") ? stylesLight.addEventContainer : stylesDark.addEventContainer}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.createHeading : stylesDark.createHeading}>Event</Text>
-                            <TextInput placeholder="Event Name..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setEvent(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
+                            <TextInput placeholder="Event Name..." placeholderTextColor="#9e9e9e" value={event} onChangeText={(e) => setEvent(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
                             <Text style={currentTheme.includes("Light") ? stylesLight.createHeading : stylesDark.createHeading}>Event Type</Text>
                             <View style={currentTheme.includes("Light") ? stylesLight.dropdown : stylesDark.dropdown}>
                                 <SelectList 
@@ -299,18 +372,19 @@ function CalendarFunc() {
                                     arrowicon={<Octicons name="chevron-down" size={18} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>}
                                     closeicon={<Octicons name="x" size={18} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>}
                                     search={false}
+                                    defaultOption={eventType}
                                 />
                             </View>
                             <Text style={currentTheme.includes("Light") ? stylesLight.createHeading : stylesDark.createHeading}>Place</Text>
-                            <TextInput placeholder="Place..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setPlace(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
+                            <TextInput placeholder="Place..." value={place} placeholderTextColor="#9e9e9e" onChangeText={(e) => setPlace(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
                             <Text style={currentTheme.includes("Light") ? stylesLight.createHeading : stylesDark.createHeading}>Time</Text>
-                            <TextInput placeholder="Time... (eg. 14:00)" placeholderTextColor="#9e9e9e" onChangeText={(e) => setTime(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
+                            <TextInput placeholder="Time... (eg. 14:00)" value={time} placeholderTextColor="#9e9e9e" onChangeText={(e) => setTime(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
                             <Text style={currentTheme.includes("Light") ? stylesLight.createHeading : stylesDark.createHeading}>Duration</Text>
-                            <TextInput placeholder="Hours..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setDurationHrs(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
-                            <TextInput placeholder="Minutes..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setDurationMins(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
+                            <TextInput placeholder="Hours..." value={durationHrs} placeholderTextColor="#9e9e9e" onChangeText={(e) => setDurationHrs(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
+                            <TextInput placeholder="Minutes..." value={durationMins} placeholderTextColor="#9e9e9e" onChangeText={(e) => setDurationMins(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
                             <Text style={currentTheme.includes("Light") ? stylesLight.createHeading : stylesDark.createHeading}>Description</Text>
-                            <TextInput placeholder="Description..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setEventDesc(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
-                            <Pressable style={currentTheme.includes("Light") ? stylesLight.done : stylesDark.done} onPress={addEvent}>
+                            <TextInput placeholder="Description..." value={eventDesc} placeholderTextColor="#9e9e9e" onChangeText={(e) => setEventDesc(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
+                            <Pressable style={currentTheme.includes("Light") ? stylesLight.done : stylesDark.done} onPress={editing ? editEvent : addEvent}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.doneText : stylesDark.doneText}>Done</Text>
                             </Pressable>
                         </View>
@@ -321,7 +395,7 @@ function CalendarFunc() {
                 {action ? (
                     <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
-                            <Pressable onPress={() => deleteEvent(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                            <Pressable onPress={triggerDelete} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                             </Pressable>
                             <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
@@ -340,6 +414,8 @@ function CalendarFunc() {
                             </Pressable>
                             <Text style={currentTheme.includes("Light") ? stylesLight.eventHeading : stylesDark.eventHeading}>{item.eventName}</Text>
                             <Text style={currentTheme.includes("Light") ? stylesLight.eventText : stylesDark.eventText}>{item.date}</Text>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.eventHeading : stylesDark.eventHeading}>Event Type:</Text>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.eventText : stylesDark.eventText}>{item.type}</Text>
                             <Text style={currentTheme.includes("Light") ? stylesLight.eventHeading : stylesDark.eventHeading}>Place: </Text>
                             <Text style={currentTheme.includes("Light") ? stylesLight.eventText : stylesDark.eventText}>{item.place}</Text>
                             <Text style={currentTheme.includes("Light") ? stylesLight.eventHeading : stylesDark.eventHeading}>Time: </Text>
@@ -352,11 +428,28 @@ function CalendarFunc() {
                             </Text>
                             <Text style={currentTheme.includes("Light") ? stylesLight.eventHeading : stylesDark.eventHeading}>Description: </Text>
                             <Text style={currentTheme.includes("Light") ? stylesLight.eventText : stylesDark.eventText}>{item.description}</Text>
-                            <Pressable style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                            <Pressable onPress={triggerEdit} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                             </Pressable>
                         </View>
                     </View>
+                ) : (
+                    <View></View>
+                )}
+                {warning ? (
+                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                        <View style={currentTheme.includes("Light") ? stylesLight.warningContainer : stylesDark.warningContainer}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.warningText : stylesDark.warningText}>Are you sure you want to delete this event?</Text>
+                            <View style={currentTheme.includes("Light") ? stylesLight.warningButtonContainer : stylesDark.warningButtonContainer}>
+                                <Pressable onPress={() => deleteEvent(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
+                                </Pressable>
+                                <Pressable onPress={() => setWarning(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>Cancel</Text>
+                                </Pressable>
+                            </View>                            
+                        </View>
+                    </View>                    
                 ) : (
                     <View></View>
                 )}
@@ -622,7 +715,35 @@ const stylesLight = StyleSheet.create({
         fontSize: 20,
         marginBottom: 5,
         marginTop: 5,
-    }
+    },
+    timeText: {
+        fontFamily: "PTSans-Regular",
+        color: "#242424",
+        fontSize: 20, 
+        position: "absolute",
+        right: "5%",
+        top: "30%"         
+    },
+    warningContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "20%",
+        padding: 20,
+        backgroundColor: "#e3e3e3",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1,
+    },
+    warningText: {
+        fontFamily: "Roboto-Regular",
+        color: "#242424",
+        fontSize: 20,
+        textAlign: "center"
+    },
+    warningButtonContainer: {
+        flexDirection: "row"
+    },
 })
 
 const stylesDark = StyleSheet.create({
@@ -882,7 +1003,35 @@ const stylesDark = StyleSheet.create({
         fontSize: 18,
         marginBottom: 5,
         marginTop: 5,
-    }
+    },
+    timeText: {
+        fontFamily: "PTSans-Regular",
+        color: "#e3e3e3",
+        fontSize: 20, 
+        position: "absolute",
+        right: "5%",
+        top: "30%"         
+    },
+    warningContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "20%",
+        padding: 20,
+        backgroundColor: "#2b2b2b",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1,
+    },
+    warningText: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 20,
+        textAlign: "center"
+    },
+    warningButtonContainer: {
+        flexDirection: "row"
+    },
 })
 
 export default CalendarFunc;

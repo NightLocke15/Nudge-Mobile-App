@@ -13,6 +13,7 @@ function UserProvider({children}) {
         lists: [],
         logs: [],
         events: [{name: "event"}],
+        alarms: [],
         preferredTheme: "Light - Gradient"
     }]);
     const [authenticated, setAuthenticated] = useState(() => {

@@ -35,6 +35,8 @@ function DiaryLogs() {
     const [action, setAction] = useState(false);
     const [tapPostition, setTapPosition] = useState({x: 0, y: 0})
 
+    const [warning, setWarning] = useState(false);
+
     //Add a new diary entry to the user's list of entries
     function addLog() {
         const usersReVamp = users.map((user, index) => {
@@ -58,6 +60,11 @@ function DiaryLogs() {
 
     }
 
+    function triggerDelete() {
+        setAction(false);
+        setWarning(true);
+    }
+
     //Code that deletes the correct diary entry from the user's information
     const deleteLog = (item) => {
         const usersReVamp = users.map((user, index) => {
@@ -73,7 +80,7 @@ function DiaryLogs() {
         }
         });
         setUsers(usersReVamp);
-        setAction(false);
+        setWarning(false);
     }
 
     //Triggers editing tile and sets the correct information to be edited ***(On long press, which is defferent from others. Subject to change, this is stille experimental)***
@@ -157,7 +164,7 @@ function DiaryLogs() {
                             <Pressable onPress={() => triggerEditing(item)} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                             </Pressable>
-                            <Pressable onPress={() => deleteLog(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                            <Pressable onPress={triggerDelete} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                             </Pressable>
                             <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
@@ -165,6 +172,23 @@ function DiaryLogs() {
                             </Pressable>
                         </View>
                     </View>
+                ) : (
+                    <View></View>
+                )}
+                {warning ? (
+                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                        <View style={currentTheme.includes("Light") ? stylesLight.warningContainer : stylesDark.warningContainer}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.warningText : stylesDark.warningText}>Are you sure you want to delete this person?</Text>
+                            <View style={currentTheme.includes("Light") ? stylesLight.buttonContainer : stylesDark.buttonContainer}>
+                                <Pressable onPress={() => deleteLog(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
+                                </Pressable>
+                                <Pressable onPress={() => setWarning(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>Cancel</Text>
+                                </Pressable>
+                            </View>                            
+                        </View>
+                    </View>                    
                 ) : (
                     <View></View>
                 )}
@@ -333,6 +357,26 @@ const stylesLight = StyleSheet.create({
         marginTop: 10,
         borderRadius: 10,
     },
+    warningContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "20%",
+        padding: 20,
+        backgroundColor: "#e3e3e3",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1,
+    },
+    warningText: {
+        fontFamily: "Roboto-Regular",
+        color: "#242424",
+        fontSize: 20,
+        textAlign: "center"
+    },
+    buttonContainer: {
+        flexDirection: "row"
+    },
 })
 
 const stylesDark = StyleSheet.create({
@@ -494,6 +538,26 @@ const stylesDark = StyleSheet.create({
         elevation: 5,
         marginTop: 10,
         borderRadius: 10,
+    },
+    warningContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "20%",
+        padding: 20,
+        backgroundColor: "#2b2b2b",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1,
+    },
+    warningText: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 20,
+        textAlign: "center"
+    },
+    buttonContainer: {
+        flexDirection: "row"
     },
 })
 
