@@ -134,60 +134,62 @@ function MedicationLogs() {
 
     //add the medication log to the user info
     function addMedLog() {
-        const usersReVamp = users.map((user, index) => {
-        if (user.idnum === localUser) {
-            const next = startDate;
-            const nextFetch = fetchDate;
+        if (medName !== "") {
+            const usersReVamp = users.map((user, index) => {
+            if (user.idnum === localUser) {
+                const next = startDate;
+                const nextFetch = fetchDate;
 
-            //setting the repeats of meds taken
-            if (repeat === "Daily") {
-                next.setDate(startDate.getDate() + 1);
-            }
-            else if (repeat === "Weekly") {
-                next.setDate(startDate.getDate() + 7);
-            }
-            else if (repeat === "Biweekly") {
-                next.setDate(startDate.getDate() + 14);
-            }
-            else if (repeat === "Monthly") {
-                next.setDate(startDate.getDate() + 28);
-            }
+                //setting the repeats of meds taken
+                if (repeat === "Daily") {
+                    next.setDate(startDate.getDate() + 1);
+                }
+                else if (repeat === "Weekly") {
+                    next.setDate(startDate.getDate() + 7);
+                }
+                else if (repeat === "Biweekly") {
+                    next.setDate(startDate.getDate() + 14);
+                }
+                else if (repeat === "Monthly") {
+                    next.setDate(startDate.getDate() + 28);
+                }
 
-            //setting the repeat on when to fetch the medication
-            if (fetchOption === "Daily") {
-                nextFetch.setDate(startDate.getDate() + 1);
-            }
-            else if (fetchOption === "Weekly") {
-                nextFetch.setDate(startDate.getDate() + 7);
-            }
-            else if (fetchOption === "Biweekly") {
-                nextFetch.setDate(startDate.getDate() + 14);
-            }
-            else if (fetchOption === "Monthly") {
-                nextFetch.setDate(startDate.getDate() + 28);
-            }
+                //setting the repeat on when to fetch the medication
+                if (fetchOption === "Daily") {
+                    nextFetch.setDate(startDate.getDate() + 1);
+                }
+                else if (fetchOption === "Weekly") {
+                    nextFetch.setDate(startDate.getDate() + 7);
+                }
+                else if (fetchOption === "Biweekly") {
+                    nextFetch.setDate(startDate.getDate() + 14);
+                }
+                else if (fetchOption === "Monthly") {
+                    nextFetch.setDate(startDate.getDate() + 28);
+                }
 
-            //adds all the information stored to a log in the user's info
-            return {
-                ...user,
-                logs: [...user.logs, {id: uuidv4(), image: "", name: medName, type: "Medication", 
-                    dosage: dosage, firstPickUp: fetchDate, fetchOption: fetchOption, nextFetchDate: nextFetch, repeats: fetchRepeat, start: startDate, 
-                    takeSpan: repeat, takeTimes: times, nextDose: next}]
+                //adds all the information stored to a log in the user's info
+                return {
+                    ...user,
+                    logs: [...user.logs, {id: uuidv4(), image: "", name: medName, type: "Medication", 
+                        dosage: dosage, firstPickUp: fetchDate, fetchOption: fetchOption, nextFetchDate: nextFetch, repeats: fetchRepeat, start: startDate, 
+                        takeSpan: repeat, takeTimes: times, nextDose: next}]
+                }
             }
-        }
-        else {
-            return user;
-        }
-        });
-        //reset all the storage
-        setUsers(usersReVamp);
-        setCreateEntry(false);
-        setTimes([]);
-        setMedName("");
-        setDosage("");
-        setRepeat("");
-        setStartDate(new Date());
-        setFetchDate(new Date());
+            else {
+                return user;
+            }
+            });
+            //reset all the storage
+            setUsers(usersReVamp);
+            setCreateEntry(false);
+            setTimes([]);
+            setMedName("");
+            setDosage("");
+            setRepeat("");
+            setStartDate(new Date());
+            setFetchDate(new Date());
+        }        
     }
 
     //The following three functions are used to change the date on when the medication was first fetched

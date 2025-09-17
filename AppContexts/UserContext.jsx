@@ -1,4 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import * as Location from 'expo-location';
 import React, { createContext, useEffect, useState } from "react";
 
 export const UserContext = createContext();
@@ -25,6 +27,31 @@ function UserProvider({children}) {
         return User;
     });
     const [localUserInfo, setLocalUserInfo] = useState();
+    const [weatherData, setWeatherData] = useState({});
+    const [location, setLocation] = useState();
+
+    const getLocation = async () => {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+
+        if (status !== 'granted') {
+        console.log('Permission to access location was denied');
+        return;
+        }
+
+        const loc = await Location.getCurrentPositionAsync({});
+        setLocation(loc);
+    };
+
+    useEffect(() => {
+        getLocation();
+        axios.get(`http://api.weatherapi.com/v1/forecast.json?key=5e5fb9402f2b41dd967110133251709&q=${location && location.coords.latitude},${location && location.coords.longitude}&days=3&aqi=no&alerts=no`)
+            .then(response => {
+                setWeatherData(response.data);
+            })
+            .catch(error => {
+                console.error("Error fetching data: ", error);
+            });
+    }, []);
 
     //Determine whether user has been logged in when the re-enter the app
     useEffect(() => {
@@ -67,7 +94,7 @@ function UserProvider({children}) {
         setAuthenticated(JSON.stringify(false));
     }
     return (
-        <UserContext.Provider value={{setUsers, users, localUser, localUserInfo, authenticated, setLocalUser, createUserProfile, login, logout}}>
+        <UserContext.Provider value={{setUsers, users, localUser, localUserInfo, authenticated, weatherData, setLocalUser, createUserProfile, login, logout}}>
             {children}
         </UserContext.Provider>
     )

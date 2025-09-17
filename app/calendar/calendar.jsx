@@ -2,19 +2,21 @@ import { ThemeContext } from "@/AppContexts/ThemeContext";
 import { UserContext } from "@/AppContexts/UserContext";
 import { Lucide } from "@react-native-vector-icons/lucide";
 import { Octicons } from "@react-native-vector-icons/octicons";
+
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Calendar } from 'react-native-calendars';
 import { SelectList } from "react-native-dropdown-select-list";
 import { Gesture, GestureDetector, TextInput } from "react-native-gesture-handler";
 import 'react-native-get-random-values';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { v4 as uuidv4 } from 'uuid';
+   
 
 function CalendarFunc() {
-    const { users, setUsers, localUserInfo, localUser } = useContext(UserContext);
+    const { users, setUsers, localUserInfo, localUser, weatherData } = useContext(UserContext);
     const {currentTheme, gradientColours } = useContext(ThemeContext);
     const router = useRouter();
     const [selectedDay, setSelectedDay] = useState('');
@@ -35,6 +37,9 @@ function CalendarFunc() {
     const [durationHrs, setDurationHrs] = useState('');
     const [durationMins, setDurationMins] = useState('');
     const [clockTime, setClockTime] = useState(new Date());
+    const [people, setPeople] = useState([]);
+   
+    
 
     const [item, setItem] = useState();
     const [action, setAction] = useState(false);
@@ -44,8 +49,7 @@ function CalendarFunc() {
     const eventTypesList = ['Birthday', 'Meeting', 'Appointment', 'Other'];
     const arrayRange = (start, end, step = 1) => Array.from({length: end - start / step + 1}, (_, i) => start + i * step);
     const numberRange = arrayRange(0,23);
-    const timeSlotNumbers = numberRange.map((number) => number < 10 ? `0${number}:00` : `${number}:00`)
-    
+    const timeSlotNumbers = numberRange.map((number) => number < 10 ? `0${number}:00` : `${number}:00`) 
 
     const cardHeight = (hours, mins) => {
         let heightAddition;
@@ -66,7 +70,9 @@ function CalendarFunc() {
         }
 
         return hours === 0 && mins === 0 ? 50 : (80 * hours) + heightAddition;
-    }
+    }  
+
+    
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -116,6 +122,8 @@ function CalendarFunc() {
         setDynamicDateList(dates);
     }, [localUserInfo]);
 
+    
+
     function daySelect(date) {
         setSelectedDay(date);
         setDynamicDateList(dateList);
@@ -139,27 +147,31 @@ function CalendarFunc() {
     }
 
     function addEvent() {
-        const usersReVamp = users.map((user, index) => {
-            if (user.idnum === localUser) {
-                return {
-                    ...user,
-                    events: [...user.events, {id: uuidv4(), eventName: event, type: eventType, date: selectedDay, description: eventDesc, place: place, time: time, hours: durationHrs, mins: durationMins}]
+        if (event !== "") {
+            const usersReVamp = users.map((user, index) => {
+                if (user.idnum === localUser) {
+                    return {
+                        ...user,
+                        events: [...user.events, {id: uuidv4(), eventName: event, type: eventType, date: selectedDay, description: eventDesc, place: place, time: time, hours: durationHrs, mins: durationMins, people: people}]
+                    }
                 }
-            }
-            else {
-                return user;
-            }
-        });
-        setUsers(usersReVamp);
-        setEvent('');
-        setEventType('');
-        setPlace('');
-        setTime('');
-        setEventDesc('');
-        setDurationHrs('');
-        setDurationMins('');
-        setCreating(false);
-        setSelectedDay('');
+                else {
+                    return user;
+                }
+            });
+            setUsers(usersReVamp);
+            setEvent('');
+            setEventType('');
+            setPlace('');
+            setTime('');
+            setEventDesc('');
+            setDurationHrs('');
+            setDurationMins('');
+            setCreating(false);
+            setSelectedDay('');
+            setPeople([]);
+        }
+        
     }
 
     function triggerDelete() {
@@ -196,6 +208,7 @@ function CalendarFunc() {
         setDurationHrs(item.hours);
         setDurationMins(item.mins);
         setEventDesc(item.description);
+        setPeople(item.people);
     }
 
     function editEvent() {
@@ -212,7 +225,8 @@ function CalendarFunc() {
                             place: place, 
                             time: time, 
                             hours: durationHrs, 
-                            mins: durationMins
+                            mins: durationMins,
+                            people: people
                         }
                     }
                     else {
@@ -238,6 +252,15 @@ function CalendarFunc() {
         setDurationMins('');
         setCreating(false);
         setSelectedDay('');
+        setPeople([]);
+    }
+
+    function addPeople(person) {
+        setPeople([...people, person]);
+    }
+
+    function removePeople(person) {
+        setPeople(people.filter((per) => per.id !== person.id));
     }
 
     const singleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(1).onStart(() => {
@@ -295,11 +318,40 @@ function CalendarFunc() {
                             <View style={currentTheme.includes("Light") ? stylesLight.weatherContainer : stylesDark.weatherContainer}>
                                 <View>
                                     <Text style={currentTheme.includes("Light") ? stylesLight.weatherHeader : stylesDark.weatherHeader}>Weather</Text>
-                                    <Text style={currentTheme.includes("Light") ? stylesLight.weatherDesc : stylesDark.weatherDesc}>Ideal for short sleeves</Text>
+                                    {weatherData.forecast.forecastday.some((day) => day.date === selectedDay) ? (
+                                        weatherData.forecast.forecastday.map((day) => {
+                                        if (day.date === selectedDay) {
+                                            return <Text style={currentTheme.includes("Light") ? stylesLight.weatherDesc : stylesDark.weatherDesc}>{day.day.condition.text}</Text>;
+                                        }                                            
+                                    })
+                                    ) : (
+                                        <View></View>
+                                    )}
+                                    
                                 </View>
                                 <View style={currentTheme.includes("Light") ? stylesLight.weatherContainer : stylesDark.weatherContainer}>
-                                    <Lucide name="sun" size={25} color={'#f1b022ff'}/>
-                                    <Text style={currentTheme.includes("Light") ? stylesLight.temp : stylesDark.temp}>21C</Text>
+                                    {weatherData.forecast.forecastday.some((day) => day.date === selectedDay) ? (
+                                        weatherData.forecast.forecastday.map((day) => {
+                                        if (day.date === selectedDay) {
+                                            return <Image key={day.date_epoch} source={{uri: `https://${day.day.condition.icon}`}} style={{width: 40}} />;
+                                        }                                            
+                                    })
+                                    ) : (
+                                        <View></View>
+                                    )}
+                                    <View>
+                                        <Text style={currentTheme.includes("Light") ? stylesLight.temp : stylesDark.temp}>High / Low</Text>
+                                        {weatherData.forecast.forecastday.some((day) => day.date === selectedDay) ? (
+                                            weatherData.forecast.forecastday.map((day) => {
+                                            if (day.date === selectedDay) {
+                                               return <Text key={day.date_epoch} style={currentTheme.includes("Light") ? stylesLight.temp : stylesDark.temp}>{day.day.maxtemp_c} / {day.day.mintemp_c}</Text>;
+                                            }                                            
+                                        })
+                                        ) : (
+                                            <Text style={currentTheme.includes("Light") ? stylesLight.temp : stylesDark.temp}>N/A</Text>
+                                        )}
+                                        
+                                    </View>                                    
                                 </View>                                
                             </View>
                         </View>
@@ -384,6 +436,17 @@ function CalendarFunc() {
                             <TextInput placeholder="Minutes..." value={durationMins} placeholderTextColor="#9e9e9e" onChangeText={(e) => setDurationMins(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
                             <Text style={currentTheme.includes("Light") ? stylesLight.createHeading : stylesDark.createHeading}>Description</Text>
                             <TextInput placeholder="Description..." value={eventDesc} placeholderTextColor="#9e9e9e" onChangeText={(e) => setEventDesc(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
+                            <Text style={currentTheme.includes("Light") ? stylesLight.createHeading : stylesDark.createHeading}>People at Event:</Text>  
+                            <ScrollView>
+                                <View style={currentTheme.includes("Light") ? stylesLight.peopleHolder : stylesDark.peopleHolder}>
+                                    {localUserInfo[0] && localUserInfo[0].logs.filter((log) => log.type === "People").map((person) => (
+                                        <Pressable key={person.id} onPress={() => people.some((personItem) => personItem.id === person.id) ? removePeople(person) : addPeople(person)} style={currentTheme.includes("Light") ? stylesLight.peopleButton : stylesDark.peopleButton}>
+                                            <Image source={{uri: person.image}} style={[currentTheme.includes("Light") ? stylesLight.peoplePhoto : stylesDark.peoplePhoto, {borderColor: "#9e9e9e", borderWidth: people.some((personItem) => personItem.id === person.id) ? 5 : 1}]}/>
+                                            <Text style={currentTheme.includes("Light") ? stylesLight.peopleName : stylesDark.peopleName}>{person.personName}</Text>
+                                        </Pressable>
+                                    ))}
+                                </View>                                                               
+                            </ScrollView>                                                   
                             <Pressable style={currentTheme.includes("Light") ? stylesLight.done : stylesDark.done} onPress={editing ? editEvent : addEvent}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.doneText : stylesDark.doneText}>Done</Text>
                             </Pressable>
@@ -392,6 +455,7 @@ function CalendarFunc() {
                 ) : (
                     <View></View>
                 )}
+                
                 {action ? (
                     <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
@@ -428,6 +492,17 @@ function CalendarFunc() {
                             </Text>
                             <Text style={currentTheme.includes("Light") ? stylesLight.eventHeading : stylesDark.eventHeading}>Description: </Text>
                             <Text style={currentTheme.includes("Light") ? stylesLight.eventText : stylesDark.eventText}>{item.description}</Text>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.eventHeading : stylesDark.eventHeading}>People: </Text>
+                            <ScrollView>
+                                <View style={currentTheme.includes("Light") ? stylesLight.peopleHolder : stylesDark.peopleHolder}>
+                                    {item.people && item.people.map((person) => (
+                                        <Pressable key={person.id} style={currentTheme.includes("Light") ? stylesLight.peopleButton : stylesDark.peopleButton}>
+                                            <Image source={{uri: person.image}} style={[currentTheme.includes("Light") ? stylesLight.peoplePhoto : stylesDark.peoplePhoto, {borderColor: "#9e9e9e", borderWidth: people.some((personItem) => personItem.id === person.id) ? 5 : 1}]}/>
+                                            <Text style={currentTheme.includes("Light") ? stylesLight.peopleName : stylesDark.peopleName}>{person.personName}</Text>
+                                        </Pressable>
+                                    ))}
+                                </View>
+                            </ScrollView>
                             <Pressable onPress={triggerEdit} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                             </Pressable>
@@ -495,12 +570,13 @@ const stylesLight = StyleSheet.create({
         position: "absolute",
         right: "5%",
         left: "5%",
-        top: "10%",
+        top: "2%",
         padding: 20,
         backgroundColor: "#e3e3e3",
         elevation: 5,
         borderRadius: 10,
-        zIndex: 1
+        zIndex: 1,
+        height: "97%"
     },
     overLay: {
         position: "absolute",
@@ -568,17 +644,17 @@ const stylesLight = StyleSheet.create({
         fontFamily: "PTSans-Regular",
         color: "#242424",
         fontSize: 18,
-        marginBottom: 5
+        marginBottom: 2
     },
     weatherDesc: {
         fontFamily: "Roboto-Regular",
         color: "#242424",
-        fontSize: 15,
+        fontSize: 16,
     },
     temp: {
         fontFamily: "Roboto-Regular",
         color: "#242424",
-        fontSize: 18,
+        fontSize: 16,
         marginLeft: 10
     }, 
     birthdayCard: {
@@ -712,7 +788,7 @@ const stylesLight = StyleSheet.create({
     createHeading: {
         fontFamily: "PTSans-Regular",
         color: "#242424",
-        fontSize: 20,
+        fontSize: 18,
         marginBottom: 5,
         marginTop: 5,
     },
@@ -744,6 +820,33 @@ const stylesLight = StyleSheet.create({
     warningButtonContainer: {
         flexDirection: "row"
     },
+    peopleList: {
+        position: "absolute",
+        top: "0%"
+    },
+    peoplePhoto: {
+        width: 50,
+        height: 50,
+        borderRadius: 40,
+        borderWidth: 1,
+        borderColor: "#323232",
+        alignSelf: "center",
+    },
+    peopleHolder: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: "space-between",
+        marginTop: 5
+    },
+    peopleButton: {
+        width: 70,
+    },
+    peopleName: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 15,
+        textAlign: "center"
+    }
 })
 
 const stylesDark = StyleSheet.create({
@@ -783,12 +886,13 @@ const stylesDark = StyleSheet.create({
         position: "absolute",
         right: "5%",
         left: "5%",
-        top: "10%",
+        top: "2%",
         padding: 20,
         backgroundColor: "#2b2b2b",
         elevation: 5,
         borderRadius: 10,
-        zIndex: 1
+        zIndex: 1,
+        height: "97%"
     },
     overLay: {
         position: "absolute",
@@ -856,17 +960,17 @@ const stylesDark = StyleSheet.create({
         fontFamily: "PTSans-Regular",
         color: "#e3e3e3",
         fontSize: 18,
-        marginBottom: 5
+        marginBottom: 2,
     },
     weatherDesc: {
         fontFamily: "Roboto-Regular",
         color: "#e3e3e3",
-        fontSize: 15,
+        fontSize: 16,
     },
     temp: {
         fontFamily: "Roboto-Regular",
         color: "#e3e3e3",
-        fontSize: 18,
+        fontSize: 16,
         marginLeft: 10
     }, 
     birthdayCard: {
@@ -1032,6 +1136,32 @@ const stylesDark = StyleSheet.create({
     warningButtonContainer: {
         flexDirection: "row"
     },
+    peopleList: {
+        position: "absolute",
+    },
+    peoplePhoto: {
+        width: 50,
+        height: 50,
+        borderRadius: 40,
+        borderWidth: 1,
+        borderColor: "#323232",
+        alignSelf: "center"
+    },
+    peopleHolder: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: "space-between",
+        marginTop: 5
+    },
+    peopleButton: {
+        width: 70,
+    },
+    peopleName: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 15,
+        textAlign: "center"
+    }
 })
 
 export default CalendarFunc;

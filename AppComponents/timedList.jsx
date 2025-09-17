@@ -52,31 +52,32 @@ function TimedList(props) {
 
     //Add a list item to the user's list
     function addItem() {
-        const userListAddision = users.map((user) => {
-            if (user.idnum === localUser) {
-                const newUserLists = user.lists.map((list) => {
-                    if (list.name === localUserInfo[0].lists[id].name) {
-                        return {
-                            ...list,
-                            listItems: [...list.listItems, {id: uuidv4(), item: listItem, completed: false, overdue: false, inRange: true, timeLengthMins: 0, startTime: null, endTime: null}]
+        if (listItem !== "") {
+            const userListAddision = users.map((user) => {
+                if (user.idnum === localUser) {
+                    const newUserLists = user.lists.map((list) => {
+                        if (list.name === localUserInfo[0].lists[id].name) {
+                            return {
+                                ...list,
+                                listItems: [...list.listItems, {id: uuidv4(), item: listItem, completed: false, overdue: false, inRange: true, timeLengthMins: 0, startTime: null, endTime: null}]
+                            }
                         }
+                        else {
+                            return list;
+                        }
+                    })
+                    return {
+                        ...user,
+                        lists: newUserLists
                     }
-                    else {
-                        return list;
-                    }
-                })
-                return {
-                    ...user,
-                    lists: newUserLists
                 }
-            }
-            else {
-                return user;
-            }
-        }) 
-        setUsers(userListAddision);
-        setListItem("");
-        console.log(localUserInfo[0] && localUserInfo[0].lists[id].listItems);
+                else {
+                    return user;
+                }
+            }) 
+            setUsers(userListAddision);
+            setListItem("");
+        }        
     }
 
     //Delete the item from the user's information

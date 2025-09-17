@@ -38,24 +38,26 @@ function PeopleLogs() {
 
     //Adds the person's name and relationship aswell as creates space for the rest of the information that can be added within the log
     function addPersonBasicDetails() {
-        const usersReVamp = users.map((user, index) => {
-            if (user.idnum === localUser) {
-                return {
-                    ...user,
-                    logs: [...user.logs, {id: uuidv4(), personName: personName, relationship: personRelationship, image: image, number: "", birthday: "", likes: [], dislikes: [], type: "People", notes: ""}]
+        if (personName !== "") {
+            const usersReVamp = users.map((user, index) => {
+                if (user.idnum === localUser) {
+                    return {
+                        ...user,
+                        logs: [...user.logs, {id: uuidv4(), personName: personName, relationship: personRelationship, image: image, number: "", birthday: "", likes: [], dislikes: [], type: "People", notes: ""}]
+                    }
                 }
-            }
-            else {
-                return user;
-            }
-        });
-        setUsers(usersReVamp);
+                else {
+                    return user;
+                }
+            });
+            setUsers(usersReVamp);
 
-        //reset information
-        setPersonName("");
-        setPersonRelationship("");
-        setAddPerson(false);
-        setImage("");
+            //reset information
+            setPersonName("");
+            setPersonRelationship("");
+            setAddPerson(false);
+            setImage("");
+        }        
     }
 
     //Uses the router to dynamically navigate to the person chosen's information in the [id] page
