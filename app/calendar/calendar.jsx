@@ -5,8 +5,8 @@ import { Octicons } from "@react-native-vector-icons/octicons";
 
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { useContext, useEffect, useState } from "react";
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { Alert, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Calendar } from 'react-native-calendars';
 import { SelectList } from "react-native-dropdown-select-list";
 import { Gesture, GestureDetector, TextInput } from "react-native-gesture-handler";
@@ -263,6 +263,17 @@ function CalendarFunc() {
         setPeople(people.filter((per) => per.id !== person.id));
     }
 
+    const handlePress = useCallback(async () => {
+        const supported = await Linking.canOpenURL("https://www.weatherapi.com/");
+
+        if (supported) {
+            await Linking.openURL("https://www.weatherapi.com/");
+        } 
+        else {
+            Alert.alert(`Don't know how to open this URL: ${"https://www.weatherapi.com/"}`);
+        }
+    });
+
     const singleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(1).onStart(() => {
         setItem(item);
         setViewEvent(true);
@@ -321,7 +332,17 @@ function CalendarFunc() {
                                     {weatherData.forecast.forecastday.some((day) => day.date === selectedDay) ? (
                                         weatherData.forecast.forecastday.map((day) => {
                                         if (day.date === selectedDay) {
-                                            return <Text style={currentTheme.includes("Light") ? stylesLight.weatherDesc : stylesDark.weatherDesc}>{day.day.condition.text}</Text>;
+                                            return (
+                                                <View>
+                                                    <Text style={currentTheme.includes("Light") ? stylesLight.weatherDesc : stylesDark.weatherDesc}>{day.day.condition.text}</Text>
+                                                    <View style={currentTheme.includes("Light") ? stylesLight.weatherRef : stylesDark.weatherRef}>
+                                                        <Text style={currentTheme.includes("Light") ? stylesLight.refText : stylesDark.refText}>Powered by </Text>
+                                                        <Pressable onPress={handlePress}>
+                                                            <Text style={currentTheme.includes("Light") ? stylesLight.refLink : stylesDark.refLink}>WeatherAPI.com</Text>
+                                                        </Pressable>
+                                                    </View>                                                    
+                                                </View>                                                
+                                            );
                                         }                                            
                                     })
                                     ) : (
@@ -1161,6 +1182,21 @@ const stylesDark = StyleSheet.create({
         color: "#e3e3e3",
         fontSize: 15,
         textAlign: "center"
+    },
+    weatherRef: {
+        flexDirection: "row",
+        marginTop: 5
+    },
+    refText: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 12,
+    },
+    refLink: {
+        fontFamily: "Roboto-Regular",
+        color: "#1966ff",
+        textDecorationLine: "underline",
+        fontSize: 12,
     }
 })
 
