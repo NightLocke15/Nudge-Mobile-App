@@ -2,7 +2,6 @@ import { ThemeContext } from "@/AppContexts/ThemeContext";
 import { UserContext } from "@/AppContexts/UserContext";
 import { Lucide } from "@react-native-vector-icons/lucide";
 import { Octicons } from "@react-native-vector-icons/octicons";
-
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useCallback, useContext, useEffect, useState } from "react";
@@ -71,14 +70,13 @@ function CalendarFunc() {
 
         return hours === 0 && mins === 0 ? 50 : (80 * hours) + heightAddition;
     }  
-
     
 
     useEffect(() => {
         const interval = setInterval(() => {
             setClockTime(new Date());
         }, 1000);
-
+        
         return () => clearInterval(interval);
     }, []);
 
@@ -139,7 +137,7 @@ function CalendarFunc() {
                 [date]: {selected: true}, 
             }));
         }   
-        setTodaysEvents(localUserInfo[0] && localUserInfo[0].events.filter((event) => event.date === date));  
+        setTodaysEvents(localUserInfo[0] && localUserInfo[0].events.filter((event) => event.date === date));   
     }
 
     const getMonth = (month) => {
@@ -333,7 +331,7 @@ function CalendarFunc() {
                                         weatherData.forecast.forecastday.map((day) => {
                                         if (day.date === selectedDay) {
                                             return (
-                                                <View>
+                                                <View key={day.date}>
                                                     <Text style={currentTheme.includes("Light") ? stylesLight.weatherDesc : stylesDark.weatherDesc}>{day.day.condition.text}</Text>
                                                     <View style={currentTheme.includes("Light") ? stylesLight.weatherRef : stylesDark.weatherRef}>
                                                         <Text style={currentTheme.includes("Light") ? stylesLight.refText : stylesDark.refText}>Powered by </Text>

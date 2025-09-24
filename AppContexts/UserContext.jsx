@@ -27,31 +27,46 @@ function UserProvider({children}) {
         return User;
     });
     const [localUserInfo, setLocalUserInfo] = useState();
+    
     const [weatherData, setWeatherData] = useState({});
-    const [location, setLocation] = useState();
-
-    const getLocation = async () => {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-
-        if (status !== 'granted') {
-        console.log('Permission to access location was denied');
-        return;
-        }
-
-        const loc = await Location.getCurrentPositionAsync({});
-        setLocation(loc);
-    };
+    const [city, setCity] = useState("Miami");
 
     useEffect(() => {
+       const getLocation = async () => {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+
+            if (status !== 'granted') {
+                console.log('Permission to access location was denied');
+                return;
+            }
+
+            let loc = await Location.getCurrentPositionAsync({});
+            
+            let reverseGeoCodeAddress = await Location.reverseGeocodeAsync({
+                longitude: loc.coords.longitude,
+                latitude: loc.coords.latitude
+            });
+            setCity(reverseGeoCodeAddress[0].city);
+            console.log(city);
+        };
+
         getLocation();
-        axios.get(`http://api.weatherapi.com/v1/forecast.json?key=5e5fb9402f2b41dd967110133251709&q=${location && location.coords.latitude},${location && location.coords.longitude}&days=3&aqi=no&alerts=no`)
+        console.log(city);
+        
+    }, [authenticated])
+
+    
+
+    useEffect(() => {
+        axios.get(`http://api.weatherapi.com/v1/forecast.json?key=5e5fb9402f2b41dd967110133251709&q=${city}&days=3&aqi=no&alerts=no`)
             .then(response => {
                 setWeatherData(response.data);
+                console.log("weatherData");
             })
             .catch(error => {
                 console.error("Error fetching data: ", error);
-            });
-    }, []);
+            });       
+    }, [authenticated]);
 
     //Determine whether user has been logged in when the re-enter the app
     useEffect(() => {
