@@ -1,6 +1,6 @@
 # Nudge-Mobile-App
 
-Please Note: This Project is only about halfway finished. The documents below contain planning and iteration up untill a certain point. This documentation 
+Please Note: This Project is only about halfway finished. The documents below contain planning and iteration up until end of July 2025. This documentation 
 is likely to change in the near future.
 
 ## Project Summary:
