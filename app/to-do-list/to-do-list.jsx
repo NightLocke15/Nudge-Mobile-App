@@ -30,6 +30,7 @@ function ToDoList() {
     //Router used to navigate back to the home page
     const router = useRouter();
 
+    //Booleans that enable the editing and deleting of lists
     const [editing, setEditing] = useState(false);
     const [deleteWarning, setDeleteWarning] = useState(false);
 
@@ -126,11 +127,13 @@ function ToDoList() {
         setDeleteWarning(false);
     }
 
+    //Activatres the delete warning that warns the user they will be deleting something
     function activateDeleting() {
         setDeleteWarning(true);
         setAction(false);
     }
 
+    //Activates editing and sets the data up to be edited
     function activateEditing() {
         setEditing(true);
         setNewListName(item.name);
@@ -138,6 +141,7 @@ function ToDoList() {
         setAction(false);
     }
 
+    //Edits the information in the user's data
     function editListName() {
          const userChange = users.map((user) => {
             if (user.idnum === localUser) {
@@ -166,6 +170,7 @@ function ToDoList() {
         setChooseList(false);  
     }
 
+    //Gesture handler constants. Detects a single tap on a certain element as well as a double tap and long press.
     const singleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(1).onStart(() => {
         goToList(item)
     }).runOnJS(true);
@@ -178,12 +183,7 @@ function ToDoList() {
         setType(item)
     }).runOnJS(true);
     
-    // Title: Mastering the Swipe: Building a Swipeable List App with React Native and LayoutAnimation
-    // Author: William Schulte
-    // Date: 27 April 2024
-    // Date Accessed: 7 July 2025
-    // Availability: https://medium.com/@wsvuefanatic/how-to-build-a-list-app-with-react-native-swipelistview-and-layout-animation-a3b6171faa50
-    return (
+   return (
         <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
             <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>
                 <View style={currentTheme.includes("Light") ? stylesLight.headerContainer : stylesDark.headerContainer}>

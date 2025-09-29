@@ -15,26 +15,36 @@ function Clock() {
     //Accessing user context and all the users that already exist
     const { localUser, localUserInfo, users, setUsers } = useContext(UserContext);
     const {currentTheme, gradientColours } = useContext(ThemeContext);
+
+    //All thge information and states for the timer to be set, started, paused, resumed and stopped
     const [timerAmounts, setTimerAmounts] = useState({hours: 0, minutes: 0, seconds: 0});
     const [showTimerPickerT, setShowTimerPickerT] = useState(false);
     const [timerReady, setTimerReady] = useState(false);
     const [timerButtons, setTimerButtons] = useState(false);
     const [timerRunning, setTimerRunning] = useState(false);
     const [currentTimer, setCurrentTimer] = useState({hours: 0, minutes: 0, seconds: 0});
+    
+    //Storing the information for the alarm before adding it to the user's data.
     const [alarmName, setAlarmName] = useState("");
     const [alarmTime, setAlarmTime] = useState({hours: 0, minutes: 0});
     const [addAlarm, setAddAlarm] = useState(false);
 
+    //Router to navigate the user back to the home page
     const router = useRouter();
 
+    //Information and states set when interacting with items by tapping or double tapping in order to edit or delete the correct items
     const [action, setAction] = useState(false);
     const [tapPostition, setTapPosition] = useState({x: 0, y: 0})
     const [item, setItem] = useState();
+
+    //All booleans to do with editing and deleting items
     const [warning, setWarning] = useState(false);
     const [editing, setEditing] = useState(false);
+
+    //Stores the current time
     const [time, setTime] = useState(new Date());
 
-
+    //Stores an array of weekdays for the list of days that can be chosen for the alarm to go off on
     const [weekDays, setWeekDays] = useState([
         {
             id: 0,
@@ -80,6 +90,7 @@ function Clock() {
         },
     ])
 
+    //Interval to update the clock as time passes by
     useEffect(() => {
         const interval = setInterval(() => {
             setTime(new Date());
@@ -88,6 +99,7 @@ function Clock() {
         return () => clearInterval(interval);
     }, []);
 
+    //Useeffect to track the timer as it counts down
     useEffect(() => {
         if (!timerRunning) return;
 
@@ -107,6 +119,7 @@ function Clock() {
         return () => clearInterval(interval);  
     }, [timerRunning])
 
+    //Sets the timer amount so it is ready to be started with teh correct numbers
     function confirmTimer(amount) {
         setTimerAmounts(amount);
         setCurrentTimer(amount);
@@ -119,17 +132,20 @@ function Clock() {
         }        
     }
 
+    //Brings correct buttons into view for the user
     function startTimer() {
         setTimerButtons(true);
         setTimerRunning(true);
     }
 
+    //Resets the timer and the buttons
     function resetTimer() {
         setTimerAmounts(currentTimer);
         setTimerButtons(false);
         setTimerRunning(false);
     }
 
+    //Adds the alarm that was created to the user's data
     function addingAlarm() {
         const usersReVamp = users.map((user, index) => {
         if (user.idnum === localUser) {
@@ -154,6 +170,7 @@ function Clock() {
         setAddAlarm(false);
     }
 
+    //Selects/Unselects the days that the user wants the alarm to go off on
     function selectDay(day) {
         const newWeekdays = weekDays.map((weekDay) => {
             if (weekDay.key === day.key) {
@@ -170,6 +187,7 @@ function Clock() {
         setWeekDays(newWeekdays);
     }
 
+    //Sets the alarm active or inactive in the user's data
     function alarmActive(id) {
         const usersReVamp = users.map((user, index) => {
         if (user.idnum === localUser) {
@@ -196,11 +214,13 @@ function Clock() {
         setUsers(usersReVamp);
     }
 
+    //Triggers delete warning, warning the user before they delete anything.
     function triggerDelete() {
         setAction(false);
         setWarning(true);
     }
 
+    //Deletes the alarm from the user's data
     function deleteAlarm() {
         const usersReVamp = users.map((user, index) => {
         if (user.idnum === localUser) {
@@ -218,6 +238,7 @@ function Clock() {
         setWarning(false);
     }
 
+    //Triggers edit of alarms and sets the data so the alarm's details can be edited
     function triggerEdit() {
         setEditing(true);
         setAction(false);
@@ -227,6 +248,7 @@ function Clock() {
         setAddAlarm(true);
     }
 
+    //Edits alarm info in the user's data
     function editAlarm() {
         const userChange = users.map((user) => {
             if (user.idnum === localUser) {
@@ -265,6 +287,7 @@ function Clock() {
         setAddAlarm(false);
     }
 
+    //Gesture handler constant that handles the double tap on the alarms elements
     const doubleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(2).onStart((event) => {
         setItem(item);
         setTapPosition({x: event.absoluteX > 260 ? 260 : event.absoluteX, y: event.absoluteY > 530 ? 530 : event.absoluteY})

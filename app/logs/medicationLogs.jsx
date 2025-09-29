@@ -46,10 +46,12 @@ function MedicationLogs() {
         {key: "4", value: "Monthly"},
     ]
 
+    //Information and states set when interacting with items by tapping or double tapping in order to edit or delete the correct items
     const [item, setItem] = useState();
     const [action, setAction] = useState(false);
     const [tapPostition, setTapPosition] = useState({x: 0, y: 0})
 
+    //All booleans to do with editing and deleting items, and to view or edit the image
     const [viewImg, setViewImg] = useState(false);
     const [image, setImage] = useState("");
     const [warning, setWarning] = useState(false);
@@ -327,6 +329,7 @@ function MedicationLogs() {
         setUsers(usersReVamp);
     }
 
+    //Triggers the warning that warns user they are about to delete a medication
     function triggerDelete() {
         setWarning(true);
         setAction(false);
@@ -356,6 +359,7 @@ function MedicationLogs() {
         setTimes(times.filter((time) => time.id !== timeID));
     }
 
+    //Allows the user to add an image from their library
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ['images', 'videos'],
@@ -372,6 +376,7 @@ function MedicationLogs() {
         }
     };
 
+    //Adds image of the medicine to the user's data
     function addImageToLogs(image) {
         const userList = users.map((user) => {
             if (user.idnum === localUser) {
@@ -400,6 +405,7 @@ function MedicationLogs() {
         setUsers(userList);
     }
 
+    //Triggers the editing of the medicine and sets the data up to be edited
     function triggerEditing() {
         setEditing(true);
         setAction(false);
@@ -414,6 +420,7 @@ function MedicationLogs() {
         setFetchRepeat(item.repeats);
     }
 
+    //Edits the info about the medication in the user's data
     function editMed() {
         const usersReVamp = users.map((user, index) => {
         if (user.idnum === localUser) {
@@ -482,17 +489,20 @@ function MedicationLogs() {
         setFetchDate(new Date());
     }
 
+    //View the image of the medication
     function viewImage(medItem) {
         setViewImg(true);
         setItem(medItem);
         setImage(medItem.image);
     }
 
+    //Close the image
     function closeImage() {
         setViewImg(false);
         setImage("");
     }
 
+    //Gesture handler constants. Detects a double tap on some elements.
     const doubleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(2).onStart((event) => {
         setItem(item);
         setTapPosition({x: event.absoluteX > 260 ? 260 : event.absoluteX, y: event.absoluteY > 530 ? 530 : event.absoluteY})

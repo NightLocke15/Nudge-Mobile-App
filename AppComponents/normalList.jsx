@@ -23,6 +23,8 @@ function NormalList(props) {
 
     //Set the state of editing to trigger the editing tile for the list item
     const [editing, setEditing] = useState(false);
+
+    //Information and states set when interacting with items by tapping or double tapping in order to edit or delete the correct items
     const [item, setItem] = useState();
     const [action, setAction] = useState(false);
     const [tapPostition, setTapPosition] = useState({x: 0, y: 0})
@@ -172,6 +174,7 @@ function NormalList(props) {
         setUsers(userChange);
     }
 
+    //Gesture handler constants. Detects a long press on a certain element as well as a double tap.
     const doubleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(2).onStart((event) => {
         setItem(item);
         setTapPosition({x: event.absoluteX > 260 ? 260 : event.absoluteX, y: event.absoluteY > 530 ? 530 : event.absoluteY})

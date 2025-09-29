@@ -30,6 +30,7 @@ function Diary(props) {
     //Router that is used to navigate the user back to the diaryLogs page
     const router = useRouter();
 
+    //Information and states set when interacting with items by tapping or double tapping in order to edit or delete the correct items
     const [addOptions, setAddOptions] = useState(false);
     const [action, setAction] = useState(false);
     const [tapPostition, setTapPosition] = useState({x: 0, y: 0})
@@ -65,6 +66,7 @@ function Diary(props) {
 
     }, [text]);
 
+    //Activates the editing of the name and sets this data up to be edited
     function activateEditing() {
         setNameEdit(true);
         setAction(false);
@@ -89,6 +91,7 @@ function Diary(props) {
         setNameEdit(false);
     }
 
+    //Allows the user to pick an image from their library
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ['images', 'videos'],
@@ -105,6 +108,7 @@ function Diary(props) {
         }
     };
 
+    //Adds images that are added to the log to the user's information
     function addImagesToLogs(imageURI) {
         const userList = users.map((user) => {
             if (user.idnum === localUser) {
@@ -133,6 +137,7 @@ function Diary(props) {
         setUsers(userList);
     }
 
+    //Gesture handler constants. Detects a double tap on a certain element.
     const doubleTap = () => Gesture.Tap().maxDuration(250).numberOfTaps(2).onStart((event) => {
             setTapPosition({x: event.absoluteX > 260 ? 260 : event.absoluteX, y: event.absoluteY > 530 ? 530 : event.absoluteY})
             setAction(true);

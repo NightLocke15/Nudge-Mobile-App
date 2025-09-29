@@ -123,6 +123,7 @@ function PeopleLogs() {
         setPersonRelationship("");
     }
 
+    //Allows the user to pick an image from their library
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ['images'],
@@ -138,6 +139,7 @@ function PeopleLogs() {
         }
     };
 
+    //Gesture handler constants. Detects a single tap on a certain element as well as a double tap.
     const singleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(1).onStart(() => {
         goToPerson(item)
     }).runOnJS(true);

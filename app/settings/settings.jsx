@@ -10,10 +10,14 @@ import { Pressable } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function Settings() {
+    //Access to the user context and all the existing users
     const { currentTheme, changePrefTheme, gradientColours } = useContext(ThemeContext);
     const { localUserInfo, localUser, users, setUsers, logout } = useContext(UserContext);
+    
+    //Sets the state to enable the user to edit any of the information displayed
     const [editing, setEditing] = useState("");
 
+    //Stores the data that is being edited before it is stored in the user's data
     const [newUser, setNewUser] = useState("");
     const [oldEmail, setOldEmail] = useState("");
     const [newEmail, setNewEmail] = useState("");
@@ -21,8 +25,10 @@ function Settings() {
     const [newPassword, setNewPassword] = useState("");
     const [warning, setWarning] = useState("");
 
+    //Router to navigate the user back to the home page
     const router = useRouter();
 
+    //Stores the four theme options for the app
     const themeOptions = [
         {key: 1, value: "Light - Gradient"},
         {key: 2, value: "Light - Plain"},
@@ -30,6 +36,7 @@ function Settings() {
         {key: 4, value: "Dark - Plain"},
     ]
 
+    //Edits the Username in the user's data
     function editUsername() {
         const newUsers = users.map((user) => {
             if (user.idnum === localUser) {
@@ -46,6 +53,7 @@ function Settings() {
         setEditing("");
     }
 
+    //Edits the Email in the user's data
     function editEmail() {
         if (oldEmail === localUserInfo[0].email) {
             const newUsers = users.map((user) => {
@@ -68,6 +76,7 @@ function Settings() {
         }     
     }
 
+    //Edits the Password in the user's data
     function editPassword() {
         if (oldPassword === localUserInfo[0].password) {
             const newUsers = users.map((user) => {
@@ -90,12 +99,13 @@ function Settings() {
         }
     }
 
+    //Logs the user out of their account
     function enableLogOut() {
         router.navigate("/home");
         logout();
     }
 
-    
+    //Allows the user to access the external link provided for the Lucide icons page
     const handlePress = useCallback(async () => {
         const supported = await Linking.canOpenURL("https://lucide.dev");
 

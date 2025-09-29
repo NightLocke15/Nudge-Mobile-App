@@ -38,6 +38,7 @@ function TimedList(props) {
     const [viewItemBox, setViewItemBox] = useState(false);  
     const [viewItemText, setViewItemText] = useState("");  
     
+    //Information and states set when interacting with items by tapping or double tapping in order to edit or delete the correct items
     const [action, setAction] = useState(false);
     const [tapPostition, setTapPosition] = useState({x: 0, y: 0})
    
@@ -368,6 +369,7 @@ function TimedList(props) {
         setEndTimes(object);
     }
 
+    //Gesture handler constants. Detects a single tap on a certain element as well as a double tap and long press.
     const singleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(1).onStart(() => viewItem(item)).runOnJS(true);
     const doubleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(2).onStart((event) => {
         setItem(item);

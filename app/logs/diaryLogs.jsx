@@ -31,10 +31,12 @@ function DiaryLogs() {
     //Finding the current date
     const today = new Date();
 
+    //Information and states set when interacting with items by tapping or double tapping in order to edit or delete the correct items
     const [item, setItem] = useState();
     const [action, setAction] = useState(false);
     const [tapPostition, setTapPosition] = useState({x: 0, y: 0})
 
+    //Warning that is set active before item is deleted
     const [warning, setWarning] = useState(false);
 
     //Add a new diary entry to the user's list of entries
@@ -60,6 +62,7 @@ function DiaryLogs() {
 
     }
 
+    //Triggers the delete warning
     function triggerDelete() {
         setAction(false);
         setWarning(true);
@@ -114,6 +117,7 @@ function DiaryLogs() {
         setItemID(null);
     }
 
+    //Gesture handler constants. Detects a single tap on a certain element as well as a double tap.
     const singleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(1).onStart(() => {
             goToLog(item)
     }).runOnJS(true);

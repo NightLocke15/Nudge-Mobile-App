@@ -31,6 +31,7 @@ function UserProvider({children}) {
     const [weatherData, setWeatherData] = useState({});
     const [city, setCity] = useState("Miami");
 
+    //Finds the location of the user's phone
     useEffect(() => {
        const getLocation = async () => {
             let { status } = await Location.requestForegroundPermissionsAsync();
@@ -55,8 +56,7 @@ function UserProvider({children}) {
         
     }, [authenticated])
 
-    
-
+    //Stores the data for the weather of the user's area
     useEffect(() => {
         axios.get(`http://api.weatherapi.com/v1/forecast.json?key=5e5fb9402f2b41dd967110133251709&q=${city}&days=3&aqi=no&alerts=no`)
             .then(response => {

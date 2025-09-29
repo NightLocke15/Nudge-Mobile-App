@@ -15,19 +15,22 @@ import { v4 as uuidv4 } from 'uuid';
    
 
 function CalendarFunc() {
+    //Access to the user context and all the existing users
     const { users, setUsers, localUserInfo, localUser, weatherData } = useContext(UserContext);
     const {currentTheme, gradientColours } = useContext(ThemeContext);
+
+    //Router to navigate the user back to the home page
     const router = useRouter();
+
+    //Calendar information. What is today's date, what is the current month, all stored events etc.
     const [selectedDay, setSelectedDay] = useState('');
     const [dateList, setDateList] = useState({});
     const [dynamicDateList, setDynamicDateList] = useState({});
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
     const [today, setToday] = useState();
     const [todaysEvents, setTodaysEvents] = useState([]);
-    const [creating, setCreating] = useState(false);
-    const [warning, setWarning] = useState(false);
-    const [editing, setEditing] = useState(false);
 
+    //Information stored for the creation of events before it is added to the user's information
     const [event, setEvent] = useState('');
     const [eventType, setEventType] = useState('');
     const [eventDesc, setEventDesc] = useState('')
@@ -37,19 +40,25 @@ function CalendarFunc() {
     const [durationMins, setDurationMins] = useState('');
     const [clockTime, setClockTime] = useState(new Date());
     const [people, setPeople] = useState([]);
-   
-    
 
+    //All booleans to do with creating, editing and deleting items
+    const [creating, setCreating] = useState(false);
+    const [warning, setWarning] = useState(false);
+    const [editing, setEditing] = useState(false);
+    const eventTypesList = ['Birthday', 'Meeting', 'Appointment', 'Other'];
+
+    //Information and states set when interacting with items by tapping or double tapping in order to edit or delete the correct items
     const [item, setItem] = useState();
     const [action, setAction] = useState(false);
     const [tapPostition, setTapPosition] = useState({x: 0, y: 0})
     const [viewEvent, setViewEvent] = useState(false);
 
-    const eventTypesList = ['Birthday', 'Meeting', 'Appointment', 'Other'];
+    //Arrays used to create time slots in the calendar list at the bottom of the page
     const arrayRange = (start, end, step = 1) => Array.from({length: end - start / step + 1}, (_, i) => start + i * step);
     const numberRange = arrayRange(0,23);
     const timeSlotNumbers = numberRange.map((number) => number < 10 ? `0${number}:00` : `${number}:00`) 
 
+    //Determinging the height of the event card in the calendar list based on the amount of time the event will be
     const cardHeight = (hours, mins) => {
         let heightAddition;
         if (mins > 0 && mins <= 15) {
@@ -72,6 +81,7 @@ function CalendarFunc() {
     }  
     
 
+    //Interval to update the clock as time passes by
     useEffect(() => {
         const interval = setInterval(() => {
             setClockTime(new Date());
@@ -80,6 +90,7 @@ function CalendarFunc() {
         return () => clearInterval(interval);
     }, []);
 
+    //Gets the list of events saved under the current user, and gets them again if an event is created to make sure all events have been accounted for
     useEffect(() => {
         const todayDate = new Date();
         setToday(`${todayDate.getFullYear()}-${todayDate.getMonth() + 1 < 10 ? `0${todayDate.getMonth() + 1}` : `${todayDate.getMonth() + 1}`}-${todayDate.getDate() < 10 ? `0${todayDate.getDate()}` : `${todayDate.getDate()}`}`)
@@ -120,8 +131,7 @@ function CalendarFunc() {
         setDynamicDateList(dates);
     }, [localUserInfo]);
 
-    
-
+    //When a day on the calander is selected, the events for that day is showcased in the calendar list.
     function daySelect(date) {
         setSelectedDay(date);
         setDynamicDateList(dateList);
@@ -140,10 +150,12 @@ function CalendarFunc() {
         setTodaysEvents(localUserInfo[0] && localUserInfo[0].events.filter((event) => event.date === date));   
     }
 
+    //Getting the current month we are in
     const getMonth = (month) => {
         setCurrentMonth(month.month);
     }
 
+    //Add event to the user's information and then resetting the data so a new event can be added
     function addEvent() {
         if (event !== "") {
             const usersReVamp = users.map((user, index) => {
@@ -172,11 +184,13 @@ function CalendarFunc() {
         
     }
 
+    //Triggers the delete warning, asking if the user is sure
     function triggerDelete() {
         setAction(false);
         setWarning(true);
     }
 
+    //Delete event from the user's information
     function deleteEvent(eventItem) {
         const userRevamp = users.map((user, index) => {
             if (user.idnum === localUser) {
@@ -195,6 +209,7 @@ function CalendarFunc() {
         setWarning(false);
     }
 
+    //Triggers editing, setting all the information up to be edited by the user
     function triggerEdit() {
         setViewEvent(false);
         setCreating(true);
@@ -209,6 +224,7 @@ function CalendarFunc() {
         setPeople(item.people);
     }
 
+    //Edits the event's informatiopn in the user's data
     function editEvent() {
         const userRevamp = users.map((user, index) => {
             if (user.idnum === localUser) {
@@ -253,14 +269,17 @@ function CalendarFunc() {
         setPeople([]);
     }
 
+    //Adds a person to an event
     function addPeople(person) {
         setPeople([...people, person]);
     }
 
+    //Removes a person from the event
     function removePeople(person) {
         setPeople(people.filter((per) => per.id !== person.id));
     }
 
+    //When clicking on the link for the weather API, this enables user to go to that link
     const handlePress = useCallback(async () => {
         const supported = await Linking.canOpenURL("https://www.weatherapi.com/");
 
@@ -272,8 +291,9 @@ function CalendarFunc() {
         }
     });
 
+    //Gesture handler constants. Detects a single tap on a certain element as well as a double tap.
     const singleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(1).onStart(() => {
-        setItem(item);
+       setItem(item);
         setViewEvent(true);
         }).runOnJS(true);
     const doubleTap = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(2).onStart((event) => {
@@ -380,7 +400,7 @@ function CalendarFunc() {
                                     return (
                                         <View key={event.id} style={currentTheme.includes("Light") ? stylesLight.birthdayCard : stylesDark.birthdayCard}>
                                             <Lucide name="sparkles" size={25} color={'#eed237ff'}/>
-                                            <Text style={stylesLight.birthdayText}>{event.eventName}</Text>
+                                            <Text style={currentTheme.includes("Light") ? stylesLight.birthdayText : stylesDark.birthdayText}>{event.eventName}</Text>
                                             <Lucide name="sparkles" size={25} color={'#eed237ff'}/>
                                         </View>
                                     )                                    
@@ -394,7 +414,7 @@ function CalendarFunc() {
                                 <View key={num} style={currentTheme.includes("Light") ? stylesLight.timeSlotContainer : stylesDark.timeSlotContainer}>
                                     <Text style={currentTheme.includes("Light") ? stylesLight.timeSlot : stylesDark.timeSlot}>{num}</Text>
                                     {todaysEvents.map((event) => {
-                                        if (event.time.slice(0,2) === num.slice(0,2)) {
+                                        if (event.type !== "Birthday" && event.time.slice(0,2) === num.slice(0,2)) {
                                             return (
                                                 <GestureDetector  key={event.id} gesture={Gesture.Exclusive(doubleTap(event), singleTap(event))}>
                                                     <View style={[currentTheme.includes("Light") ? stylesLight.eventCard : stylesDark.eventCard, {

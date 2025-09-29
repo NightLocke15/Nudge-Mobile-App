@@ -13,8 +13,10 @@ function Emergency() {
     const { localUser, localUserInfo, users, setUsers } = useContext(UserContext);
     const {currentTheme, gradientColours } = useContext(ThemeContext);
 
+    //Router to navigate the user back to the home page
     const router = useRouter();
     
+    //**Currently this only sends a console log. Next step is to add call functionality**
     return (
         <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
             <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>
