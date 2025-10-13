@@ -173,45 +173,45 @@ function Diary(props) {
                                 
             <TextInput multiline placeholder="Enter Log..." placeholderTextColor={"#9e9e9e"} value={text} onChangeText={(e) => setText(e)} style={currentTheme.includes("Light") ? stylesLight.noteInput : stylesDark.noteInput}/>
             {nameEdit ? (
-                <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                <Pressable onPress={() => setNameEdit(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                     <View style={currentTheme.includes("Light") ? stylesLight.editNameContainer : stylesDark.editNameContainer}>
+                        <Pressable onPress={() => setNameEdit(false)} style={currentTheme.includes("Light") ? stylesLight.close : stylesDark.close}>
+                            <Octicons name="x" size={20} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
+                        </Pressable>
                         <TextInput placeholder="Name..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setName(e)} value={name} maxLength={15} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input}/>
                         <Pressable onPress={editName} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
                         </Pressable>
                     </View>
-                </View>
+                </Pressable>
             ) : (
                 <View></View>
             )}
             {addOptions ? (
-                <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                <Pressable onPress={() => setAddOptions(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                     <View style={currentTheme.includes("Light") ? stylesLight.optionsContainer : stylesDark.optionsContainer}>
+                        <Pressable onPress={() => setAddOptions(false)} style={currentTheme.includes("Light") ? stylesLight.close : stylesDark.close}>
+                            <Octicons name="x" size={20} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
+                        </Pressable>
                         <Pressable onPress={pickImage} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Image</Text>
                         </Pressable>
                         <Pressable style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Voice Note</Text>
                         </Pressable>
-                        <Pressable onPress={() => setAddOptions(false)} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
-                            <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Cancel</Text>
-                        </Pressable>
                     </View>
-                </View>
+                </Pressable>
             ) : (
                 <View></View>
             )}
             {action ? (
-                <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                     <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
                         <Pressable onPress={activateEditing} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                         </Pressable>
-                        <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
-                            <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>Cancel</Text>
-                        </Pressable>
                     </View>
-                </View>
+                </Pressable>
             ) : (
                 <View></View>
             )}
@@ -371,6 +371,11 @@ const stylesLight = StyleSheet.create({
         color: "#242424",
         fontSize: 18
     },
+    close: {
+        position: "absolute",
+        right: 10,
+        top: 10,
+    },
 });
 
 const stylesDark = StyleSheet.create({
@@ -524,6 +529,11 @@ const stylesDark = StyleSheet.create({
         fontFamily: "Roboto-Regular",
         color: "#e3e3e3",
         fontSize: 18
+    },
+    close: {
+        position: "absolute",
+        right: 10,
+        top: 10,
     },
 });
 

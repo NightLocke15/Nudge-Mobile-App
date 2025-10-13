@@ -173,8 +173,11 @@ function PeopleLogs() {
                     </GestureDetector>
                 ))}
                 {addPerson ? (
-                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <Pressable onPress={() => setAddPerson(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={currentTheme.includes("Light") ? stylesLight.addPersonContainer : stylesDark.addPersonContainer}>
+                            <Pressable onPress={() => setAddPerson(false)} style={currentTheme.includes("Light") ? stylesLight.close : stylesDark.close}>
+                                <Octicons name="x" size={20} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
+                            </Pressable>
                             <Text style={currentTheme.includes("Light") ? stylesLight.heading : stylesDark.heading}>Person Name:</Text>
                             <TextInput placeholder="Name..." placeholderTextColor="#9e9e9e" value={personName} onChangeText={(e) => setPersonName(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
                             <Text style={currentTheme.includes("Light") ? stylesLight.heading : stylesDark.heading}>Relationship:</Text>
@@ -189,12 +192,12 @@ function PeopleLogs() {
                                 <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
                             </Pressable>
                         </View>
-                    </View>                    
+                    </Pressable>                    
                 ) : (
                     <View></View>
                 )}
                 {warning ? (
-                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <Pressable onPress={() => setWarning(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={currentTheme.includes("Light") ? stylesLight.warningContainer : stylesDark.warningContainer}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.warningText : stylesDark.warningText}>Are you sure you want to delete this person?</Text>
                             <View style={currentTheme.includes("Light") ? stylesLight.buttonContainer : stylesDark.buttonContainer}>
@@ -206,12 +209,12 @@ function PeopleLogs() {
                                 </Pressable>
                             </View>                            
                         </View>
-                    </View>                    
+                    </Pressable>                    
                 ) : (
                     <View></View>
                 )}
                 {action ? (
-                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
                             <Pressable onPress={() => triggerEditing(item)} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
@@ -219,11 +222,8 @@ function PeopleLogs() {
                             <Pressable onPress={() => deleteWarning(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                             </Pressable>
-                            <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
-                                <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>Cancel</Text>
-                            </Pressable>
                         </View>
-                    </View>
+                    </Pressable>
                 ) : (
                     <View></View>
                 )}
@@ -442,6 +442,11 @@ const stylesLight = StyleSheet.create({
         color: "#242424",
         fontSize: 18
     },
+    close: {
+        position: "absolute",
+        right: 10,
+        top: 10,
+    },
 });
 
 const stylesDark = StyleSheet.create({
@@ -653,6 +658,11 @@ const stylesDark = StyleSheet.create({
         fontFamily: "Roboto-Regular",
         color: "#e3e3e3",
         fontSize: 18
+    },
+    close: {
+        position: "absolute",
+        right: 10,
+        top: 10,
     },
 });
 

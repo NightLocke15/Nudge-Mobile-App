@@ -561,6 +561,9 @@ function MedicationLogs() {
                 {createEntry ? (
                     <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={currentTheme.includes("Light") ? stylesLight.addMedContainer : stylesDark.addMedContainer}>
+                            <Pressable onPress={() => setCreateEntry(false)} style={currentTheme.includes("Light") ? stylesLight.close : stylesDark.close}>
+                                <Octicons name="x" size={20} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
+                            </Pressable>
                             <View>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.formHeaders : stylesDark.formHeaders}>Medication Name</Text>
                                 <TextInput placeholder="Name..." placeholderTextColor="#9e9e9e" value={medName} onChangeText={(e) => setMedName(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
@@ -647,7 +650,7 @@ function MedicationLogs() {
                     <View></View>
                 )}
                 {action ? (
-                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
                             <Pressable onPress={triggerEditing} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
@@ -655,16 +658,13 @@ function MedicationLogs() {
                             <Pressable onPress={triggerDelete} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                             </Pressable>
-                            <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
-                                <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>Cancel</Text>
-                            </Pressable>
                         </View>
-                    </View>
+                    </Pressable>
                 ) : (
                     <View></View>
                 )}
                 {viewImg ? (
-                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <Pressable onPress={() => setViewImg(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={currentTheme.includes("Light") ? stylesLight.viewImageContainer : stylesDark.viewImageContainer}> 
                             <Pressable onPress={closeImage} style={currentTheme.includes("Light") ? stylesLight.close : stylesDark.close}>
                                 <Octicons name="x" size={30} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
@@ -674,12 +674,12 @@ function MedicationLogs() {
                                 <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>{image === "" ? "Add" : "Change"}</Text>
                             </Pressable>
                         </View>
-                    </View>
+                    </Pressable>
                     ) : (
                     <View></View>
                 )}
                 {warning ? (
-                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <Pressable onPress={() => setWarning(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={currentTheme.includes("Light") ? stylesLight.warningContainer : stylesDark.warningContainer}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.warningText : stylesDark.warningText}>Are you sure you want to delete this medication log?</Text>
                             <View style={currentTheme.includes("Light") ? stylesLight.warningButtonContainer : stylesDark.warningButtonContainer}>
@@ -691,7 +691,7 @@ function MedicationLogs() {
                                 </Pressable>
                             </View>                            
                         </View>
-                    </View>                    
+                    </Pressable>                    
                 ) : (
                     <View></View>
                 )}
@@ -993,6 +993,11 @@ const stylesLight = StyleSheet.create({
     warningButtonContainer: {
         flexDirection: "row"
     },
+    close: {
+        position: "absolute",
+        right: 10,
+        top: 10,
+    },
 })
 
 const stylesDark = StyleSheet.create({
@@ -1287,6 +1292,11 @@ const stylesDark = StyleSheet.create({
     },
     warningButtonContainer: {
         flexDirection: "row"
+    },
+    close: {
+        position: "absolute",
+        right: 10,
+        top: 10,
     },
 })
 

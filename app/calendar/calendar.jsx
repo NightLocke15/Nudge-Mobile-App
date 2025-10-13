@@ -449,6 +449,9 @@ function CalendarFunc() {
                 {creating ? (
                     <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={currentTheme.includes("Light") ? stylesLight.addEventContainer : stylesDark.addEventContainer}>
+                            <Pressable onPress={() => setCreating(false)} style={currentTheme.includes("Light") ? stylesLight.close : stylesDark.close}>
+                                <Octicons name="x" size={20} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
+                            </Pressable>
                             <Text style={currentTheme.includes("Light") ? stylesLight.createHeading : stylesDark.createHeading}>Event</Text>
                             <TextInput placeholder="Event Name..." placeholderTextColor="#9e9e9e" value={event} onChangeText={(e) => setEvent(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
                             <Text style={currentTheme.includes("Light") ? stylesLight.createHeading : stylesDark.createHeading}>Event Type</Text>
@@ -496,16 +499,13 @@ function CalendarFunc() {
                 )}
                 
                 {action ? (
-                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
                             <Pressable onPress={triggerDelete} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                             </Pressable>
-                            <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
-                                <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>Cancel</Text>
-                            </Pressable>
                         </View>
-                    </View>
+                    </Pressable>
                 ) : (
                     <View></View>
                 )}
@@ -551,7 +551,7 @@ function CalendarFunc() {
                     <View></View>
                 )}
                 {warning ? (
-                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <Pressable onPress={() => setWarning(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={currentTheme.includes("Light") ? stylesLight.warningContainer : stylesDark.warningContainer}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.warningText : stylesDark.warningText}>Are you sure you want to delete this event?</Text>
                             <View style={currentTheme.includes("Light") ? stylesLight.warningButtonContainer : stylesDark.warningButtonContainer}>
@@ -563,7 +563,7 @@ function CalendarFunc() {
                                 </Pressable>
                             </View>                            
                         </View>
-                    </View>                    
+                    </Pressable>                    
                 ) : (
                     <View></View>
                 )}
@@ -774,6 +774,7 @@ const stylesLight = StyleSheet.create({
     actionContainer: {
         backgroundColor: '#e3e3e3',
         padding: 20,
+        paddingTop: 10,
         borderTopRightRadius: 10,
         borderBottomRightRadius: 10,
         borderBottomLeftRadius: 10
@@ -1090,6 +1091,7 @@ const stylesDark = StyleSheet.create({
     actionContainer: {
         backgroundColor: '#2b2b2b',
         padding: 20,
+        paddingTop: 10,
         borderTopRightRadius: 10,
         borderBottomRightRadius: 10,
         borderBottomLeftRadius: 10

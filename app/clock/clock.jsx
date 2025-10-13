@@ -359,8 +359,11 @@ function Clock() {
                     ))}   
                 </ScrollView>          
                 {addAlarm ? (
-                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <Pressable onPress={() => setAddAlarm(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={currentTheme.includes("Light") ? stylesLight.addAlarmContainer : stylesDark.addAlarmContainer}>
+                            <Pressable onPress={() => setAddAlarm(false)} style={currentTheme.includes("Light") ? stylesLight.close : stylesDark.close}>
+                                <Octicons name="x" size={20} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
+                            </Pressable>
                             <TimerPicker 
                             hourLabel=":"
                             minuteLabel=""
@@ -406,12 +409,12 @@ function Clock() {
                                 <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
                             </Pressable>
                         </View>
-                    </View>                    
+                    </Pressable>                    
                 ) : (
                     <View></View>
                 )}
                 {action ? (
-                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
                             <Pressable onPress={triggerEdit} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
@@ -419,11 +422,8 @@ function Clock() {
                             <Pressable onPress={triggerDelete} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                             </Pressable>
-                            <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
-                                <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>Cancel</Text>
-                            </Pressable>
                         </View>
-                    </View>
+                    </Pressable>
                 ) : (
                     <View></View>
                 )}
@@ -704,6 +704,11 @@ const stylesLight = StyleSheet.create({
         right: "5%",
         top: "30%"         
     },
+    close: {
+        position: "absolute",
+        right: 10,
+        top: 10,
+    },
 });
 
 const stylesDark = StyleSheet.create({
@@ -955,6 +960,11 @@ const stylesDark = StyleSheet.create({
         position: "absolute",
         right: "5%",
         top: "30%"         
+    },
+    close: {
+        position: "absolute",
+        right: 10,
+        top: 10,
     },
 });
 

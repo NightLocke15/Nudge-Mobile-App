@@ -205,7 +205,7 @@ function NormalList(props) {
                 </GestureDetector>
             ))}
             {action ? (
-                <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                     <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
                         <Pressable onPress={() => editItem(item)} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
@@ -213,11 +213,8 @@ function NormalList(props) {
                         <Pressable onPress={() => deleteItem(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                         </Pressable>
-                        <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
-                            <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>Cancel</Text>
-                        </Pressable>
                     </View>
-                </View>
+                </Pressable>
             ) : (
                 <View></View>
             )}

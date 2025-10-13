@@ -151,19 +151,22 @@ function DiaryLogs() {
                     ))}
                 </View>
                 {editing ? (
-                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <Pressable onPress={() => setEditing(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={currentTheme.includes("Light") ? stylesLight.editNameContainer : stylesDark.editNameContainer}>
+                            <Pressable onPress={() => setEditing(false)} style={currentTheme.includes("Light") ? stylesLight.close : stylesDark.close}>
+                                <Octicons name="x" size={20} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
+                            </Pressable>
                             <TextInput placeholder="Name..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setLogName(e)} value={logName} maxLength={15} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
                             <Pressable onPress={editLogName} style={currentTheme.includes("Light") ? stylesLight.done : stylesDark.done}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.doneText : stylesDark.doneText}>Done</Text>
                             </Pressable>
                         </View>
-                    </View>                    
+                    </Pressable>                    
                 ) : (
                     <View></View>
                 )}
                 {action ? (
-                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
                             <Pressable onPress={() => triggerEditing(item)} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
@@ -171,16 +174,13 @@ function DiaryLogs() {
                             <Pressable onPress={triggerDelete} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                             </Pressable>
-                            <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
-                                <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>Cancel</Text>
-                            </Pressable>
                         </View>
-                    </View>
+                    </Pressable>
                 ) : (
                     <View></View>
                 )}
                 {warning ? (
-                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <Pressable onPress={() => setWarning(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={currentTheme.includes("Light") ? stylesLight.warningContainer : stylesDark.warningContainer}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.warningText : stylesDark.warningText}>Are you sure you want to delete this person?</Text>
                             <View style={currentTheme.includes("Light") ? stylesLight.buttonContainer : stylesDark.buttonContainer}>
@@ -192,7 +192,7 @@ function DiaryLogs() {
                                 </Pressable>
                             </View>                            
                         </View>
-                    </View>                    
+                    </Pressable>                    
                 ) : (
                     <View></View>
                 )}
@@ -281,6 +281,7 @@ const stylesLight = StyleSheet.create({
         left: "5%",
         top: "10%",
         padding: 20,
+        paddingTop: 40,
         backgroundColor: "#e3e3e3",
         elevation: 5,
         borderRadius: 10,
@@ -381,6 +382,11 @@ const stylesLight = StyleSheet.create({
     buttonContainer: {
         flexDirection: "row"
     },
+    close: {
+        position: "absolute",
+        right: 10,
+        top: 10,
+    },
 })
 
 const stylesDark = StyleSheet.create({
@@ -463,6 +469,7 @@ const stylesDark = StyleSheet.create({
         left: "5%",
         top: "10%",
         padding: 20,
+        paddingTop: 40,
         backgroundColor: "#2b2b2b",
         elevation: 5,
         borderRadius: 10,
@@ -562,6 +569,11 @@ const stylesDark = StyleSheet.create({
     },
     buttonContainer: {
         flexDirection: "row"
+    },
+    close: {
+        position: "absolute",
+        right: 10,
+        top: 10,
     },
 })
 

@@ -315,20 +315,26 @@ function People(props) {
                 </View>                  
             </ScrollView>
             {editing ? (
-                <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                <Pressable onPress={() => setEditing(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                     <View style={currentTheme.includes("Light") ? stylesLight.editContainer : stylesDark.editContainer}>
+                        <Pressable onPress={() => setEditing(false)} style={currentTheme.includes("Light") ? stylesLight.close : stylesDark.close}>
+                            <Octicons name="x" size={20} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
+                        </Pressable>
                         <TextInput  placeholder="Type..." placeholderTextColor="#9e9e9e" value={singleElement} onChangeText={(e) => setSingleElement(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input}/>
                         <Pressable onPress={() => editSingleElement(singleElement, toEdit)} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
                         </Pressable>
                     </View>
-                </View>
+                </Pressable>
             ) : (
                 <View></View>
             )}   
             {adding ? (
-                <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                <Pressable onPress={() => setAdding(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                     <View style={currentTheme.includes("Light") ? stylesLight.editContainer : stylesDark.editContainer}>
+                        <Pressable onPress={() => setAdding(false)} style={currentTheme.includes("Light") ? stylesLight.close : stylesDark.close}>
+                            <Octicons name="x" size={20} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
+                        </Pressable>
                         {listToAdd && listToAdd.map((like) => (
                             <View key={like.id}>
                                 <View  style={currentTheme.includes("Light") ? stylesLight.listView : stylesDark.listView}>
@@ -349,7 +355,7 @@ function People(props) {
                             <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
                         </Pressable>
                     </View>
-                </View>
+                </Pressable>
             ) : (
                 <View></View>
             )}
@@ -416,6 +422,7 @@ const stylesLight = StyleSheet.create({
         left: "5%",
         top: "10%",
         padding: 20,
+        paddingTop: 40,
         backgroundColor: "#e3e3e3",
         elevation: 5,
         borderRadius: 10,
@@ -471,7 +478,12 @@ const stylesLight = StyleSheet.create({
     listView: {
         flexDirection: "row",
         justifyContent: "space-between"
-    }
+    },
+    close: {
+        position: "absolute",
+        right: 10,
+        top: 10,
+    },
 })
 
 const stylesDark = StyleSheet.create({
@@ -532,6 +544,7 @@ const stylesDark = StyleSheet.create({
         left: "5%",
         top: "10%",
         padding: 20,
+        paddingTop: 40,
         backgroundColor: "#2b2b2b",
         elevation: 5,
         borderRadius: 10,
@@ -587,7 +600,12 @@ const stylesDark = StyleSheet.create({
     listView: {
         flexDirection: "row",
         justifyContent: "space-between"
-    }
+    },
+    close: {
+        position: "absolute",
+        right: 10,
+        top: 10,
+    },
 })
 
 export default People;

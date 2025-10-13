@@ -188,7 +188,7 @@ function Settings() {
                     </View>
                 </ScrollView> 
                 {editing === "username" ? (
-                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <Pressable onPress={() => setEditing("")} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={currentTheme.includes("Light") ? stylesLight.editContainer : stylesDark.editContainer}>
                             <Pressable onPress={() => setEditing("")} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
                                 <Octicons name="x" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
@@ -199,10 +199,10 @@ function Settings() {
                                 <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
                             </Pressable>
                         </View>
-                    </View>
+                    </Pressable>
                 ) : 
                 editing === "email" ? (
-                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <Pressable onPress={() => setEditing("")} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={currentTheme.includes("Light") ? stylesLight.editContainer : stylesDark.editContainer}>
                             <Pressable onPress={() => setEditing("")} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
                                 <Octicons name="x" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
@@ -216,10 +216,10 @@ function Settings() {
                                 <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
                             </Pressable>
                         </View>
-                    </View>
+                    </Pressable>
                 ) : 
                 editing === "password" ? (
-                    <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <Pressable onPress={() => setEditing("")} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={currentTheme.includes("Light") ? stylesLight.editContainer : stylesDark.editContainer}>
                             <Pressable onPress={() => setEditing("")} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
                                 <Octicons name="x" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
@@ -233,7 +233,7 @@ function Settings() {
                                 <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
                             </Pressable>
                         </View>
-                    </View>
+                    </Pressable>
                 ) : (
                     <View></View>
                 )}

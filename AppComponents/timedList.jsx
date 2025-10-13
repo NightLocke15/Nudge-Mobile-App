@@ -444,7 +444,7 @@ function TimedList(props) {
                 </View>
             ))} 
             {changeTime ? (
-                <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                <Pressable onPress={() => setChangeTime(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                     <View style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
                         <Pressable onPress={() => setChangeTime(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
                             <Octicons name="x" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
@@ -454,24 +454,24 @@ function TimedList(props) {
                             <Text style={currentTheme.includes("Light") ? stylesLight.doneText : stylesDark.doneText}>Done</Text>
                         </Pressable>
                     </View>
-                </View>                
+                </Pressable>                
             ) : (
                 <View></View>
             )}
             {viewItemBox ? (
-                <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                <Pressable onPress={() => setViewItemBox(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                     <View style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
-                        <Text style={currentTheme.includes("Light") ? stylesLight.listItemText : stylesDark.listItemText}>{viewItemText}</Text>
-                        <Pressable onPress={closeViewBox} style={currentTheme.includes("Light") ? stylesLight.done : stylesDark.done}>
-                            <Text style={currentTheme.includes("Light") ? stylesLight.doneText : stylesDark.doneText}>Done</Text>
+                        <Pressable onPress={() => setViewItemBox(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
+                            <Octicons name="x" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                         </Pressable>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.listItemText : stylesDark.listItemText}>{viewItemText}</Text>
                     </View>
-                </View>                
+                </Pressable>                
             ) : (
                 <View></View>
             )}     
             {action ? (
-                <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                     <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
                         <Pressable onPress={() => editItem(item)} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
@@ -479,11 +479,8 @@ function TimedList(props) {
                         <Pressable onPress={() => deleteItem(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                         </Pressable>
-                        <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.done : stylesDark.done}>
-                            <Text style={currentTheme.includes("Light") ? stylesLight.doneText : stylesDark.doneText}>Cancel</Text>
-                        </Pressable>
                     </View>
-                </View>
+                </Pressable>
             ) : (
                 <View></View>
             )}       
