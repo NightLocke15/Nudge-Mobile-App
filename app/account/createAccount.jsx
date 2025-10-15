@@ -33,7 +33,7 @@ function CreateAccount() {
             }
             else {
                 createUserProfile(username, idNum, password, email);
-                router.navigate('/home');                
+                router.navigate('/account/setup');                
             }            
         }
     }
@@ -94,7 +94,7 @@ function CreateAccount() {
                     </View>
                     <View>
                         <Text style={currentTheme.includes("Light") ? stylesLight.label : stylesDark.label}>Password</Text>
-                        <TextInput style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} placeholder="Password..." placeholderTextColor="#9e9e9e" onChangeText={(e) => checkPasssword(e)}/>
+                        <TextInput style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} placeholder="Password..." secureTextEntry={true} placeholderTextColor="#9e9e9e" onChangeText={(e) => checkPasssword(e)}/>
                         <Text style={currentTheme.includes("Light") ? stylesLight.passwordMessage : stylesDark.passwordMessage}>Password should contain at least 8 characters, 1 number and 1 special character.</Text>
                         <Text style={currentTheme.includes("Light") ? stylesLight.message : stylesDark.message}>{passwordMessage}</Text>
                     </View>

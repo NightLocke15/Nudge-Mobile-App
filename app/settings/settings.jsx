@@ -36,6 +36,16 @@ function Settings() {
         {key: 4, value: "Dark - Plain"},
     ]
 
+    const [userType, setUserType] = useState("average");
+    const [emergencyContact, setEmergencyContact] = useState({name: "", number: ""});
+    const [emergencyService, setEmergencyService] = useState({name: "", number: ""});
+
+    const userOptions = [
+        {key: "Caretaker", value: "Is a caretaker."},
+        {key: "Patient", value: "Makes use of a caretaker that uses this app."},
+        {key: "Average", value: "Just needs an organisational tool"},
+    ]
+
     //Edits the Username in the user's data
     function editUsername() {
         const newUsers = users.map((user) => {
@@ -97,6 +107,54 @@ function Settings() {
         else {
             setWarning("Your current password is incorrect.")
         }
+    }
+
+    function editUsertype() {
+        const newUsers = users.map((user) => {
+            if (user.idnum === localUser) {
+                return {
+                    ...user,
+                    userType: userType,
+                }
+            }
+            else {
+                return user;
+            };
+        });
+        setUsers(newUsers);
+        setEditing("");
+    }
+
+    function editEmergencyContact() {
+        const newUsers = users.map((user) => {
+            if (user.idnum === localUser) {
+                return {
+                    ...user,
+                    emergencyContact: emergencyContact,
+                }
+            }
+            else {
+                return user;
+            };
+        });
+        setUsers(newUsers);
+        setEditing("");
+    }
+
+    function editEmergencyService() {
+        const newUsers = users.map((user) => {
+            if (user.idnum === localUser) {
+                return {
+                    ...user,
+                    emergencyService: emergencyService,
+                }
+            }
+            else {
+                return user;
+            };
+        });
+        setUsers(newUsers);
+        setEditing("");
     }
 
     //Logs the user out of their account
@@ -176,7 +234,28 @@ function Settings() {
                         <Pressable onPress={() => setEditing("password")} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                         </Pressable>
+                    </View> 
+                    <Text style={currentTheme.includes("Light") ? stylesLight.subHeaderAccount : stylesDark.subHeaderAccount}>User Type:</Text>
+                    <View style={currentTheme.includes("Light") ? stylesLight.accountInfoContainer : stylesDark.accountInfoContainer}>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.accountInfo : stylesDark.accountInfo}>{localUserInfo[0] && localUserInfo[0].userType}</Text>
+                        <Pressable onPress={() => setEditing("usertype")} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
+                        </Pressable>
                     </View>  
+                    <Text style={currentTheme.includes("Light") ? stylesLight.subHeaderAccount : stylesDark.subHeaderAccount}>Emergency Contact:</Text>
+                    <View style={currentTheme.includes("Light") ? stylesLight.accountInfoContainer : stylesDark.accountInfoContainer}>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.accountInfo : stylesDark.accountInfo}>{localUserInfo[0] && localUserInfo[0].emergencyContact.name}: {localUserInfo[0] && localUserInfo[0].emergencyContact.number}</Text>
+                        <Pressable onPress={() => setEditing("emergencycontact")} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
+                        </Pressable>
+                    </View> 
+                    <Text style={currentTheme.includes("Light") ? stylesLight.subHeaderAccount : stylesDark.subHeaderAccount}>Emergency Service:</Text>
+                    <View style={currentTheme.includes("Light") ? stylesLight.accountInfoContainer : stylesDark.accountInfoContainer}>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.accountInfo : stylesDark.accountInfo}>{localUserInfo[0] && localUserInfo[0].emergencyService.name}: {localUserInfo[0] && localUserInfo[0].emergencyService.number}</Text>
+                        <Pressable onPress={() => setEditing("emergencyservice")} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
+                        </Pressable>
+                    </View> 
                     <Pressable onPress={enableLogOut} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
                         <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Log Out</Text>
                     </Pressable>  
@@ -230,6 +309,64 @@ function Settings() {
                             <Text style={currentTheme.includes("Light") ? stylesLight.subHeaderAccount : stylesDark.subHeaderAccount}>New Password:</Text>
                             <TextInput placeholder="New Password..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setNewPassword(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
                             <Pressable onPress={editPassword} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
+                            </Pressable>
+                        </View>
+                    </Pressable>
+                ) : 
+                editing === "usertype" ? (
+                    <Pressable onPress={() => setEditing("")} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                        <View style={currentTheme.includes("Light") ? stylesLight.editContainer : stylesDark.editContainer}>
+                            <Pressable onPress={() => setEditing("")} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
+                                <Octicons name="x" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
+                            </Pressable>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.subHeaderAccount : stylesDark.subHeaderAccount}>User Type:</Text>
+                            <SelectList 
+                                setSelected={(e) => setUserType(e)}
+                                data={userOptions}
+                                save="key"
+                                placeholder="Choose..."
+                                dropdownTextStyles={{color: currentTheme.includes("Light") ? "#242424" : "#e3e3e3"}}
+                                inputStyles={{color: currentTheme.includes("Light") ? "#242424" : "#e3e3e3"}}
+                                arrowicon={<Octicons name="chevron-down" size={18} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>}
+                                closeicon={<Octicons name="x" size={18} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>}
+                                search={false}
+                            />
+                            <Pressable onPress={editUsertype} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
+                            </Pressable>
+                        </View>
+                    </Pressable>
+                ) : 
+                editing === "emergencycontact" ? (
+                    <Pressable onPress={() => setEditing("")} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                        <View style={currentTheme.includes("Light") ? stylesLight.editContainer : stylesDark.editContainer}>
+                            <Pressable onPress={() => setEditing("")} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
+                                <Octicons name="x" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
+                            </Pressable>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.subHeaderAccount : stylesDark.subHeaderAccount}>Contact Name:</Text>
+                            <TextInput placeholder="Name..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setEmergencyContact({...emergencyContact, name: e})} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
+                            <Text>{warning}</Text>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.subHeaderAccount : stylesDark.subHeaderAccount}>Contact Number:</Text>
+                            <TextInput placeholder="Number..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setEmergencyContact({...emergencyContact, number: e})} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
+                            <Pressable onPress={editEmergencyContact} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
+                            </Pressable>
+                        </View>
+                    </Pressable>
+                ) : 
+                editing === "emergencyservice" ? (
+                    <Pressable onPress={() => setEditing("")} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                        <View style={currentTheme.includes("Light") ? stylesLight.editContainer : stylesDark.editContainer}>
+                            <Pressable onPress={() => setEditing("")} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
+                                <Octicons name="x" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
+                            </Pressable>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.subHeaderAccount : stylesDark.subHeaderAccount}>Service Name:</Text>
+                            <TextInput placeholder="Name..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setEmergencyService({...emergencyService, name: e})} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
+                            <Text>{warning}</Text>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.subHeaderAccount : stylesDark.subHeaderAccount}>Service Number:</Text>
+                            <TextInput placeholder="Number..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setEmergencyService({...emergencyService, number: e})} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
+                            <Pressable onPress={editEmergencyService} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
                             </Pressable>
                         </View>
@@ -403,14 +540,14 @@ const stylesDark = StyleSheet.create({
         fontFamily: "PTSans-Regular",
         color: "#e3e3e3",
         fontSize: 22,
-        marginBottom: 10,
+        marginBottom: 5,
         marginTop: 10,
     },
     subHeaderAccount: {
         fontFamily: "PTSans-Regular",
         color: "#e3e3e3",
         fontSize: 18,
-        marginBottom: 10,
+        marginBottom: 5,
         marginTop: 10,
     },
     settingsContainer: {
@@ -422,7 +559,6 @@ const stylesDark = StyleSheet.create({
         fontFamily: "Roboto-Regular",
         color: "#e3e3e3",
         fontSize: 16,
-        marginBottom: 10,
     },
     accountInfoContainer: {
         flexDirection: "row",

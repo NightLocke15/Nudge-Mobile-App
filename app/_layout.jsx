@@ -41,6 +41,8 @@ function RootLayout() {
                             <Stack.Screen name="index" />
                             <Stack.Screen name="home" />
                             <Stack.Screen name="account/login" />
+                            <Stack.Screen name="account/createAccount" />
+                            <Stack.Screen name="account/setup" />
                             <Stack.Screen name="to-do-list/to-do-list" />
                             <Stack.Screen name="calendar/calendar" />
                             <Stack.Screen name="logs/diaryLogs" />
