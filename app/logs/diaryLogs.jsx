@@ -46,7 +46,7 @@ function DiaryLogs() {
             return {
                 ...user,
                 logs: [...user.logs, {id: uuidv4(), name: `Untitled Note ${user.logs.length}`, type: "Diary", date: `${today.getFullYear()}-${today.getMonth() + 1 < 10 ? `0${today.getMonth() + 1}` : 
-                `${today.getMonth() + 1}`}-${today.getDate() < 10 ? `0${today.getDate()}` : `${today.getDate()}`}`, text: "", images: []}]
+                `${today.getMonth() + 1}`}-${today.getDate() < 10 ? `0${today.getDate()}` : `${today.getDate()}`}`, text: "", images: [], voiceNotes: []}]
             }
         }
         else {

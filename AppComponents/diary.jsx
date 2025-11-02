@@ -1,11 +1,19 @@
 import { ThemeContext } from "@/AppContexts/ThemeContext";
 import { UserContext } from "@/AppContexts/UserContext";
 import { Octicons } from "@react-native-vector-icons/octicons";
+import {
+    AudioModule,
+    RecordingPresets,
+    setAudioModeAsync,
+    useAudioPlayer,
+    useAudioRecorder,
+    useAudioRecorderState
+} from 'expo-audio';
 import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { Gesture, GestureDetector, TextInput } from "react-native-gesture-handler";
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
@@ -34,6 +42,12 @@ function Diary(props) {
     const [addOptions, setAddOptions] = useState(false);
     const [action, setAction] = useState(false);
     const [tapPostition, setTapPosition] = useState({x: 0, y: 0})
+
+    const [recordingCard, setRecordingCard] = useState(false);
+    const audioRec = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
+    const recorderState = useAudioRecorderState(audioRec);
+    const [recording, setRecording] = useState(null);
+    const player = useAudioPlayer(recording);
 
     //Use effect that saves the text being written in the log 1 second after the user has stopped writing
     useEffect(() => {
@@ -65,6 +79,20 @@ function Diary(props) {
         }
 
     }, [text]);
+
+    useEffect(() => {
+        (async () => {
+            const status = await AudioModule.requestRecordingPermissionsAsync();
+            if (!status.granted) {
+                Alert.alert('Permission to Access microphone was denied.')
+            }
+
+            setAudioModeAsync({
+                playsInSilentMode: true,
+                allowsRecording: true,
+            })
+        })();
+    }, []);
 
     //Activates the editing of the name and sets this data up to be edited
     function activateEditing() {
@@ -137,6 +165,62 @@ function Diary(props) {
         setUsers(userList);
     }
 
+    function triggerRecording() {
+        setRecording(null);
+        setRecordingCard(true);
+        setAddOptions(false);
+    }
+
+    const startRecord = async () => {
+        await audioRec.prepareToRecordAsync();
+        audioRec.record();
+    }
+
+    const stopRecord = async () => {
+        await audioRec.stop();
+        setRecording(audioRec.uri);
+    }
+
+    const playSound = () => {
+        player.seekTo(0);
+        player.play();
+    }
+
+    function playSavedSound(recordID) {
+        player.replace(localUserInfo[0] && localUserInfo[0].logs[id].voiceNotes.filter((vnote) => vnote.id === recordID)[0].uri)
+        player.seekTo(0);
+        player.play();
+    }
+
+    function saveSound() {
+        const userList = users.map((user) => {
+            if (user.idnum === localUser) {
+                const newLogs = user.logs.map((log) => {
+                    if (user.logs.indexOf(log) === id) {
+                        return {
+                            ...log,
+                            voiceNotes: [...log.voiceNotes, {id: uuidv4(), uri: recording}]
+                        }
+                    }
+                    else {
+                        return log;
+                    }
+                })
+
+                return {
+                    ...user,
+                    logs: newLogs
+                }
+            }
+            else {
+                return user;
+            }
+        })
+        setUsers(userList);
+        setRecording(null);
+        setRecordingCard(false);
+    }
+
     //Gesture handler constants. Detects a double tap on a certain element.
     const doubleTap = () => Gesture.Tap().maxDuration(250).numberOfTaps(2).onStart((event) => {
             setTapPosition({x: event.absoluteX > 260 ? 260 : event.absoluteX, y: event.absoluteY > 530 ? 530 : event.absoluteY})
@@ -169,8 +253,19 @@ function Diary(props) {
             ) : (
                 <View></View>
             )}
-            
-                                
+            {localUserInfo[0] && localUserInfo[0].logs[id].voiceNotes !== undefined ? (
+                <View>  
+                    {localUserInfo[0] && localUserInfo[0].logs[id].voiceNotes.map((note) => (
+                        <View key={note.id}>
+                            <Pressable onPress={() => playSavedSound(note.id)} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Play</Text>
+                            </Pressable>
+                        </View>
+                    ))}
+                </View>
+            ) : (
+                <View></View>
+            )}                                
             <TextInput multiline placeholder="Enter Log..." placeholderTextColor={"#9e9e9e"} value={text} onChangeText={(e) => setText(e)} style={currentTheme.includes("Light") ? stylesLight.noteInput : stylesDark.noteInput}/>
             {nameEdit ? (
                 <Pressable onPress={() => setNameEdit(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
@@ -196,7 +291,7 @@ function Diary(props) {
                         <Pressable onPress={pickImage} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Image</Text>
                         </Pressable>
-                        <Pressable style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                        <Pressable onPress={triggerRecording} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Voice Note</Text>
                         </Pressable>
                     </View>
@@ -210,6 +305,32 @@ function Diary(props) {
                         <Pressable onPress={activateEditing} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                         </Pressable>
+                    </View>
+                </Pressable>
+            ) : (
+                <View></View>
+            )}
+            {recordingCard ? (
+                <Pressable onPress={() => setRecordingCard(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <View style={currentTheme.includes("Light") ? stylesLight.editNameContainer : stylesDark.editNameContainer}>
+                        <Pressable onPress={recorderState.isRecording ? stopRecord : startRecord} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>{recorderState.isRecording ? "Stop" : "Record"}</Text>
+                        </Pressable>
+                        {recording !== null ? (
+                            <View>
+                                <Pressable onPress={playSound} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Play</Text>
+                                </Pressable>
+                                <Pressable onPress={saveSound} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Save</Text>
+                                </Pressable>
+                                <Pressable onPress={() => setRecording(null)} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Delete</Text>
+                                </Pressable>
+                            </View>                            
+                        ) : (
+                            <View></View>
+                        )}                            
                     </View>
                 </Pressable>
             ) : (
