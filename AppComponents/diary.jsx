@@ -1,11 +1,13 @@
 import { ThemeContext } from "@/AppContexts/ThemeContext";
 import { UserContext } from "@/AppContexts/UserContext";
+import { Lucide } from "@react-native-vector-icons/lucide";
 import { Octicons } from "@react-native-vector-icons/octicons";
 import {
     AudioModule,
     RecordingPresets,
     setAudioModeAsync,
     useAudioPlayer,
+    useAudioPlayerStatus,
     useAudioRecorder,
     useAudioRecorderState
 } from 'expo-audio';
@@ -41,13 +43,18 @@ function Diary(props) {
     //Information and states set when interacting with items by tapping or double tapping in order to edit or delete the correct items
     const [addOptions, setAddOptions] = useState(false);
     const [action, setAction] = useState(false);
+    const [actionDel, setActionDel] = useState(false);
     const [tapPostition, setTapPosition] = useState({x: 0, y: 0})
+    const [item, setItem] = useState();
 
     const [recordingCard, setRecordingCard] = useState(false);
     const audioRec = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
     const recorderState = useAudioRecorderState(audioRec);
     const [recording, setRecording] = useState(null);
     const player = useAudioPlayer(recording);
+    const status = useAudioPlayerStatus(player);
+
+    const [warning, setWarning] = useState(false);
 
     //Use effect that saves the text being written in the log 1 second after the user has stopped writing
     useEffect(() => {
@@ -221,11 +228,82 @@ function Diary(props) {
         setRecordingCard(false);
     }
 
+    function triggerDelete() {
+        setActionDel(false);
+        setWarning(true);
+    }
+
+    function deleteThing() {
+        if (item.type === "img") {
+            const usersReVamp = users.map((user, index) => {
+                if (user.idnum === localUser) {
+                    const newLogs = user.logs.map((log) => {
+                        if (user.logs.indexOf(log) === id) {
+                            const newImages = log.images.filter((image) => image.id !== item.item.id)
+
+                            return {
+                                ...log,
+                                images: newImages,
+                            }
+                        }
+                        else {
+                            return log;
+                        }
+                    });
+                    return {
+                        ...user,
+                        logs: newLogs
+                    }
+                }
+                else {
+                    return user;
+                }
+            });
+            setUsers(usersReVamp);
+            setWarning(false);
+        }
+        else if (item.type === "voice") {
+            const usersReVamp = users.map((user, index) => {
+                if (user.idnum === localUser) {
+                    const newLogs = user.logs.map((log) => {
+                        if (user.logs.indexOf(log) === id) {
+                            const newNotes = log.voiceNotes.filter((note) => note.id !== item.item.id)
+
+                            return {
+                                ...log,
+                                voiceNotes: newNotes,
+                            }
+                        }
+                        else {
+                            return log;
+                        }
+                    });
+                    return {
+                        ...user,
+                        logs: newLogs
+                    }
+                }
+                else {
+                    return user;
+                }
+            });
+            setUsers(usersReVamp);
+            setWarning(false);
+        }
+        
+    }
+
     //Gesture handler constants. Detects a double tap on a certain element.
-    const doubleTap = () => Gesture.Tap().maxDuration(250).numberOfTaps(2).onStart((event) => {
-            setTapPosition({x: event.absoluteX > 260 ? 260 : event.absoluteX, y: event.absoluteY > 530 ? 530 : event.absoluteY})
-            setAction(true);
-        }).runOnJS(true);
+    const doubleTapEdit = () => Gesture.Tap().maxDuration(250).numberOfTaps(2).onStart((event) => {
+        setTapPosition({x: event.absoluteX > 260 ? 260 : event.absoluteX, y: event.absoluteY > 530 ? 530 : event.absoluteY})
+        setAction(true);
+    }).runOnJS(true);
+
+    const doubleTapDelete = (item) => Gesture.Tap().maxDuration(250).numberOfTaps(2).onStart((event) => {
+        setTapPosition({x: event.absoluteX > 260 ? 260 : event.absoluteX, y: event.absoluteY > 530 ? 530 : event.absoluteY})
+        setActionDel(true);
+        setItem(item);
+    }).runOnJS(true);
 
     return (
         <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>
@@ -234,7 +312,7 @@ function Diary(props) {
                     <Octicons name="arrow-left" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                 </Pressable>  
                 <View style={currentTheme.includes("Light") ? stylesLight.headingContainer : stylesDark.headingContainer}>
-                    <GestureDetector gesture={Gesture.Exclusive(doubleTap())}>
+                    <GestureDetector gesture={Gesture.Exclusive(doubleTapEdit())}>
                         <Text style={currentTheme.includes("Light") ? stylesLight.header : stylesDark.header}>{localUserInfo[0].logs[id].name}</Text>
                     </GestureDetector>                        
                     <Text style={currentTheme.includes("Light") ? stylesLight.logDate : stylesDark.logDate}>{localUserInfo[0].logs[id].date}</Text>
@@ -248,19 +326,26 @@ function Diary(props) {
             </View>    
             {localUserInfo[0] && localUserInfo[0].logs[id].images !== undefined ? (
                 <View style={currentTheme.includes("Light") ? stylesLight.imagesContainer : stylesDark.imagesContainer}>  
-                    {localUserInfo[0] && localUserInfo[0].logs[id].images.map((image) => (<Image key={image.id} source={{ uri: image.uri }} style={currentTheme.includes("Light") ? stylesLight.image : stylesDark.image} />))}
+                    {localUserInfo[0] && localUserInfo[0].logs[id].images.map((image) => (
+                        <GestureDetector key={image.id} gesture={Gesture.Exclusive(doubleTapDelete({type: "img", item: image}))}>
+                            <Image source={{ uri: image.uri }} style={currentTheme.includes("Light") ? stylesLight.image : stylesDark.image} />
+                        </GestureDetector>
+                        ))}
                 </View>
             ) : (
                 <View></View>
             )}
             {localUserInfo[0] && localUserInfo[0].logs[id].voiceNotes !== undefined ? (
                 <View>  
-                    {localUserInfo[0] && localUserInfo[0].logs[id].voiceNotes.map((note) => (
-                        <View key={note.id}>
-                            <Pressable onPress={() => playSavedSound(note.id)} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
-                                <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Play</Text>
-                            </Pressable>
-                        </View>
+                    {localUserInfo[0] && localUserInfo[0].logs[id].voiceNotes.map((note, key) => (
+                        <GestureDetector key={note.id} gesture={Gesture.Exclusive(doubleTapDelete({type: "voice", item: note}))}>
+                            <View style={currentTheme.includes("Light") ? stylesLight.vNoteContainer : stylesDark.vNoteContainer}>                            
+                                <Pressable onPress={() => playSavedSound(note.id)}>
+                                    <Lucide name={status.playing ? "square" : "play"} size={30} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
+                                </Pressable>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Voice Note {key}</Text>
+                            </View>
+                        </GestureDetector>
                     ))}
                 </View>
             ) : (
@@ -310,29 +395,61 @@ function Diary(props) {
             ) : (
                 <View></View>
             )}
+            {actionDel ? (
+                <Pressable onPress={() => setActionDel(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
+                        <Pressable onPress={triggerDelete} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
+                        </Pressable>
+                    </View>
+                </Pressable>
+            ) : (
+                <View></View>
+            )}
             {recordingCard ? (
                 <Pressable onPress={() => setRecordingCard(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                     <View style={currentTheme.includes("Light") ? stylesLight.editNameContainer : stylesDark.editNameContainer}>
-                        <Pressable onPress={recorderState.isRecording ? stopRecord : startRecord} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
-                            <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>{recorderState.isRecording ? "Stop" : "Record"}</Text>
-                        </Pressable>
                         {recording !== null ? (
-                            <View>
+                            <View style={currentTheme.includes("Light") ? stylesLight.recordingContainer : stylesDark.recordingContainer}>
+                                <Pressable onPress={recorderState.isRecording ? stopRecord : startRecord} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>{recorderState.isRecording ? "Stop" : "Record"}</Text>
+                                </Pressable>
                                 <Pressable onPress={playSound} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
                                     <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Play</Text>
                                 </Pressable>
                                 <Pressable onPress={saveSound} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
                                     <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Save</Text>
                                 </Pressable>
-                                <Pressable onPress={() => setRecording(null)} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
-                                    <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Delete</Text>
+                                <Pressable onPress={() => setRecording(null)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                                 </Pressable>
                             </View>                            
                         ) : (
-                            <View></View>
+                            <View>
+                                <Pressable onPress={recorderState.isRecording ? stopRecord : startRecord} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                                    <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>{recorderState.isRecording ? "Stop" : "Record"}</Text>
+                                </Pressable>
+                            </View>
                         )}                            
                     </View>
                 </Pressable>
+            ) : (
+                <View></View>
+            )}
+            {warning ? (
+                <Pressable onPress={() => setWarning(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <View style={currentTheme.includes("Light") ? stylesLight.warningContainer : stylesDark.warningContainer}>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.warningText : stylesDark.warningText}>Are you sure you want to delete this person?</Text>
+                        <View style={currentTheme.includes("Light") ? stylesLight.buttonContainer : stylesDark.buttonContainer}>
+                            <Pressable onPress={() => deleteThing()} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
+                            </Pressable>
+                            <Pressable onPress={() => setWarning(false)} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                                <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Cancel</Text>
+                            </Pressable>
+                        </View>                            
+                    </View>
+                </Pressable>                    
             ) : (
                 <View></View>
             )}
@@ -497,6 +614,58 @@ const stylesLight = StyleSheet.create({
         right: 10,
         top: 10,
     },
+    warningContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "20%",
+        padding: 20,
+        backgroundColor: "#e3e3e3",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1,
+    },
+    warningText: {
+        fontFamily: "Roboto-Regular",
+        color: "#242424",
+        fontSize: 20,
+        textAlign: "center"
+    },
+    delete: {
+        backgroundColor: "#be2206ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    deleteText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    buttonContainer: {
+        flexDirection: "row"
+    },
+    vNoteContainer: {
+        backgroundColor: "#f2f2f2",
+        width: "95%",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        borderRadius: 10,
+        elevation: 5,
+    },
+    recordingContainer: {
+        flexDirection: "row",
+        flexWrap: 'wrap',
+        justifyContent: "space-between",
+        padding: 10,
+    }
 });
 
 const stylesDark = StyleSheet.create({
@@ -656,6 +825,58 @@ const stylesDark = StyleSheet.create({
         right: 10,
         top: 10,
     },
+    warningContainer: {
+        position: "absolute",
+        right: "5%",
+        left: "5%",
+        top: "20%",
+        padding: 20,
+        backgroundColor: "#2b2b2b",
+        elevation: 5,
+        borderRadius: 10,
+        zIndex: 1,
+    },
+    warningText: {
+        fontFamily: "Roboto-Regular",
+        color: "#e3e3e3",
+        fontSize: 20,
+        textAlign: "center"
+    },
+    delete: {
+        backgroundColor: "#be2206ff",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        elevation: 5,
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    deleteText: {
+        textAlign: "center",
+        fontFamily: "Roboto-Regular",
+        fontSize: 18,
+        color: '#e3e3e3'
+    },
+    buttonContainer: {
+        flexDirection: "row"
+    },
+    vNoteContainer: {
+        backgroundColor: "#3a3a3a",
+        width: "95%",
+        marginLeft: "auto",
+        marginRight: "auto",
+        padding: 10,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        borderRadius: 10,
+        elevation: 5,
+    },
+    recordingContainer: {
+        flexDirection: "row",
+        flexWrap: 'wrap',
+        justifyContent: "space-between",
+        padding: 10,
+    }
 });
 
 export default Diary;

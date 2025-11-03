@@ -22,7 +22,8 @@
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION"
       ],
-      "package": "com.chrispypixel.NudgeMobile"
+      "package": "com.chrispypixel.NudgeMobile",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",

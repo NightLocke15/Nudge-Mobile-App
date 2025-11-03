@@ -1,15 +1,27 @@
 import { ThemeContext } from '@/AppContexts/ThemeContext';
 import { UserContext } from '@/AppContexts/UserContext';
 import Octicons from '@react-native-vector-icons/octicons';
+import Constants from 'expo-constants';
+import * as Device from 'expo-device';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Switch, Text, TextInput, View } from "react-native";
+import { Platform, Pressable, ScrollView, StyleSheet, Switch, Text, TextInput, View } from "react-native";
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import 'react-native-get-random-values';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TimerPicker, TimerPickerModal } from "react-native-timer-picker";
 import { v4 as uuidv4 } from 'uuid';
+
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+        shouldShowBanner: true,
+        shouldShowList: true,
+    })
+})
 
 function Clock() {
     //Accessing user context and all the users that already exist
@@ -90,10 +102,47 @@ function Clock() {
         },
     ])
 
+    const [expoPushToken, setExpoPushToken] = useState('');
+    const [channels, setChannels] = useState([]);
+    const [notification, setNotification] = useState();
+
+    useEffect(() => {
+        registerForPushNotificationsAsync().then(token => token && setExpoPushToken(token));
+
+        if (Platform.OS === 'android') {
+            Notifications.getNotificationChannelsAsync().then(value => setChannels(value ?? []));
+        }
+        const notificationListener = Notifications.addNotificationReceivedListener(notification => {
+            setNotification(notification);
+        });
+
+        const responseListener = Notifications.addNotificationResponseReceivedListener(response => {
+            console.log(response);
+        });
+
+        return () => {
+            notificationListener.remove();
+            responseListener.remove();
+        }
+    }, []);
+
     //Interval to update the clock as time passes by
     useEffect(() => {
         const interval = setInterval(() => {
             setTime(new Date());
+            localUserInfo[0] && localUserInfo[0].alarms.forEach(alarm => {
+                if (alarm.active) {
+                    if (alarm.time.hours === new Date().getHours() && alarm.time.minutes === new Date().getMinutes()) {
+                        schedulePushNotification(alarm.name, "");
+                    }
+                    else {
+
+                    }
+                }
+                else {
+
+                }
+            });
         }, 1000);
 
         return () => clearInterval(interval);
@@ -112,6 +161,7 @@ function Clock() {
             }
             else {
                 clearInterval(interval);
+                schedulePushNotification("Timer", "Your Timer has run out!");
                 setTimerRunning(false);
             }
         }, 1000)
@@ -285,6 +335,66 @@ function Clock() {
         setAlarmName("");
         setAlarmTime({hours: 0, minutes: 0})
         setAddAlarm(false);
+        setEditing(false);
+    }
+
+    async function schedulePushNotification(title, message) {
+        await Notifications.scheduleNotificationAsync({
+            content: {
+                title: title,
+                body: message,
+            },
+            trigger: {
+                trigger: { seconds: 1 }, 
+            }
+        });
+    }
+
+    async function registerForPushNotificationsAsync() {
+        let token;
+
+        if (Platform.OS === 'android') {
+            await Notifications.setNotificationChannelAsync('myNotificationChannel', {
+                name: 'A channel is needed for the permissions prompt to appear',
+                importance: Notifications.AndroidImportance.MAX,
+                vibrationPattern: [0, 250, 250, 250],
+                lightColor: '#FF231F7C',
+            });
+        }
+
+        if (Device.isDevice) {
+            const { status: existingStatus } = await Notifications.getPermissionsAsync();
+            let finalStatus = existingStatus;
+            if (existingStatus !== 'granted') {
+                const { status } = await Notifications.requestPermissionsAsync();
+                finalStatus = status;
+            }
+            if (finalStatus !== 'granted') {
+                alert('Failed to get push token for push notification.');
+                return;
+            }
+
+            try {
+                const projectID = Constants?.expoConfig?.extra?.eas?.projectID ?? Constants?.easConfig?.projectId;
+                if (!projectID) {
+                    throw new Error('Project ID not found.');
+                }
+                token = (
+                    await Notifications.getExpoPushTokenAsync({
+                        projectID,
+                    })
+                ).data;
+            }
+            catch (e) {
+                console.error('Error getting Expo push token:', e);
+                token = `${e}`;
+            }
+        }
+        else {
+            alert('Must use physical device for Push Notifications.');
+        }
+
+        return token;
     }
 
     //Gesture handler constant that handles the double tap on the alarms elements
@@ -334,7 +444,7 @@ function Clock() {
                     <Pressable onPress={() => setAddAlarm(true)} style={currentTheme.includes("Light") ? stylesLight.add : stylesDark.add}>
                         <Octicons name="plus" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                     </Pressable>
-                </View>   
+                </View>
                 <ScrollView>
                     {localUserInfo[0] && localUserInfo[0].alarms.map((alarm) => (
                         <GestureDetector key={alarm.id} gesture={Gesture.Exclusive(doubleTap(alarm))}>
@@ -359,7 +469,7 @@ function Clock() {
                     ))}   
                 </ScrollView>          
                 {addAlarm ? (
-                    <Pressable onPress={() => setAddAlarm(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
+                    <Pressable style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={currentTheme.includes("Light") ? stylesLight.addAlarmContainer : stylesDark.addAlarmContainer}>
                             <Pressable onPress={() => setAddAlarm(false)} style={currentTheme.includes("Light") ? stylesLight.close : stylesDark.close}>
                                 <Octicons name="x" size={20} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
