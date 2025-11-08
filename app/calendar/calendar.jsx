@@ -134,20 +134,33 @@ function CalendarFunc() {
     //When a day on the calander is selected, the events for that day is showcased in the calendar list.
     function daySelect(date) {
         setSelectedDay(date);
-        setDynamicDateList(dateList);
-        if (dynamicDateList[date]) {
-            setDynamicDateList(prevData => ({
-                ...prevData, 
-                [date]: {selected: true, marked: true, dots: dynamicDateList[date].dots}
-            }));
-        }
-        else {
-            setDynamicDateList(prevData => ({
-                ...prevData, 
-                [date]: {selected: true}, 
-            }));
-        }   
-        setTodaysEvents(localUserInfo[0] && localUserInfo[0].events.filter((event) => event.date === date));   
+        setTodaysEvents(localUserInfo[0].events && localUserInfo[0].events.filter((event) => event.date === date));
+        // try {
+        //     if (!localUserInfo || !Array.isArray(localUserInfo) || !localUserInfo[0]) return;
+
+        //     const eventsUnfilt = localUserInfo[0].events ?? [];
+
+        //     setSelectedDay(date);
+        //     setDynamicDateList(prev => {
+        //         const prevData = {...dateList };
+        //         const selectedDots = prevData[date]?.dots ?? [];
+
+        //         return {
+        //             ...prevData,
+        //             [date]: {
+        //                 ...prevData[date],
+        //                 selected: true,
+        //                 marked: selectedDots.length > 0,
+        //                 dots: selectedDots
+        //             }
+        //         }
+        //     }) 
+        //     const eventsFilt = eventsUnfilt.filter((e) => e.date === date);
+        //     setTodaysEvents(eventsFilt);
+        // }
+        // catch (e) {
+        //     console.error(e);
+        // }           
     }
 
     //Getting the current month we are in
