@@ -16,7 +16,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
-        shouldPlaySound: false,
+        shouldPlaySound: true,
         shouldSetBadge: false,
         shouldShowBanner: true,
         shouldShowList: true,
@@ -343,6 +343,7 @@ function Clock() {
             content: {
                 title: title,
                 body: message,
+                sound: 'default'
             },
             trigger: {
                 trigger: { seconds: 1 }, 
@@ -359,6 +360,7 @@ function Clock() {
                 importance: Notifications.AndroidImportance.MAX,
                 vibrationPattern: [0, 250, 250, 250],
                 lightColor: '#FF231F7C',
+                sound: 'default',
             });
         }
 
@@ -406,7 +408,6 @@ function Clock() {
     
     return (
         <React.Fragment>
-        <SafeAreaView style={{ flex: 0, backgroundColor: currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b" }} />
         <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
             <StatusBar barStyle={currentTheme.includes("Light") ? "dark-content" : "light-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
             <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>

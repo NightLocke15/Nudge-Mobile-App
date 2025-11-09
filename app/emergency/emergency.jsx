@@ -3,7 +3,7 @@ import { UserContext } from '@/AppContexts/UserContext';
 import Octicons from '@react-native-vector-icons/octicons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Pressable, StatusBar, StyleSheet, Text, View } from "react-native";
 import 'react-native-get-random-values';
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -12,6 +12,7 @@ function Emergency() {
     //Accessing user context and all the users that already exist
     const { localUser, localUserInfo, users, setUsers } = useContext(UserContext);
     const {currentTheme, gradientColours } = useContext(ThemeContext);
+    const [call, setCall] = useState("")
 
     //Router to navigate the user back to the home page
     const router = useRouter();
@@ -19,7 +20,6 @@ function Emergency() {
     //**Currently this only sends a console log. Next step is to add call functionality**
     return (
         <React.Fragment>
-        <SafeAreaView style={{ flex: 0, backgroundColor: currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b" }} />
         <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
             <StatusBar barStyle={currentTheme.includes("Light") ? "dark-content" : "light-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
             <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>
@@ -29,14 +29,15 @@ function Emergency() {
                     </Pressable>
                     <Text style={currentTheme.includes("Light") ? stylesLight.header : stylesDark.header}>Emergency</Text>
                 </View>
+                <Text style={currentTheme.includes("Light") ? stylesLight.textOne : stylesDark.textOne}>{call}</Text>
                 <View style={currentTheme.includes("Light") ? stylesLight.emergencyButtonHolder : stylesDark.emergencyButtonHolder}>
-                    <Pressable style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.emergencyButton : stylesDark.emergencyButton, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]} onLongPress={() => console.log("Call Emergency Contact.")}>
+                    <Pressable style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.emergencyButton : stylesDark.emergencyButton, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]} onLongPress={() => setCall("Calling Emergency Contact")}>
                         <View style={currentTheme.includes("Light") ? stylesLight.redBorder : stylesDark.redBorder}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.textOne : stylesDark.textOne}>Hold to call</Text>
                             <Text style={currentTheme.includes("Light") ? stylesLight.textTwo : stylesDark.textTwo}>EMERGENCY CONTACT</Text>
                         </View>                    
                     </Pressable>
-                    <Pressable style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.emergencyButton : stylesDark.emergencyButton, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]} onLongPress={() => console.log("Call Emergency Services.")}>
+                    <Pressable style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.emergencyButton : stylesDark.emergencyButton, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]} onLongPress={() => setCall("Calling Emergency Services")}>
                         <View style={currentTheme.includes("Light") ? stylesLight.redBorder : stylesDark.redBorder}>                        
                             <Text style={currentTheme.includes("Light") ? stylesLight.textOne : stylesDark.textOne}>Hold to call</Text>
                             <Text style={currentTheme.includes("Light") ? stylesLight.textTwo : stylesDark.textTwo}>EMERGENCY SERVICES</Text>
@@ -110,7 +111,7 @@ const stylesLight = StyleSheet.create({
 const stylesDark = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "2b2b2b"
+        backgroundColor: "#2b2b2b"
     },
     contentContainer: {
         flex: 1,

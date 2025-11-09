@@ -348,7 +348,7 @@ function People(props) {
                         <View style={currentTheme.includes("Light") ? stylesLight.addContainer : stylesDark.addContainer}>
                             <TextInput  placeholder="Type..." placeholderTextColor="#9e9e9e" multiline value={listItem} onChangeText={(e) => setListItem(e)} style={[currentTheme.includes("Light") ? stylesLight.input : stylesDark.input, {width: "80%"}]}/>
                             <Pressable onPress={addListItems}>
-                                <Text style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText, currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>Add</Text>
+                                <Text style={[currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText, currentTheme.includes("Light") ? stylesLight.click : stylesDark.click]}>Add</Text>
                             </Pressable>
                         </View>                        
                         <Pressable onPress={() => addToList(sectionAdding)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>

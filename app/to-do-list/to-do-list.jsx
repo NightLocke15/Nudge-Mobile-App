@@ -275,6 +275,7 @@ function ToDoList() {
 const stylesLight = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: "#e3e3e3"
     },
     contentContainer: {
         flex: 1,
@@ -509,6 +510,7 @@ const stylesLight = StyleSheet.create({
 const stylesDark = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: "#2b2b2b"
     },
     contentContainer: {
         flex: 1,

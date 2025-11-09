@@ -421,7 +421,7 @@ function TimedList(props) {
                 <View></View>
             )}
             {localUserInfo[0].lists[id] && localUserInfo[0].lists[id].listItems.map((item) => (
-                <View key={item.id} style={[currentTheme.includes("Light") ? stylesLight.listItemContainer : stylesDark.listItemContainer, (item.endTime && item.endTime.h >= endTimes.h && item.endTime.m > endTimes.m) && (currentTheme.includes("Light") ? stylesLight.listItemContainerOutRange : stylesDark.listItemContainerOutRange), (item.endTime && time.getTime() >= new Date().setHours(item.endTime.h, item.endTime.m, 0, 0) && item.completed === false) && (currentTheme.includes("Light") ? stylesLight.listItemContainerOverdue : stylesDark.listItemContainerOverdue)]}>
+                <View key={item.id} style={currentTheme.includes("Light") ? stylesLight.listItemContainer : stylesDark.listItemContainer}>
                     {/* <Pressable onLongPress={() => completeListItem(item.id)} onPress={() => viewItem(item)} style={stylesLight.listItemNameContainer}> */}
                         <GestureDetector gesture={Gesture.Exclusive(doubleTap(item), singleTap(item), longPress(item))}>
                             <Text numberOfLines={1} ellipsizeMode="tail" style={item && item.completed ? (currentTheme.includes("Light") ? stylesLight.listItemNameComplete : stylesDark.listItemNameComplete) : (currentTheme.includes("Light") ? stylesLight.listItemNameUncomplete : stylesDark.listItemNameUncomplete)}>{item.item}</Text>
@@ -430,6 +430,7 @@ function TimedList(props) {
                     <View style={currentTheme.includes("Light") ? stylesLight.listItemTimesContainer : stylesDark.listItemTimesContainer}>
                         <Pressable onPress={() => addTimeAmount(item)}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.time : stylesDark.time}>{item.timeLengthMins} Mins</Text>
+                            <Text style={{color: (item.endTime && item.endTime.h >= endTimes.h && item.endTime.m > endTimes.m) ? "#f09f26ff" : "#f02626ff"}}>{(item.endTime && item.endTime.h >= endTimes.h && item.endTime.m > endTimes.m) ? "OUT OF RANGE" : (item.endTime && time.getTime() >= new Date().setHours(item.endTime.h, item.endTime.m, 0, 0) && item.completed === false) ? "OVERDUE" : null}</Text>
                         </Pressable>
                         {item.startTime === null || item.endTime === null ? (
                             <View></View>

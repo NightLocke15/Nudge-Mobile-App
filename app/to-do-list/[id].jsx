@@ -1,5 +1,6 @@
 import NormalList from "@/AppComponents/normalList";
 import TimedList from "@/AppComponents/timedList";
+import { ThemeContext } from "@/AppContexts/ThemeContext";
 import { UserContext } from "@/AppContexts/UserContext";
 import { useLocalSearchParams } from "expo-router";
 import React, { useContext, useState } from "react";
@@ -10,6 +11,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 function MakeList() {
     //Accessing user context and all the users that already exist
     const { localUserInfo } = useContext(UserContext); 
+    const {currentTheme, gradientColours } = useContext(ThemeContext);
 
     //ID received through the router dynamically navigating to this page, and injecting the relevant information
     const { id } = useLocalSearchParams();
@@ -20,7 +22,6 @@ function MakeList() {
     //Renders the relevent information based on the type of list
     return (
         <React.Fragment>
-                <SafeAreaView style={{ flex: 0, backgroundColor: currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b" }} />
                 <SafeAreaView style={[styles.container, {backgroundColor: currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"}]}>
                     <StatusBar barStyle={currentTheme.includes("Light") ? "dark-content" : "light-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
             {localUserInfo[0].lists[index].type === "Normal" ? 

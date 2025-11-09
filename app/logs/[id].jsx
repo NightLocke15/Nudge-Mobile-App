@@ -1,5 +1,6 @@
 import Diary from "@/AppComponents/diary";
 import People from "@/AppComponents/people";
+import { ThemeContext } from "@/AppContexts/ThemeContext";
 import { UserContext } from "@/AppContexts/UserContext";
 import { useLocalSearchParams } from "expo-router";
 import React, { useContext, useState } from "react";
@@ -9,6 +10,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 function MakeLog() {
     //ID received through the router dynamically navigating to this page, and injecting the relevant information
     const { id } = useLocalSearchParams();
+    const {currentTheme, gradientColours } = useContext(ThemeContext);
 
     //Accessing user context and all the users that already exist
     const { localUserInfo } = useContext(UserContext); 
@@ -19,7 +21,6 @@ function MakeLog() {
     //Return the log dependent on the current log's type
     return (
         <React.Fragment>
-            <SafeAreaView style={{ flex: 0, backgroundColor: currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b" }} />
             <SafeAreaView style={[styles.container, {backgroundColor: currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"}]}>
             <StatusBar barStyle={currentTheme.includes("Light") ? "dark-content" : "light-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
             {localUserInfo[0].logs[index].type === "Diary" ? 

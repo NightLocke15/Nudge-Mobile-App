@@ -6,7 +6,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React, { useContext, useEffect, useState } from "react";
-import { Image, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Image, Pressable, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
 import { SelectList } from 'react-native-dropdown-select-list';
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import 'react-native-get-random-values';
@@ -511,7 +511,6 @@ function MedicationLogs() {
 
     return (
         <React.Fragment>
-        <SafeAreaView style={{ flex: 0, backgroundColor: currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b" }} />
         <SafeAreaView style={[currentTheme.includes("Light") ? stylesLight.container : stylesDark.container, {backgroundColor: currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"}]}>
             <StatusBar barStyle={currentTheme.includes("Light") ? "dark-content" : "light-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
             <LinearGradient colors={gradientColours} style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer}>
@@ -586,7 +585,7 @@ function MedicationLogs() {
                                 </View> 
                                 <View>
                                     <Pressable onPress={showFetchDatePicker}>
-                                        <Text style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>Change Date</Text>
+                                        <Text style={[currentTheme.includes("Light") ? stylesLight.click : stylesDark.click]}>Change Date</Text>
                                     </Pressable>
                                 </View>
                             </View> 
@@ -612,7 +611,7 @@ function MedicationLogs() {
                                 </View> 
                                 <View>
                                     <Pressable onPress={showStartDatePicker}>
-                                        <Text style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>Change Date</Text>
+                                        <Text style={[currentTheme.includes("Light") ? stylesLight.click : stylesDark.click]}>Change Date</Text>
                                     </Pressable>
                                 </View>
                             </View> 
@@ -641,11 +640,11 @@ function MedicationLogs() {
                             <View style={currentTheme.includes("Light") ? stylesLight.formAddTime : stylesDark.formAddTime}>
                                 <TextInput placeholder="Time (eg. 14:00)..." placeholderTextColor="#9e9e9e" value={oneTime} onChangeText={(e) => setOneTime(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
                                 <Pressable onPress={addTime}>
-                                    <Text style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>Add Time To Take</Text>
+                                    <Text style={[currentTheme.includes("Light") ? stylesLight.click : stylesDark.click]}>Add Time To Take</Text>
                                 </Pressable>
                             </View>                            
                             <Pressable onPress={editing ? editMed : addMedLog}>
-                                <Text style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, {marginTop: 5}, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>Done</Text>
+                                <Text style={[currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, {marginTop: 5}]}>Done</Text>
                             </Pressable>
                         </View>
                     </View>                    

@@ -134,33 +134,25 @@ function CalendarFunc() {
     //When a day on the calander is selected, the events for that day is showcased in the calendar list.
     function daySelect(date) {
         setSelectedDay(date);
-        setTodaysEvents(localUserInfo[0].events && localUserInfo[0].events.filter((event) => event.date === date));
-        // try {
-        //     if (!localUserInfo || !Array.isArray(localUserInfo) || !localUserInfo[0]) return;
 
-        //     const eventsUnfilt = localUserInfo[0].events ?? [];
+        setDynamicDateList(prevData => {
+            const newData = {};
 
-        //     setSelectedDay(date);
-        //     setDynamicDateList(prev => {
-        //         const prevData = {...dateList };
-        //         const selectedDots = prevData[date]?.dots ?? [];
+            for (let d in prevData) {
+                newData[d] = { ...prevData[d], selected: false };
+            }
 
-        //         return {
-        //             ...prevData,
-        //             [date]: {
-        //                 ...prevData[date],
-        //                 selected: true,
-        //                 marked: selectedDots.length > 0,
-        //                 dots: selectedDots
-        //             }
-        //         }
-        //     }) 
-        //     const eventsFilt = eventsUnfilt.filter((e) => e.date === date);
-        //     setTodaysEvents(eventsFilt);
-        // }
-        // catch (e) {
-        //     console.error(e);
-        // }           
+            newData[date] = {
+                ...(prevData[date] || {}),
+                selected: true,
+                marked: true,
+            };
+
+            return newData;
+        });
+
+        const events = localUserInfo?.[0]?.events?.filter(e => e.date === date) || [];
+        setTodaysEvents(events);
     }
 
     //Getting the current month we are in
@@ -317,7 +309,6 @@ function CalendarFunc() {
 
     return (
         <React.Fragment>
-        <SafeAreaView style={{ flex: 0, backgroundColor: currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b" }} />
         <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
             <StatusBar barStyle={currentTheme.includes("Light") ? "dark-content" : "light-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
             <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>
@@ -363,8 +354,8 @@ function CalendarFunc() {
                             <View style={currentTheme.includes("Light") ? stylesLight.weatherContainer : stylesDark.weatherContainer}>
                                 <View>
                                     <Text style={currentTheme.includes("Light") ? stylesLight.weatherHeader : stylesDark.weatherHeader}>Weather</Text>
-                                    {weatherData.forecast.forecastday.some((day) => day.date === selectedDay) ? (
-                                        weatherData.forecast.forecastday.map((day) => {
+                                    {weatherData?.forecast?.forecastday?.some((day) => day.date === selectedDay) ? (
+                                        weatherData?.forecast?.forecastday?.map((day) => {
                                         if (day.date === selectedDay) {
                                             return (
                                                 <View key={day.date}>
@@ -385,8 +376,8 @@ function CalendarFunc() {
                                     
                                 </View>
                                 <View style={currentTheme.includes("Light") ? stylesLight.weatherContainer : stylesDark.weatherContainer}>
-                                    {weatherData.forecast.forecastday.some((day) => day.date === selectedDay) ? (
-                                        weatherData.forecast.forecastday.map((day) => {
+                                    {weatherData?.forecast?.forecastday?.some((day) => day.date === selectedDay) ? (
+                                        weatherData?.forecast?.forecastday?.map((day) => {
                                         if (day.date === selectedDay) {
                                             return <Image key={day.date_epoch} source={{uri: `https://${day.day.condition.icon}`}} style={{width: 40}} />;
                                         }                                            
@@ -396,8 +387,8 @@ function CalendarFunc() {
                                     )}
                                     <View>
                                         <Text style={currentTheme.includes("Light") ? stylesLight.temp : stylesDark.temp}>High / Low</Text>
-                                        {weatherData.forecast.forecastday.some((day) => day.date === selectedDay) ? (
-                                            weatherData.forecast.forecastday.map((day) => {
+                                        {weatherData?.forecast?.forecastday?.some((day) => day.date === selectedDay) ? (
+                                            weatherData?.forecast?.forecastday?.map((day) => {
                                             if (day.date === selectedDay) {
                                                return <Text key={day.date_epoch} style={currentTheme.includes("Light") ? stylesLight.temp : stylesDark.temp}>{day.day.maxtemp_c} / {day.day.mintemp_c}</Text>;
                                             }                                            

@@ -36,39 +36,34 @@ function UserProvider({children}) {
 
     //Finds the location of the user's phone
     useEffect(() => {
-       const getLocation = async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
+        const fetchLocationAndWeather = async () => {
+            try {
+                if (!authenticated) return;
 
-            if (status !== 'granted') {
-                console.log('Permission to access location was denied');
-                return;
+                let { status } = await Location.requestForegroundPermissionsAsync();
+                if (status !== 'granted') return;
+
+                const loc = await Location.getCurrentPositionAsync({});
+                const reverseGeo = await Location.reverseGeocodeAsync({
+                    latitude: loc.coords.latitude,
+                    longitude: loc.coords.longitude,
+                });
+
+                const userCity = reverseGeo?.[0]?.city;
+                if (!userCity) return;
+
+                setCity(userCity);
+
+                const response = await axios.get(
+                    `https://api.weatherapi.com/v1/forecast.json?key=e81f6e30dcd9457dbcf185856250911&q=${userCity}&days=3&aqi=no&alerts=no`
+                );
+                setWeatherData(response.data);
+            } catch (err) {
+                console.error(err);
             }
-
-            let loc = await Location.getCurrentPositionAsync({});
-            
-            let reverseGeoCodeAddress = await Location.reverseGeocodeAsync({
-                longitude: loc.coords.longitude,
-                latitude: loc.coords.latitude
-            });
-            setCity(reverseGeoCodeAddress[0].city);
-            console.log(city);
         };
 
-        getLocation();
-        console.log(city);
-        
-    }, [authenticated])
-
-    //Stores the data for the weather of the user's area
-    useEffect(() => {
-        axios.get(`http://api.weatherapi.com/v1/forecast.json?key=5e5fb9402f2b41dd967110133251709&q=${city}&days=3&aqi=no&alerts=no`)
-            .then(response => {
-                setWeatherData(response.data);
-                console.log("weatherData");
-            })
-            .catch(error => {
-                console.error("Error fetching data: ", error);
-            });       
+        fetchLocationAndWeather();
     }, [authenticated]);
 
     //Determine whether user has been logged in when the re-enter the app

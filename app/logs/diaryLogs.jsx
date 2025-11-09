@@ -4,7 +4,7 @@ import { Octicons } from "@react-native-vector-icons/octicons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React, { useContext, useState } from "react";
-import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { Pressable, StatusBar, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { Gesture, GestureDetector, TextInput } from "react-native-gesture-handler";
 import 'react-native-get-random-values';
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -129,8 +129,7 @@ function DiaryLogs() {
 
     return (
         <React.Fragment>
-        <SafeAreaView style={{ flex: 0, backgroundColor: currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b" }} />
-        <SafeAreaView style={[currentTheme.includes("Light") ? stylesLight.container : stylesDark.container, {backgroundColor: currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"}]}>
+        <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
             <StatusBar barStyle={currentTheme.includes("Light") ? "dark-content" : "light-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
             <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>
                 <View style={currentTheme.includes("Light") ? stylesLight.headerContainer : stylesDark.headerContainer}>
@@ -207,7 +206,8 @@ function DiaryLogs() {
 
 const stylesLight = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor: "#e3e3e3"
     },
     contentContainer: {
         flex: 1
@@ -395,7 +395,8 @@ const stylesLight = StyleSheet.create({
 
 const stylesDark = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor: "#2b2b2b"
     },
     contentContainer: {
         flex: 1
