@@ -5,7 +5,7 @@ import { Octicons } from "@react-native-vector-icons/octicons";
 import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Image, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { SelectList } from 'react-native-dropdown-select-list';
 import { Gesture, GestureDetector } from "react-native-gesture-handler";

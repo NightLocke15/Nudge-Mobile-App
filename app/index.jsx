@@ -1,7 +1,7 @@
 import { ThemeContext } from '@/AppContexts/ThemeContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from "expo-router";
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import { Pressable, StatusBar, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 

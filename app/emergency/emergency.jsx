@@ -3,7 +3,7 @@ import { UserContext } from '@/AppContexts/UserContext';
 import Octicons from '@react-native-vector-icons/octicons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import { Pressable, StatusBar, StyleSheet, Text, View } from "react-native";
 import 'react-native-get-random-values';
 import { SafeAreaView } from "react-native-safe-area-context";

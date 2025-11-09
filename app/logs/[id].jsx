@@ -2,7 +2,7 @@ import Diary from "@/AppComponents/diary";
 import People from "@/AppComponents/people";
 import { UserContext } from "@/AppContexts/UserContext";
 import { useLocalSearchParams } from "expo-router";
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { StatusBar, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
