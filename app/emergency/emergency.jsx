@@ -20,7 +20,7 @@ function Emergency() {
     return (
         <React.Fragment>
         <SafeAreaView style={{ flex: 0, backgroundColor: currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b" }} />
-        <SafeAreaView style={[currentTheme.includes("Light") ? stylesLight.container : stylesDark.container, {backgroundColor: currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"}]}>
+        <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
             <StatusBar barStyle={currentTheme.includes("Light") ? "dark-content" : "light-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
             <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>
                 <View style={currentTheme.includes("Light") ? stylesLight.headerContainer : stylesDark.headerContainer}>
@@ -52,6 +52,7 @@ function Emergency() {
 const stylesLight = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: "#e3e3e3"
     },
     contentContainer: {
         flex: 1,
@@ -109,6 +110,7 @@ const stylesLight = StyleSheet.create({
 const stylesDark = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: "2b2b2b"
     },
     contentContainer: {
         flex: 1,
