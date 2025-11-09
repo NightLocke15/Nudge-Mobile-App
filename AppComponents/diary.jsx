@@ -172,6 +172,7 @@ function Diary(props) {
         setUsers(userList);
     }
 
+    //The following few functions are all used to record, save and replay voice recordings
     function triggerRecording() {
         setRecording(null);
         setRecordingCard(true);
@@ -233,6 +234,7 @@ function Diary(props) {
         setWarning(true);
     }
 
+    //Delete images or voice notes
     function deleteThing() {
         if (item.type === "img") {
             const usersReVamp = users.map((user, index) => {

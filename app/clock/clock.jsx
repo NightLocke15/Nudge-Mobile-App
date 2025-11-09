@@ -338,6 +338,7 @@ function Clock() {
         setEditing(false);
     }
 
+    //Notification Functionality
     async function schedulePushNotification(title, message) {
         await Notifications.scheduleNotificationAsync({
             content: {

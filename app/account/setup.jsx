@@ -35,6 +35,7 @@ function Setup() {
     //Router to navigate the user back to the home page
     const router = useRouter();
 
+    //Adding users preffereed contacts
     function updateInfo() {
         const usersReVamp = users.map((user, index) => {
         if (user.idnum === localUser) {
@@ -53,6 +54,7 @@ function Setup() {
         router.navigate('/home');
     }
 
+    //Skipping this step. This can be edited in the settings later
     function skipInfo() {
         const usersReVamp = users.map((user, index) => {
         if (user.idnum === localUser) {
