@@ -413,7 +413,7 @@ function TimedList(props) {
             </View>   
             {changed ? (
                 <View style={currentTheme.includes("Light") ? stylesLight.update : stylesDark.update}>
-                    <Pressable onPress={update} style={currentTheme.includes("Light") ? stylesLight.updateClickable : stylesDark.updateClickable}>
+                    <Pressable onPress={update} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.updateClickable : stylesDark.updateClickable, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                         <Text style={currentTheme.includes("Light") ? stylesLight.updateText : stylesDark.updateText}>Update</Text>
                     </Pressable>
                 </View>
@@ -450,7 +450,7 @@ function TimedList(props) {
                             <Octicons name="x" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                         </Pressable>
                         <TextInput keyboardType="numeric" placeholder="Number of Minutes..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setTimeAmount(parseInt(e))} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input}/>
-                        <Pressable onPress={finishTimeAmount} style={currentTheme.includes("Light") ? stylesLight.done : stylesDark.done}>
+                        <Pressable onPress={finishTimeAmount} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.done : stylesDark.done, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.doneText : stylesDark.doneText}>Done</Text>
                         </Pressable>
                     </View>
@@ -473,10 +473,10 @@ function TimedList(props) {
             {action ? (
                 <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                     <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
-                        <Pressable onPress={() => editItem(item)} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                        <Pressable onPress={() => editItem(item)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit, {backgroundColor: pressed ? '#0f470aff' : '#1f9615ff'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                         </Pressable>
-                        <Pressable onPress={() => deleteItem(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                        <Pressable onPress={() => deleteItem(item)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete, {backgroundColor: pressed ? '#7a1503ff' : '#be2206ff'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                         </Pressable>
                     </View>

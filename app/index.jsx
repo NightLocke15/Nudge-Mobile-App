@@ -23,7 +23,7 @@ function WelcomeScreen() {
                     <Text style={currentTheme.includes("Light") ? stylesLight.logo : stylesDark.logo}>NUDGE</Text> 
                 </View>
                 <View style={currentTheme.includes("Light") ? stylesLight.getStartedContainer : stylesDark.getStartedContainer}>
-                    <Pressable onPress={getStarted} style={currentTheme.includes("Light") ? stylesLight.getStarted : stylesDark.getStarted}>
+                    <Pressable onPress={getStarted} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.getStarted : stylesDark.getStarted, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                         <Text style={currentTheme.includes("Light") ? stylesLight.getStartedText : stylesDark.getStartedText}>Get Started</Text>
                     </Pressable>
                 </View>                       

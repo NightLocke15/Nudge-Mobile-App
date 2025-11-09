@@ -502,7 +502,7 @@ function CalendarFunc() {
                                     ))}
                                 </View>                                                               
                             </ScrollView>                                                   
-                            <Pressable style={currentTheme.includes("Light") ? stylesLight.done : stylesDark.done} onPress={editing ? editEvent : addEvent}>
+                            <Pressable style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.done : stylesDark.done, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]} onPress={editing ? editEvent : addEvent}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.doneText : stylesDark.doneText}>Done</Text>
                             </Pressable>
                         </View>
@@ -514,7 +514,7 @@ function CalendarFunc() {
                 {action ? (
                     <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
-                            <Pressable onPress={triggerDelete} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                            <Pressable onPress={triggerDelete} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete, {backgroundColor: pressed ? '#7a1503ff' : '#be2206ff'}]}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                             </Pressable>
                         </View>
@@ -555,7 +555,7 @@ function CalendarFunc() {
                                     ))}
                                 </View>
                             </ScrollView>
-                            <Pressable onPress={triggerEdit} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                            <Pressable onPress={triggerEdit} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit, {backgroundColor: pressed ? '#104d0aff' : '#1f9615ff'}]}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                             </Pressable>
                         </View>
@@ -568,10 +568,10 @@ function CalendarFunc() {
                         <View style={currentTheme.includes("Light") ? stylesLight.warningContainer : stylesDark.warningContainer}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.warningText : stylesDark.warningText}>Are you sure you want to delete this event?</Text>
                             <View style={currentTheme.includes("Light") ? stylesLight.warningButtonContainer : stylesDark.warningButtonContainer}>
-                                <Pressable onPress={() => deleteEvent(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                                <Pressable onPress={() => deleteEvent(item)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete, {backgroundColor: pressed ? '#7a1503ff' : '#be2206ff'}]}>
                                     <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                                 </Pressable>
-                                <Pressable onPress={() => setWarning(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
+                                <Pressable onPress={() => setWarning(false)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                                     <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>Cancel</Text>
                                 </Pressable>
                             </View>                            

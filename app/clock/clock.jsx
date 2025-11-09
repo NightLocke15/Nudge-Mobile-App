@@ -418,20 +418,20 @@ function Clock() {
                 <Text style={currentTheme.includes("Light") ? stylesLight.timerNums : stylesDark.timerNums}>{timerAmounts.hours.toString().padStart(2, "0")}:{timerAmounts.minutes.toString().padStart(2, "0")}:{timerAmounts.seconds.toString().padStart(2, "0")}</Text>
                 {timerButtons ? (
                     <View style={currentTheme.includes("Light") ? stylesLight.buttonContainer : stylesDark.buttonContainer}>
-                        <Pressable onPress={resetTimer} style={currentTheme.includes("Light") ? stylesLight.button : stylesDark.button}>
+                        <Pressable onPress={resetTimer} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.button : stylesDark.button, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.buttonText : stylesDark.buttonText}>Delete</Text>
                         </Pressable>
-                        <Pressable onPress={() => setTimerRunning(!timerRunning)} style={currentTheme.includes("Light") ? stylesLight.button : stylesDark.button}>
+                        <Pressable onPress={() => setTimerRunning(!timerRunning)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.button : stylesDark.button, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.buttonText : stylesDark.buttonText}>{timerRunning ? "Pause" : "Resume"}</Text>
                         </Pressable>
                     </View>
                 ) : (
                     <View style={currentTheme.includes("Light") ? stylesLight.buttonContainer : stylesDark.buttonContainer}>
-                        <Pressable onPress={() => setShowTimerPickerT(true)} style={currentTheme.includes("Light") ? stylesLight.button : stylesDark.button}>
+                        <Pressable onPress={() => setShowTimerPickerT(true)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.button : stylesDark.button, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.buttonText : stylesDark.buttonText}>Set Timer</Text>
                         </Pressable>
                         {timerReady ? (
-                            <Pressable onPress={startTimer} style={currentTheme.includes("Light") ? stylesLight.button : stylesDark.button}>
+                            <Pressable onPress={startTimer} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.button : stylesDark.button, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.buttonText : stylesDark.buttonText}>Start Timer</Text>
                             </Pressable>
                         ) : (
@@ -515,7 +515,7 @@ function Clock() {
                             </View>
                             <Text style={currentTheme.includes("Light") ? stylesLight.headingAlarm : stylesDark.headingAlarm}>Alarm Name:</Text>
                             <TextInput placeholder="Name..." placeholderTextColor="#9e9e9e" value={alarmName} onChangeText={(e) => setAlarmName(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />                          
-                            <Pressable style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click} onPress={editing ? editAlarm : addingAlarm}>
+                            <Pressable style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]} onPress={editing ? editAlarm : addingAlarm}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
                             </Pressable>
                         </View>
@@ -526,10 +526,10 @@ function Clock() {
                 {action ? (
                     <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
-                            <Pressable onPress={triggerEdit} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                            <Pressable onPress={triggerEdit} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit, {backgroundColor: pressed ? '#0f470aff' : '#1f9615ff'}]}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                             </Pressable>
-                            <Pressable onPress={triggerDelete} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                            <Pressable onPress={triggerDelete} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete, {backgroundColor: pressed ? '#7a1503ff' : '#be2206ff'}]}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                             </Pressable>
                         </View>
@@ -542,10 +542,10 @@ function Clock() {
                         <View style={currentTheme.includes("Light") ? stylesLight.warningContainer : stylesDark.warningContainer}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.warningText : stylesDark.warningText}>Are you sure you want to delete this alarm?</Text>
                             <View style={currentTheme.includes("Light") ? stylesLight.warningButtonContainer : stylesDark.warningButtonContainer}>
-                                <Pressable onPress={deleteAlarm} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                                <Pressable onPress={deleteAlarm} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete, {backgroundColor: pressed ? '#7a1503ff' : '#be2206ff'}]}>
                                     <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                                 </Pressable>
-                                <Pressable onPress={() => setWarning(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
+                                <Pressable onPress={() => setWarning(false)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                                     <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>Cancel</Text>
                                 </Pressable>
                             </View>                            

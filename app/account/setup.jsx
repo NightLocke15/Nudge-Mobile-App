@@ -115,7 +115,7 @@ function Setup() {
                     <Text style={currentTheme.includes("Light") ? stylesLight.text : stylesDark.text}>What is your preffered emergency service's number?</Text>
                     <TextInput placeholder="Emergency Service Name..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setEmergencyService({...emergencyService, name: e})} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
                     <TextInput placeholder="Emergency Service Number..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setEmergencyService({...emergencyService, number: e})} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
-                    <Pressable onPress={updateInfo} style={currentTheme.includes("Light") ? stylesLight.done : stylesDark.done}>
+                    <Pressable onPress={updateInfo} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.done : stylesDark.done, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                         <Text style={currentTheme.includes("Light") ? stylesLight.doneText : stylesDark.doneText}>Done</Text>
                     </Pressable>
                 </ScrollView>

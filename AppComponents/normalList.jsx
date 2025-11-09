@@ -208,10 +208,10 @@ function NormalList(props) {
             {action ? (
                 <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                     <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
-                        <Pressable onPress={() => editItem(item)} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                        <Pressable onPress={() => editItem(item)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit, {backgroundColor: pressed ? '#0f470aff' : '#1f9615ff'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                         </Pressable>
-                        <Pressable onPress={() => deleteItem(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                        <Pressable onPress={() => deleteItem(item)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete, {backgroundColor: pressed ? '#7a1503ff' : '#be2206ff'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                         </Pressable>
                     </View>

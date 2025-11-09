@@ -359,7 +359,7 @@ function Diary(props) {
                             <Octicons name="x" size={20} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                         </Pressable>
                         <TextInput placeholder="Name..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setName(e)} value={name} maxLength={15} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input}/>
-                        <Pressable onPress={editName} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                        <Pressable onPress={editName} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
                         </Pressable>
                     </View>
@@ -373,10 +373,10 @@ function Diary(props) {
                         <Pressable onPress={() => setAddOptions(false)} style={currentTheme.includes("Light") ? stylesLight.close : stylesDark.close}>
                             <Octicons name="x" size={20} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                         </Pressable>
-                        <Pressable onPress={pickImage} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                        <Pressable onPress={pickImage} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Image</Text>
                         </Pressable>
-                        <Pressable onPress={triggerRecording} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                        <Pressable onPress={triggerRecording} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Voice Note</Text>
                         </Pressable>
                     </View>
@@ -387,7 +387,7 @@ function Diary(props) {
             {action ? (
                 <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                     <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
-                        <Pressable onPress={activateEditing} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                        <Pressable onPress={activateEditing} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit, {backgroundColor: pressed ? '#0f470aff' : '#1f9615ff'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                         </Pressable>
                     </View>
@@ -398,7 +398,7 @@ function Diary(props) {
             {actionDel ? (
                 <Pressable onPress={() => setActionDel(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                     <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
-                        <Pressable onPress={triggerDelete} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                        <Pressable onPress={triggerDelete} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete, {backgroundColor: pressed ? '#7a1503ff' : '#be2206ff'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                         </Pressable>
                     </View>
@@ -411,22 +411,22 @@ function Diary(props) {
                     <View style={currentTheme.includes("Light") ? stylesLight.editNameContainer : stylesDark.editNameContainer}>
                         {recording !== null ? (
                             <View style={currentTheme.includes("Light") ? stylesLight.recordingContainer : stylesDark.recordingContainer}>
-                                <Pressable onPress={recorderState.isRecording ? stopRecord : startRecord} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                                <Pressable onPress={recorderState.isRecording ? stopRecord : startRecord} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                                     <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>{recorderState.isRecording ? "Stop" : "Record"}</Text>
                                 </Pressable>
-                                <Pressable onPress={playSound} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                                <Pressable onPress={playSound} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                                     <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Play</Text>
                                 </Pressable>
-                                <Pressable onPress={saveSound} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                                <Pressable onPress={saveSound} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                                     <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Save</Text>
                                 </Pressable>
-                                <Pressable onPress={() => setRecording(null)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                                <Pressable onPress={() => setRecording(null)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete, {backgroundColor: pressed ? '#7a1503ff' : '#be2206ff'}]}>
                                     <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                                 </Pressable>
                             </View>                            
                         ) : (
                             <View>
-                                <Pressable onPress={recorderState.isRecording ? stopRecord : startRecord} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                                <Pressable onPress={recorderState.isRecording ? stopRecord : startRecord} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                                     <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>{recorderState.isRecording ? "Stop" : "Record"}</Text>
                                 </Pressable>
                             </View>
@@ -441,10 +441,10 @@ function Diary(props) {
                     <View style={currentTheme.includes("Light") ? stylesLight.warningContainer : stylesDark.warningContainer}>
                         <Text style={currentTheme.includes("Light") ? stylesLight.warningText : stylesDark.warningText}>Are you sure you want to delete this person?</Text>
                         <View style={currentTheme.includes("Light") ? stylesLight.buttonContainer : stylesDark.buttonContainer}>
-                            <Pressable onPress={() => deleteThing()} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                            <Pressable onPress={() => deleteThing()} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete, {backgroundColor: pressed ? '#7a1503ff' : '#be2206ff'}]}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                             </Pressable>
-                            <Pressable onPress={() => setWarning(false)} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                            <Pressable onPress={() => setWarning(false)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Cancel</Text>
                             </Pressable>
                         </View>                            

@@ -583,7 +583,7 @@ function MedicationLogs() {
                                 </View> 
                                 <View>
                                     <Pressable onPress={showFetchDatePicker}>
-                                        <Text style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>Change Date</Text>
+                                        <Text style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>Change Date</Text>
                                     </Pressable>
                                 </View>
                             </View> 
@@ -609,7 +609,7 @@ function MedicationLogs() {
                                 </View> 
                                 <View>
                                     <Pressable onPress={showStartDatePicker}>
-                                        <Text style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>Change Date</Text>
+                                        <Text style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>Change Date</Text>
                                     </Pressable>
                                 </View>
                             </View> 
@@ -638,11 +638,11 @@ function MedicationLogs() {
                             <View style={currentTheme.includes("Light") ? stylesLight.formAddTime : stylesDark.formAddTime}>
                                 <TextInput placeholder="Time (eg. 14:00)..." placeholderTextColor="#9e9e9e" value={oneTime} onChangeText={(e) => setOneTime(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
                                 <Pressable onPress={addTime}>
-                                    <Text style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>Add Time To Take</Text>
+                                    <Text style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>Add Time To Take</Text>
                                 </Pressable>
                             </View>                            
                             <Pressable onPress={editing ? editMed : addMedLog}>
-                                <Text style={[currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, {marginTop: 5}]}>Done</Text>
+                                <Text style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, {marginTop: 5}, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>Done</Text>
                             </Pressable>
                         </View>
                     </View>                    
@@ -652,10 +652,10 @@ function MedicationLogs() {
                 {action ? (
                     <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
-                            <Pressable onPress={triggerEditing} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                            <Pressable onPress={triggerEditing} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit, {backgroundColor: pressed ? '#0f470aff' : '#1f9615ff'}]}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                             </Pressable>
-                            <Pressable onPress={triggerDelete} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                            <Pressable onPress={triggerDelete} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete, {backgroundColor: pressed ? '#7a1503ff' : '#be2206ff'}]}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                             </Pressable>
                         </View>
@@ -670,7 +670,7 @@ function MedicationLogs() {
                                 <Octicons name="x" size={30} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                             </Pressable>
                             {image !== "" ? <Image source={{uri: image}} style={currentTheme.includes("Light") ? stylesLight.viewPill : stylesDark.viewPill}/> : <Image source={""} style={currentTheme.includes("Light") ? stylesLight.viewPill : stylesDark.viewPill}/>}
-                            <Pressable onPress={pickImage} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
+                            <Pressable onPress={pickImage} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>{image === "" ? "Add" : "Change"}</Text>
                             </Pressable>
                         </View>
@@ -683,10 +683,10 @@ function MedicationLogs() {
                         <View style={currentTheme.includes("Light") ? stylesLight.warningContainer : stylesDark.warningContainer}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.warningText : stylesDark.warningText}>Are you sure you want to delete this medication log?</Text>
                             <View style={currentTheme.includes("Light") ? stylesLight.warningButtonContainer : stylesDark.warningButtonContainer}>
-                                <Pressable onPress={() => deleteItem(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                                <Pressable onPress={() => deleteItem(item)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete, {backgroundColor: pressed ? '#7a1503ff' : '#be2206ff'}]}>
                                     <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                                 </Pressable>
-                                <Pressable onPress={() => setWarning(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
+                                <Pressable onPress={() => setWarning(false)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                                     <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>Cancel</Text>
                                 </Pressable>
                             </View>                            

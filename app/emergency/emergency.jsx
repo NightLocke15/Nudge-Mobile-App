@@ -27,13 +27,13 @@ function Emergency() {
                     <Text style={currentTheme.includes("Light") ? stylesLight.header : stylesDark.header}>Emergency</Text>
                 </View>
                 <View style={currentTheme.includes("Light") ? stylesLight.emergencyButtonHolder : stylesDark.emergencyButtonHolder}>
-                    <Pressable style={currentTheme.includes("Light") ? stylesLight.emergencyButton : stylesDark.emergencyButton} onLongPress={() => console.log("Call Emergency Contact.")}>
+                    <Pressable style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.emergencyButton : stylesDark.emergencyButton, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]} onLongPress={() => console.log("Call Emergency Contact.")}>
                         <View style={currentTheme.includes("Light") ? stylesLight.redBorder : stylesDark.redBorder}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.textOne : stylesDark.textOne}>Hold to call</Text>
                             <Text style={currentTheme.includes("Light") ? stylesLight.textTwo : stylesDark.textTwo}>EMERGENCY CONTACT</Text>
                         </View>                    
                     </Pressable>
-                    <Pressable style={currentTheme.includes("Light") ? stylesLight.emergencyButton : stylesDark.emergencyButton} onLongPress={() => console.log("Call Emergency Services.")}>
+                    <Pressable style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.emergencyButton : stylesDark.emergencyButton, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]} onLongPress={() => console.log("Call Emergency Services.")}>
                         <View style={currentTheme.includes("Light") ? stylesLight.redBorder : stylesDark.redBorder}>                        
                             <Text style={currentTheme.includes("Light") ? stylesLight.textOne : stylesDark.textOne}>Hold to call</Text>
                             <Text style={currentTheme.includes("Light") ? stylesLight.textTwo : stylesDark.textTwo}>EMERGENCY SERVICES</Text>

@@ -205,7 +205,7 @@ function Settings() {
                     <Text style={currentTheme.includes("Light") ? stylesLight.subHeaderAccount : stylesDark.subHeaderAccount}>Username:</Text>
                     <View style={currentTheme.includes("Light") ? stylesLight.accountInfoContainer : stylesDark.accountInfoContainer}>
                         <Text style={currentTheme.includes("Light") ? stylesLight.accountInfo : stylesDark.accountInfo}>{localUserInfo[0] && localUserInfo[0].username}</Text>
-                        <Pressable onPress={() => setEditing("username")} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                        <Pressable onPress={() => setEditing("username")} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                         </Pressable>
                     </View>                    
@@ -222,7 +222,7 @@ function Settings() {
                                 return letter;
                             }
                         })}</Text>
-                        <Pressable onPress={() => setEditing("email")} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                        <Pressable onPress={() => setEditing("email")} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                         </Pressable>
                     </View>
@@ -231,32 +231,32 @@ function Settings() {
                         <Text style={currentTheme.includes("Light") ? stylesLight.accountInfo : stylesDark.accountInfo}>{localUserInfo[0] && localUserInfo[0].password.split('').map((letter) => {
                             return '*'
                         })}</Text>
-                        <Pressable onPress={() => setEditing("password")} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                        <Pressable onPress={() => setEditing("password")} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                         </Pressable>
                     </View> 
                     <Text style={currentTheme.includes("Light") ? stylesLight.subHeaderAccount : stylesDark.subHeaderAccount}>User Type:</Text>
                     <View style={currentTheme.includes("Light") ? stylesLight.accountInfoContainer : stylesDark.accountInfoContainer}>
                         <Text style={currentTheme.includes("Light") ? stylesLight.accountInfo : stylesDark.accountInfo}>{localUserInfo[0] && localUserInfo[0].userType}</Text>
-                        <Pressable onPress={() => setEditing("usertype")} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                        <Pressable onPress={() => setEditing("usertype")} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                         </Pressable>
                     </View>  
                     <Text style={currentTheme.includes("Light") ? stylesLight.subHeaderAccount : stylesDark.subHeaderAccount}>Emergency Contact:</Text>
                     <View style={currentTheme.includes("Light") ? stylesLight.accountInfoContainer : stylesDark.accountInfoContainer}>
                         <Text style={currentTheme.includes("Light") ? stylesLight.accountInfo : stylesDark.accountInfo}>{localUserInfo[0] && localUserInfo[0].emergencyContact.name}: {localUserInfo[0] && localUserInfo[0].emergencyContact.number}</Text>
-                        <Pressable onPress={() => setEditing("emergencycontact")} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                        <Pressable onPress={() => setEditing("emergencycontact")} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                         </Pressable>
                     </View> 
                     <Text style={currentTheme.includes("Light") ? stylesLight.subHeaderAccount : stylesDark.subHeaderAccount}>Emergency Service:</Text>
                     <View style={currentTheme.includes("Light") ? stylesLight.accountInfoContainer : stylesDark.accountInfoContainer}>
                         <Text style={currentTheme.includes("Light") ? stylesLight.accountInfo : stylesDark.accountInfo}>{localUserInfo[0] && localUserInfo[0].emergencyService.name}: {localUserInfo[0] && localUserInfo[0].emergencyService.number}</Text>
-                        <Pressable onPress={() => setEditing("emergencyservice")} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                        <Pressable onPress={() => setEditing("emergencyservice")} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                         </Pressable>
                     </View> 
-                    <Pressable onPress={enableLogOut} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                    <Pressable onPress={enableLogOut} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                         <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Log Out</Text>
                     </Pressable>  
                     <View style={currentTheme.includes("Light") ? stylesLight.legalContainer : stylesDark.legalContainer}>
@@ -274,7 +274,7 @@ function Settings() {
                             </Pressable>
                             <Text style={currentTheme.includes("Light") ? stylesLight.subHeaderAccount : stylesDark.subHeaderAccount}>New Username:</Text>
                             <TextInput placeholder="New Username..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setNewUser(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
-                            <Pressable onPress={editUsername} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                            <Pressable onPress={editUsername} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
                             </Pressable>
                         </View>
@@ -291,7 +291,7 @@ function Settings() {
                             <Text>{warning}</Text>
                             <Text style={currentTheme.includes("Light") ? stylesLight.subHeaderAccount : stylesDark.subHeaderAccount}>New Email:</Text>
                             <TextInput placeholder="New Email..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setNewEmail(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
-                            <Pressable onPress={editEmail} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                            <Pressable onPress={editEmail} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
                             </Pressable>
                         </View>
@@ -308,7 +308,7 @@ function Settings() {
                             <Text>{warning}</Text>
                             <Text style={currentTheme.includes("Light") ? stylesLight.subHeaderAccount : stylesDark.subHeaderAccount}>New Password:</Text>
                             <TextInput placeholder="New Password..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setNewPassword(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
-                            <Pressable onPress={editPassword} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                            <Pressable onPress={editPassword} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
                             </Pressable>
                         </View>
@@ -332,7 +332,7 @@ function Settings() {
                                 closeicon={<Octicons name="x" size={18} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>}
                                 search={false}
                             />
-                            <Pressable onPress={editUsertype} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                            <Pressable onPress={editUsertype} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
                             </Pressable>
                         </View>
@@ -349,7 +349,7 @@ function Settings() {
                             <Text>{warning}</Text>
                             <Text style={currentTheme.includes("Light") ? stylesLight.subHeaderAccount : stylesDark.subHeaderAccount}>Contact Number:</Text>
                             <TextInput placeholder="Number..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setEmergencyContact({...emergencyContact, number: e})} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
-                            <Pressable onPress={editEmergencyContact} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                            <Pressable onPress={editEmergencyContact} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
                             </Pressable>
                         </View>
@@ -366,7 +366,7 @@ function Settings() {
                             <Text>{warning}</Text>
                             <Text style={currentTheme.includes("Light") ? stylesLight.subHeaderAccount : stylesDark.subHeaderAccount}>Service Number:</Text>
                             <TextInput placeholder="Number..." placeholderTextColor="#9e9e9e" onChangeText={(e) => setEmergencyService({...emergencyService, number: e})} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
-                            <Pressable onPress={editEmergencyService} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                            <Pressable onPress={editEmergencyService} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
                             </Pressable>
                         </View>

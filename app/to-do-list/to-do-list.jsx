@@ -216,7 +216,7 @@ function ToDoList() {
                                 <Octicons name="x" size={20} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                             </Pressable>
                             <TextInput placeholder="Name your list..." value={newListName} placeholderTextColor="#9e9e9e" onChangeText={(e) => setNewListName(e)} maxLength={15} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
-                            <Pressable onPress={editing ? editListName : newList} style={currentTheme.includes("Light") ? stylesLight.done : stylesDark.done}>
+                            <Pressable onPress={editing ? editListName : newList} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.done : stylesDark.done, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.doneText : stylesDark.doneText}>Done</Text>
                             </Pressable>
                         </View>
@@ -230,7 +230,7 @@ function ToDoList() {
                     <View style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={currentTheme.includes("Light") ? stylesLight.warningContainer : stylesDark.warningContainer}>
                         <Text style={currentTheme.includes("Light") ? stylesLight.warningText : stylesDark.warningText}>{warning}</Text>
-                        <Pressable onPress={() => setWarning("")} style={currentTheme.includes("Light") ? stylesLight.okay : stylesDark.okay}>
+                        <Pressable onPress={() => setWarning("")} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.okay : stylesDark.okay, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.okayText : stylesDark.okayText}>Okay</Text>
                         </Pressable>
                         </View>
@@ -239,10 +239,10 @@ function ToDoList() {
                 {action ? (
                     <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
-                            <Pressable onPress={activateEditing} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                            <Pressable onPress={activateEditing} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit, {backgroundColor: pressed ? '#0f470aff' : '#1f9615ff'}]}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                             </Pressable>
-                            <Pressable onPress={activateDeleting} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                            <Pressable onPress={activateDeleting} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete, {backgroundColor: pressed ? '#7a1503ff' : '#be2206ff'}]}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                             </Pressable>
                         </View>
@@ -255,10 +255,10 @@ function ToDoList() {
                         <View style={currentTheme.includes("Light") ? stylesLight.deleteWarningContainer : stylesDark.deleteWarningContainer}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.deleteWarningText : stylesDark.deleteWarningText}>Are you sure you want to delete this list?</Text>
                             <View style={currentTheme.includes("Light") ? stylesLight.buttonContainer : stylesDark.buttonContainer}>
-                                <Pressable onPress={() => deleteItem(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                                <Pressable onPress={() => deleteItem(item)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete, {backgroundColor: pressed ? '#7a1503ff' : '#be2206ff'}]}>
                                     <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                                 </Pressable>
-                                <Pressable onPress={() => setDeleteWarning(false)} style={currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel}>
+                                <Pressable onPress={() => setDeleteWarning(false)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.cancel : stylesDark.cancel, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                                     <Text style={currentTheme.includes("Light") ? stylesLight.cancelText : stylesDark.cancelText}>Cancel</Text>
                                 </Pressable>
                             </View>                            

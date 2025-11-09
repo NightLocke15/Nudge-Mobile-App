@@ -184,11 +184,11 @@ function PeopleLogs() {
                             <TextInput placeholder="Relationship..." placeholderTextColor="#9e9e9e" value={personRelationship} onChangeText={(e) => setPersonRelationship(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} />
                             <View>
                                 {image !== "" ? <Image source={{uri: image}} style={currentTheme.includes("Light") ? stylesLight.peoplePhotoChoose : stylesDark.peoplePhotoChoose}/> : <View></View>}
-                                <Pressable onPress={pickImage} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                                <Pressable onPress={pickImage} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                                     <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>{image === "" ? "Add Photo" : "Change Photo"}</Text>
                                 </Pressable>
                             </View>                            
-                            <Pressable onPress={!editing ? addPersonBasicDetails : () => editItem(item)} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                            <Pressable onPress={!editing ? addPersonBasicDetails : () => editItem(item)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
                             </Pressable>
                         </View>
@@ -201,10 +201,10 @@ function PeopleLogs() {
                         <View style={currentTheme.includes("Light") ? stylesLight.warningContainer : stylesDark.warningContainer}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.warningText : stylesDark.warningText}>Are you sure you want to delete this person?</Text>
                             <View style={currentTheme.includes("Light") ? stylesLight.buttonContainer : stylesDark.buttonContainer}>
-                                <Pressable onPress={() => deleteItem(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                                <Pressable onPress={() => deleteItem(item)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete, {backgroundColor: pressed ? '#7a1503ff' : '#be2206ff'}]}>
                                     <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                                 </Pressable>
-                                <Pressable onPress={() => setWarning(false)} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                                <Pressable onPress={() => setWarning(false)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                                     <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Cancel</Text>
                                 </Pressable>
                             </View>                            
@@ -216,10 +216,10 @@ function PeopleLogs() {
                 {action ? (
                     <Pressable onPress={() => setAction(false)} style={currentTheme.includes("Light") ? stylesLight.overLay : stylesDark.overLay}>
                         <View style={[currentTheme.includes("Light") ? stylesLight.actionContainer : stylesDark.actionContainer, {position: "absolute", left: tapPostition.x, top: tapPostition.y}]}> 
-                            <Pressable onPress={() => triggerEditing(item)} style={currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit}>
+                            <Pressable onPress={() => triggerEditing(item)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.edit : stylesDark.edit, {backgroundColor: pressed ? '#0f470aff' : '#1f9615ff'}]}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.editText : stylesDark.editText}>Edit</Text>
                             </Pressable>
-                            <Pressable onPress={() => deleteWarning(item)} style={currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete}>
+                            <Pressable onPress={() => deleteWarning(item)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.delete : stylesDark.delete, {backgroundColor: pressed ? '#7a1503ff' : '#be2206ff'}]}>
                                 <Text style={currentTheme.includes("Light") ? stylesLight.deleteText : stylesDark.deleteText}>Delete</Text>
                             </Pressable>
                         </View>

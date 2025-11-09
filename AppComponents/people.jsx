@@ -263,34 +263,34 @@ function People(props) {
                     <Text style={currentTheme.includes("Light") ? stylesLight.heading : stylesDark.heading}>Name: </Text>
                     <View style={currentTheme.includes("Light") ? stylesLight.miniContainer : stylesDark.miniContainer}>
                         <Text style={currentTheme.includes("Light") ? stylesLight.text : stylesDark.text}>{localUserInfo[0] && localUserInfo[0].logs[id].personName}</Text>
-                        <Pressable onPress={() => triggerEditing(localUserInfo[0] && localUserInfo[0].logs[id].personName, "personName")} style={currentTheme.includes("Light") ? stylesLight.clickOther : stylesDark.clickOther}>
+                        <Pressable onPress={() => triggerEditing(localUserInfo[0] && localUserInfo[0].logs[id].personName, "personName")} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.clickOther : stylesDark.clickOther, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Edit</Text>
                         </Pressable>
                     </View>                
                     <Text style={currentTheme.includes("Light") ? stylesLight.heading : stylesDark.heading}>Relationship: </Text>
                     <View style={currentTheme.includes("Light") ? stylesLight.miniContainer : stylesDark.miniContainer}>
                         <Text style={currentTheme.includes("Light") ? stylesLight.text : stylesDark.text}>{localUserInfo[0] && localUserInfo[0].logs[id].relationship}</Text>
-                        <Pressable onPress={() => triggerEditing(localUserInfo[0] && localUserInfo[0].logs[id].relationship, "relationship")} style={currentTheme.includes("Light") ? stylesLight.clickOther : stylesDark.clickOther}>
+                        <Pressable onPress={() => triggerEditing(localUserInfo[0] && localUserInfo[0].logs[id].relationship, "relationship")} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.clickOther : stylesDark.clickOther, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Edit</Text>
                         </Pressable>
                     </View>                
                     <Text style={currentTheme.includes("Light") ? stylesLight.heading : stylesDark.heading}>Birthday: </Text> 
                     <View style={currentTheme.includes("Light") ? stylesLight.miniContainer : stylesDark.miniContainer}>
                         <Text style={currentTheme.includes("Light") ? stylesLight.text : stylesDark.text}>{localUserInfo[0] && localUserInfo[0].logs[id].birthday === "" ? "" : `${localUserInfo[0].logs[id].birthday.substring(8)} ${month[localUserInfo[0].logs[id].birthday.substring(6,7) - 1]}`}</Text>
-                        <Pressable onPress={showDatePicker} style={currentTheme.includes("Light") ? stylesLight.clickOther : stylesDark.clickOther}>
+                        <Pressable onPress={showDatePicker} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.clickOther : stylesDark.clickOther, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Edit</Text>
                         </Pressable>
                     </View>    
                     <Text style={currentTheme.includes("Light") ? stylesLight.heading : stylesDark.heading}>Number:</Text>
                     <View style={currentTheme.includes("Light") ? stylesLight.miniHeaderContainer : stylesDark.miniHeaderContainer}>
                         <Text style={currentTheme.includes("Light") ? stylesLight.text : stylesDark.text}>{localUserInfo[0] && localUserInfo[0].logs[id].number}</Text>
-                        <Pressable onPress={() => triggerEditing(localUserInfo[0] && localUserInfo[0].logs[id].number, "number")} style={currentTheme.includes("Light") ? stylesLight.clickOther : stylesDark.clickOther}>
+                        <Pressable onPress={() => triggerEditing(localUserInfo[0] && localUserInfo[0].logs[id].number, "number")} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.clickOther : stylesDark.clickOther, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Edit</Text>
                         </Pressable>
                     </View>
                     <View style={currentTheme.includes("Light") ? stylesLight.miniHeaderContainer : stylesDark.miniHeaderContainer}>
                         <Text style={currentTheme.includes("Light") ? stylesLight.heading : stylesDark.heading}>Likes: </Text>
-                        <Pressable onPress={() => triggerAdd("likes")} style={currentTheme.includes("Light") ? stylesLight.clickOther : stylesDark.clickOther}>
+                        <Pressable onPress={() => triggerAdd("likes")} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.clickOther : stylesDark.clickOther, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Edit</Text>
                         </Pressable>
                     </View>    
@@ -301,7 +301,7 @@ function People(props) {
                     ))}   
                     <View style={currentTheme.includes("Light") ? stylesLight.miniHeaderContainer : stylesDark.miniHeaderContainer}>
                         <Text style={currentTheme.includes("Light") ? stylesLight.heading : stylesDark.heading}>Dislikes: </Text>
-                        <Pressable onPress={() => triggerAdd("dislikes")} style={currentTheme.includes("Light") ? stylesLight.clickOther : stylesDark.clickOther}>
+                        <Pressable onPress={() => triggerAdd("dislikes")} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.clickOther : stylesDark.clickOther, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Edit</Text>
                         </Pressable>
                     </View>                
@@ -321,7 +321,7 @@ function People(props) {
                             <Octicons name="x" size={20} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                         </Pressable>
                         <TextInput  placeholder="Type..." placeholderTextColor="#9e9e9e" value={singleElement} onChangeText={(e) => setSingleElement(e)} style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input}/>
-                        <Pressable onPress={() => editSingleElement(singleElement, toEdit)} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                        <Pressable onPress={() => editSingleElement(singleElement, toEdit)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
                         </Pressable>
                     </View>
@@ -339,7 +339,7 @@ function People(props) {
                             <View key={like.id}>
                                 <View  style={currentTheme.includes("Light") ? stylesLight.listView : stylesDark.listView}>
                                     <Text style={[currentTheme.includes("Light") ? stylesLight.text : stylesDark.text, {marginBottom: 10}]}>- {like.item}</Text>
-                                    <Pressable onPress={() => deleteFromList(like.id)} style={currentTheme.includes("Light") ? stylesLight.clickOther : stylesDark.clickOther}>
+                                    <Pressable onPress={() => deleteFromList(like.id)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.clickOther : stylesDark.clickOther, {backgroundColor: pressed ? '#7a1503ff' : '#be2206ff'}]}>
                                         <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Delete</Text>
                                     </Pressable>
                                 </View>                                
@@ -348,10 +348,10 @@ function People(props) {
                         <View style={currentTheme.includes("Light") ? stylesLight.addContainer : stylesDark.addContainer}>
                             <TextInput  placeholder="Type..." placeholderTextColor="#9e9e9e" multiline value={listItem} onChangeText={(e) => setListItem(e)} style={[currentTheme.includes("Light") ? stylesLight.input : stylesDark.input, {width: "80%"}]}/>
                             <Pressable onPress={addListItems}>
-                                <Text style={[currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText, currentTheme.includes("Light") ? stylesLight.click : stylesDark.click]}>Add</Text>
+                                <Text style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText, currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>Add</Text>
                             </Pressable>
                         </View>                        
-                        <Pressable onPress={() => addToList(sectionAdding)} style={currentTheme.includes("Light") ? stylesLight.click : stylesDark.click}>
+                        <Pressable onPress={() => addToList(sectionAdding)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.click : stylesDark.click, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
                             <Text style={currentTheme.includes("Light") ? stylesLight.clickText : stylesDark.clickText}>Done</Text>
                         </Pressable>
                     </View>

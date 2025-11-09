@@ -29,32 +29,32 @@ function Home() {
                     <Octicons style={currentTheme.includes("Light") ? stylesLight.icon : stylesDark.icon} name="gear" size={25} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                 </Pressable>
                 <View style={currentTheme.includes("Light") ? stylesLight.menuContainer : stylesDark.menuContainer}>
-                    <Pressable style={currentTheme.includes("Light") ? stylesLight.button : stylesDark.button} onPress={() => router.navigate('/to-do-list/to-do-list')}>
+                    <Pressable style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.button : stylesDark.button, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]} onPress={() => router.navigate('/to-do-list/to-do-list')}>
                         <Octicons style={currentTheme.includes("Light") ? stylesLight.icon : stylesDark.icon} name="list-unordered" size={50} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                         <Text style={currentTheme.includes("Light") ? stylesLight.buttonText : stylesDark.buttonText}>To-Do</Text>
                     </Pressable>
-                    <Pressable style={currentTheme.includes("Light") ? stylesLight.button : stylesDark.button} onPress={() => router.navigate('/calendar/calendar')}>
+                    <Pressable style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.button : stylesDark.button, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]} onPress={() => router.navigate('/calendar/calendar')}>
                         <Octicons style={currentTheme.includes("Light") ? stylesLight.icon : stylesDark.icon} name="calendar" size={50} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                         <Text style={currentTheme.includes("Light") ? stylesLight.buttonText : stylesDark.buttonText}>Calendar</Text>
                     </Pressable>
-                    <Pressable style={currentTheme.includes("Light") ? stylesLight.button : stylesDark.button} onPress={() => router.navigate('/logs/diaryLogs')}>
+                    <Pressable style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.button : stylesDark.button, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]} onPress={() => router.navigate('/logs/diaryLogs')}>
                         <Octicons style={currentTheme.includes("Light") ? stylesLight.icon : stylesDark.icon} name="repo" size={50} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                         <Text style={currentTheme.includes("Light") ? stylesLight.buttonText : stylesDark.buttonText}>Diary</Text>
                     </Pressable>
-                    <Pressable style={currentTheme.includes("Light") ? stylesLight.button : stylesDark.button} onPress={() => router.navigate('/logs/peopleLogs')}>
+                    <Pressable style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.button : stylesDark.button, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]} onPress={() => router.navigate('/logs/peopleLogs')}>
                         <Octicons style={currentTheme.includes("Light") ? stylesLight.icon : stylesDark.icon} name="people" size={50} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                         <Text style={currentTheme.includes("Light") ? stylesLight.buttonText : stylesDark.buttonText}>People</Text>
                     </Pressable>
-                    <Pressable style={currentTheme.includes("Light") ? stylesLight.button : stylesDark.button} onPress={() => router.navigate('/logs/medicationLogs')}>
+                    <Pressable style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.button : stylesDark.button, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]} onPress={() => router.navigate('/logs/medicationLogs')}>
                         <Lucide style={currentTheme.includes("Light") ? stylesLight.icon : stylesDark.icon} name="pill" size={50} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                         <Text style={currentTheme.includes("Light") ? stylesLight.buttonText : stylesDark.buttonText}>Medication</Text>
                     </Pressable>
-                    <Pressable style={currentTheme.includes("Light") ? stylesLight.button : stylesDark.button} onPress={() => router.navigate('/clock/clock')}>
+                    <Pressable style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.button : stylesDark.button, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]} onPress={() => router.navigate('/clock/clock')}>
                         <Octicons style={currentTheme.includes("Light") ? stylesLight.icon : stylesDark.icon} name="clock" size={50} color={currentTheme.includes("Light") ? '#585858' : '#e3e3e3'}/>
                         <Text style={currentTheme.includes("Light") ? stylesLight.buttonText : stylesDark.buttonText}>Clock</Text>
                     </Pressable>
                 </View>  
-                <Pressable style={currentTheme.includes("Light") ? stylesLight.emergencyButton : stylesDark.emergencyButton} onPress={() => router.navigate('/emergency/emergency')}>
+                <Pressable style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.emergencyButton : stylesDark.emergencyButton, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]} onPress={() => router.navigate('/emergency/emergency')}>
                     <View style={currentTheme.includes("Light") ? stylesLight.redBorder : stylesDark.redBorder}>
                         <Lucide style={currentTheme.includes("Light") ? stylesLight.emergencyIcon : stylesDark.emergencyIcon} name="activity" size={50} color={'#c00f0fff'}/>
                         <Text style={currentTheme.includes("Light") ? stylesLight.emergencyButtonText : stylesDark.emergencyButtonText}>EMERGENCY</Text>
@@ -67,10 +67,10 @@ function Home() {
                     <Text style={currentTheme.includes("Light") ? stylesLight.header2 : stylesDark.header2}>NUDGE</Text>
                 </View>
                 <View style={currentTheme.includes("Light") ? stylesLight.loginContainer : stylesDark.loginContainer}>
-                    <Pressable  style={currentTheme.includes("Light") ? stylesLight.clickableAccount : stylesDark.clickableAccount} onPress={() => router.navigate('/account/login')}>
+                    <Pressable  style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.clickableAccount : stylesDark.clickableAccount, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]} onPress={() => router.navigate('/account/login')}>
                         <Text style={currentTheme.includes("Light") ? stylesLight.clickableAccountText : stylesDark.clickableAccountText}>Log In</Text>
                     </Pressable> 
-                    <Pressable  style={currentTheme.includes("Light") ? stylesLight.clickableAccount : stylesDark.clickableAccount} onPress={() => router.navigate('/account/createAccount')}>
+                    <Pressable  style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.clickableAccount : stylesDark.clickableAccount, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]} onPress={() => router.navigate('/account/createAccount')}>
                         <Text style={currentTheme.includes("Light") ? stylesLight.clickableAccountText : stylesDark.clickableAccountText}>Create Account</Text>
                     </Pressable>
                 </View>                

@@ -56,7 +56,7 @@ function Login() {
                     </View> 
                 </View>                      
                 <View style={currentTheme.includes("Light") ? stylesLight.accountContainer : stylesDark.accountContainer}>
-                    <Pressable style={currentTheme.includes("Light") ? stylesLight.clickable : stylesDark.clickable} onPress={() => handleLogin(email, password)}>
+                    <Pressable style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.clickable : stylesDark.clickable, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]} onPress={() => handleLogin(email, password)}>
                         <Text style={currentTheme.includes("Light") ? stylesLight.clickableText : stylesDark.clickableText}>Log In</Text>
                     </Pressable>
                     <Text style={currentTheme.includes("Light") ? stylesLight.createLabel : stylesDark.createLabel}>No Account Yet?</Text>
