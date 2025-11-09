@@ -37,6 +37,7 @@ function RootLayout() {
             <SafeAreaProvider>
                 <UserProvider>
                     <ThemeProvider>
+                        <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
                         <Stack screenOptions={{ headerShown: false, headerTitle: "NUDGE", headerStyle: {backgroundColor: "#fff"}, headerShadowVisible: false}}>
                             <Stack.Screen name="index" />
                             <Stack.Screen name="home" />
