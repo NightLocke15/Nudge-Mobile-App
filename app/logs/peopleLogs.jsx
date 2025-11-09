@@ -5,7 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useContext, useState } from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, StatusBar, StyleSheet, Text, View } from "react-native";
 import { Gesture, GestureDetector, TextInput } from "react-native-gesture-handler";
 import 'react-native-get-random-values';
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -151,6 +151,7 @@ function PeopleLogs() {
 
     return (
         <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
+            <StatusBar barStyle={currentTheme.includes("Light") ? "light-content" : "dark-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
             <LinearGradient colors={gradientColours} style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer}>
                 <View style={currentTheme.includes("Light") ? stylesLight.headerContainer : stylesDark.headerContainer}>
                     <Pressable onPress={() => router.navigate("/home")} style={currentTheme.includes("Light") ? stylesLight.back : stylesDark.back}>

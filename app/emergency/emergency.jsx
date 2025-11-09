@@ -4,7 +4,7 @@ import Octicons from '@react-native-vector-icons/octicons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useContext } from 'react';
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StatusBar, StyleSheet, Text, View } from "react-native";
 import 'react-native-get-random-values';
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -19,6 +19,7 @@ function Emergency() {
     //**Currently this only sends a console log. Next step is to add call functionality**
     return (
         <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
+            <StatusBar barStyle={currentTheme.includes("Light") ? "light-content" : "dark-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
             <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>
                 <View style={currentTheme.includes("Light") ? stylesLight.headerContainer : stylesDark.headerContainer}>
                     <Pressable onPress={() => router.navigate("/home")} style={currentTheme.includes("Light") ? stylesLight.back : stylesDark.back}>

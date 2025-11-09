@@ -2,7 +2,7 @@ import { ThemeContext } from '@/AppContexts/ThemeContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from "expo-router";
 import { useContext } from 'react';
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StatusBar, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 
@@ -18,6 +18,7 @@ function WelcomeScreen() {
 
     return (
         <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.mainContainer : stylesDark.mainContainer}>  
+        <StatusBar barStyle={currentTheme.includes("Light") ? "light-content" : "dark-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
             <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>
                 <View style={currentTheme.includes("Light") ? stylesLight.logoContainer : stylesDark.logoContainer}>
                     <Text style={currentTheme.includes("Light") ? stylesLight.logo : stylesDark.logo}>NUDGE</Text> 

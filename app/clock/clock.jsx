@@ -7,7 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
-import { Platform, Pressable, ScrollView, StyleSheet, Switch, Text, TextInput, View } from "react-native";
+import { Platform, Pressable, ScrollView, StatusBar, StyleSheet, Switch, Text, TextInput, View } from "react-native";
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import 'react-native-get-random-values';
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -406,6 +406,7 @@ function Clock() {
     
     return (
         <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
+            <StatusBar barStyle={currentTheme.includes("Light") ? "light-content" : "dark-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
             <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>
                 <View style={currentTheme.includes("Light") ? stylesLight.headerContainer : stylesDark.headerContainer}>
                     <Pressable onPress={() => router.navigate("/home")} style={currentTheme.includes("Light") ? stylesLight.back : stylesDark.back}>

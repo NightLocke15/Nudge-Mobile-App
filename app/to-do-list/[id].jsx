@@ -3,7 +3,7 @@ import TimedList from "@/AppComponents/timedList";
 import { UserContext } from "@/AppContexts/UserContext";
 import { useLocalSearchParams } from "expo-router";
 import { useContext, useState } from "react";
-import { StyleSheet } from "react-native";
+import { StatusBar, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 
@@ -20,6 +20,7 @@ function MakeList() {
     //Renders the relevent information based on the type of list
     return (
         <SafeAreaView style={styles.container}>
+            <StatusBar barStyle={currentTheme.includes("Light") ? "light-content" : "dark-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
             {localUserInfo[0].lists[index].type === "Normal" ? 
             <NormalList id={index}/> : <TimedList id={index} />}
         </SafeAreaView>

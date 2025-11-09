@@ -4,7 +4,6 @@ import { useFonts } from 'expo-font';
 import { Stack } from "expo-router";
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from "react";
-import { StatusBar } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
@@ -38,7 +37,6 @@ function RootLayout() {
             <SafeAreaProvider>
                 <UserProvider>
                     <ThemeProvider>
-                        <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
                         <Stack screenOptions={{ headerShown: false, headerTitle: "NUDGE", headerStyle: {backgroundColor: "#fff"}, headerShadowVisible: false}}>
                             <Stack.Screen name="index" />
                             <Stack.Screen name="home" />

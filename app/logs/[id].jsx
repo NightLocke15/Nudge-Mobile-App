@@ -3,7 +3,7 @@ import People from "@/AppComponents/people";
 import { UserContext } from "@/AppContexts/UserContext";
 import { useLocalSearchParams } from "expo-router";
 import { useContext, useState } from "react";
-import { StyleSheet } from "react-native";
+import { StatusBar, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function MakeLog() {
@@ -19,6 +19,7 @@ function MakeLog() {
     //Return the log dependent on the current log's type
     return (
         <SafeAreaView style = {styles.container}>
+            <StatusBar barStyle={currentTheme.includes("Light") ? "light-content" : "dark-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
             {localUserInfo[0].logs[index].type === "Diary" ? 
             <Diary id={index} /> :
             <People id={index} />}

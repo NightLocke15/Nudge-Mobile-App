@@ -5,7 +5,7 @@ import { Octicons } from "@react-native-vector-icons/octicons";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from "expo-router";
 import { useContext } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StatusBar, StyleSheet, Text, View } from "react-native";
 import { Pressable } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -20,6 +20,7 @@ function Home() {
 
     return (
         <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
+            <StatusBar barStyle={currentTheme.includes("Light") ? "light-content" : "dark-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
             {JSON.parse(authenticated) ? 
             (<LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>
                 <View style={currentTheme.includes("Light") ? stylesLight.homeHeaderContainer : stylesDark.homeHeaderContainer}>

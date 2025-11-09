@@ -5,7 +5,7 @@ import { Octicons } from "@react-native-vector-icons/octicons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { Alert, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, Image, Linking, Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
 import { Calendar } from 'react-native-calendars';
 import { SelectList } from "react-native-dropdown-select-list";
 import { Gesture, GestureDetector, TextInput } from "react-native-gesture-handler";
@@ -317,6 +317,7 @@ function CalendarFunc() {
 
     return (
         <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
+            <StatusBar barStyle={currentTheme.includes("Light") ? "light-content" : "dark-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
             <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>
                 <View style={currentTheme.includes("Light") ? stylesLight.headerContainer : stylesDark.headerContainer}>
                     <Pressable onPress={() => router.dismissTo("/home")} style={currentTheme.includes("Light") ? stylesLight.back : stylesDark.back}>
