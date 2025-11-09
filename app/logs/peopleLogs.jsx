@@ -8,7 +8,6 @@ import { useContext, useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { Gesture, GestureDetector, TextInput } from "react-native-gesture-handler";
 import 'react-native-get-random-values';
-import Animated from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -36,7 +35,6 @@ function PeopleLogs() {
     
     //Setting editiding state that activates the editing tile
     const [editing, setEditing] = useState(false);
-    const backgroundColourRef = new Animated.Value(0);
 
     //Adds the person's name and relationship aswell as creates space for the rest of the information that can be added within the log
     function addPersonBasicDetails() {
@@ -150,27 +148,6 @@ function PeopleLogs() {
         setTapPosition({x: event.absoluteX > 260 ? 260 : event.absoluteX, y: event.absoluteY > 530 ? 530 : event.absoluteY})
         setAction(true);
     }).runOnJS(true);
-
-    const animPress = () => {
-            Animated.timing(backgroundColourRef, {
-                toValue: 1,
-                duration: 60,
-                useNativeDriver: true,
-            }).start();
-        };
-    
-        const animRelease = () => {
-            Animated.timing(backgroundColourRef, {
-                toValue: 0,
-                duration : 60,
-                useNativeDriver: true,
-            }).start();
-        };
-    
-        const backgroundColorAnim = backgroundColourRef.interpolate({
-            inputRange: [0,1],
-            outputRange: currentTheme.includes("Light") ? ['#f2f2f2', '#bebebeff'] : ['#3a3a3a', '#202020ff'],
-        })
 
     return (
         <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>

@@ -5,7 +5,6 @@ import { useRouter } from "expo-router";
 import { useContext, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Pressable, TextInput } from "react-native-gesture-handler";
-import Animated from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function Login() {
@@ -23,8 +22,6 @@ function Login() {
     //Router to navigate the user back to the home page
     const router = useRouter();
 
-    const backgroundColourRef = new Animated.Value(0);
-
     //Checks whether the data that the user provided matches the data that has been saved before it logs them in
     function handleLogin(email, password) {        
         for (let i = 0; i < users.length; i++) {
@@ -40,27 +37,6 @@ function Login() {
             }
         }
     }
-
-    const animPress = () => {
-            Animated.timing(backgroundColourRef, {
-                toValue: 1,
-                duration: 60,
-                useNativeDriver: true,
-            }).start();
-        };
-    
-        const animRelease = () => {
-            Animated.timing(backgroundColourRef, {
-                toValue: 0,
-                duration : 60,
-                useNativeDriver: true,
-            }).start();
-        };
-    
-        const backgroundColorAnim = backgroundColourRef.interpolate({
-            inputRange: [0,1],
-            outputRange: currentTheme.includes("Light") ? ['#f2f2f2', '#bebebeff'] : ['#3a3a3a', '#202020ff'],
-        })
 
     return (
         <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>

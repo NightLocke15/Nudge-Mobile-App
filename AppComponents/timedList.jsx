@@ -7,7 +7,6 @@ import { useContext, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Gesture, GestureDetector, TextInput } from "react-native-gesture-handler";
 import 'react-native-get-random-values';
-import Animated from "react-native-reanimated";
 import { v4 as uuidv4 } from 'uuid';
 
 function TimedList(props) {
@@ -42,8 +41,6 @@ function TimedList(props) {
     //Information and states set when interacting with items by tapping or double tapping in order to edit or delete the correct items
     const [action, setAction] = useState(false);
     const [tapPostition, setTapPosition] = useState({x: 0, y: 0})
-
-    const backgroundColourRef = new Animated.Value(0);
    
     //Resets the time every second for the clock that is visible on this page to be accurate to local time
     useEffect(() => {
@@ -380,27 +377,6 @@ function TimedList(props) {
         setAction(true);
     }).runOnJS(true);
     const longPress = (item) => Gesture.LongPress().onEnd(() => completeListItem(item.id)).runOnJS(true);
-
-    const animPress = () => {
-            Animated.timing(backgroundColourRef, {
-                toValue: 1,
-                duration: 60,
-                useNativeDriver: true,
-            }).start();
-        };
-    
-        const animRelease = () => {
-            Animated.timing(backgroundColourRef, {
-                toValue: 0,
-                duration : 60,
-                useNativeDriver: true,
-            }).start();
-        };
-    
-        const backgroundColorAnim = backgroundColourRef.interpolate({
-            inputRange: [0,1],
-            outputRange: currentTheme.includes("Light") ? ['#f2f2f2', '#bebebeff'] : ['#3a3a3a', '#202020ff'],
-        })
 
     return (
         <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>

@@ -8,7 +8,6 @@ import { useContext, useEffect, useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import 'react-native-get-random-values';
-import Animated from "react-native-reanimated";
 import { v4 as uuidv4 } from 'uuid';
 
 function People(props) {
@@ -49,8 +48,6 @@ function People(props) {
 
     //Date formatting information
     const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-
-    const backgroundColourRef = new Animated.Value(0);
 
     //Use effect that saves the note a second after the user stopped writing
     useEffect(() => {
@@ -251,27 +248,6 @@ function People(props) {
     const showDatePicker = () => {
         showMode("date")
     }
-
-    const animPress = () => {
-            Animated.timing(backgroundColourRef, {
-                toValue: 1,
-                duration: 60,
-                useNativeDriver: true,
-            }).start();
-        };
-    
-        const animRelease = () => {
-            Animated.timing(backgroundColourRef, {
-                toValue: 0,
-                duration : 60,
-                useNativeDriver: true,
-            }).start();
-        };
-    
-        const backgroundColorAnim = backgroundColourRef.interpolate({
-            inputRange: [0,1],
-            outputRange: currentTheme.includes("Light") ? ['#f2f2f2', '#bebebeff'] : ['#3a3a3a', '#202020ff'],
-        })
 
     return (
         <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>            

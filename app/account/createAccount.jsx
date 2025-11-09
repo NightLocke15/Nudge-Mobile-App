@@ -5,7 +5,6 @@ import { useRouter } from "expo-router";
 import { useContext, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Pressable, TextInput } from "react-native-gesture-handler";
-import Animated from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function CreateAccount() {
@@ -24,8 +23,6 @@ function CreateAccount() {
 
     //Router used to take the user back to the home page after logging in
     const router = useRouter();
-
-    const backgroundColourRef = new Animated.Value(0);
 
     //Function called when user creates account. Checks whether all the messages are clear and the data is valid before creating the account
     function createAccount(username, password, email) {
@@ -79,27 +76,6 @@ function CreateAccount() {
         return result;
     }
 
-    const animPress = () => {
-        Animated.timing(backgroundColourRef, {
-            toValue: 1,
-            duration: 60,
-            useNativeDriver: true,
-        }).start();
-    };
-
-    const animRelease = () => {
-        Animated.timing(backgroundColourRef, {
-            toValue: 0,
-            duration : 60,
-            useNativeDriver: true,
-        }).start();
-    };
-
-    const backgroundColorAnim = backgroundColourRef.interpolate({
-        inputRange: [0,1],
-        outputRange: currentTheme.includes("Light") ? ['#f2f2f2', '#bebebeff'] : ['#3a3a3a', '#202020ff'],
-    })
-
     return (
         <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
             <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>                
@@ -124,10 +100,8 @@ function CreateAccount() {
                     </View>
                 </View>     
                 <View style={currentTheme.includes("Light") ? stylesLight.accountContainer : stylesDark.accountContainer}>
-                    <Pressable onPressIn={animPress} onPressOut={animRelease} onPress={() => createAccount(chosenUsername, chosenPassword, chosenEmail)}>
-                        <Animated.View style={[currentTheme.includes("Light") ? stylesLight.clickable : stylesDark.clickable, {backgroundColorAnim}]}>
-                            <Text style={currentTheme.includes("Light") ? stylesLight.clickableText : stylesDark.clickableText}>Create Account</Text>
-                        </Animated.View>
+                    <Pressable onPress={() => createAccount(chosenUsername, chosenPassword, chosenEmail)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.clickable : stylesDark.clickable, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.clickableText : stylesDark.clickableText}>Create Account</Text>
                     </Pressable>
                     <Text style={currentTheme.includes("Light") ? stylesLight.loginLabel : stylesDark.loginLabel}>Already have an Account?</Text>
                     <Pressable onPress={() => router.navigate('/account/login')}>

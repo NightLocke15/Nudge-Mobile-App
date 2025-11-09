@@ -7,7 +7,6 @@ import { useContext, useState } from "react";
 import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { Gesture, GestureDetector, TextInput } from "react-native-gesture-handler";
 import 'react-native-get-random-values';
-import Animated from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -39,8 +38,6 @@ function DiaryLogs() {
 
     //Warning that is set active before item is deleted
     const [warning, setWarning] = useState(false);
-
-    const backgroundColourRef = new Animated.Value(0);
 
     //Add a new diary entry to the user's list of entries
     function addLog() {
@@ -129,27 +126,6 @@ function DiaryLogs() {
         setTapPosition({x: event.absoluteX > 260 ? 260 : event.absoluteX, y: event.absoluteY > 530 ? 530 : event.absoluteY});
         setAction(true);
     }).runOnJS(true);
-
-    const animPress = () => {
-            Animated.timing(backgroundColourRef, {
-                toValue: 1,
-                duration: 60,
-                useNativeDriver: true,
-            }).start();
-        };
-    
-        const animRelease = () => {
-            Animated.timing(backgroundColourRef, {
-                toValue: 0,
-                duration : 60,
-                useNativeDriver: true,
-            }).start();
-        };
-    
-        const backgroundColorAnim = backgroundColourRef.interpolate({
-            inputRange: [0,1],
-            outputRange: currentTheme.includes("Light") ? ['#f2f2f2', '#bebebeff'] : ['#3a3a3a', '#202020ff'],
-        })
 
     return (
         <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>

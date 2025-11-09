@@ -7,7 +7,6 @@ import { useContext, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Gesture, GestureDetector, TextInput } from "react-native-gesture-handler";
 import 'react-native-get-random-values';
-import Animated from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -34,8 +33,6 @@ function ToDoList() {
     //Booleans that enable the editing and deleting of lists
     const [editing, setEditing] = useState(false);
     const [deleteWarning, setDeleteWarning] = useState(false);
-
-    const backgroundColourRef = new Animated.Value(0);
 
     //Sets the state that triggers the tile to create a new list 
     function newList() {
@@ -185,27 +182,6 @@ function ToDoList() {
     const longPress = (item) => Gesture.LongPress().onEnd(() => {
         setType(item)
     }).runOnJS(true);
-
-    const animPress = () => {
-            Animated.timing(backgroundColourRef, {
-                toValue: 1,
-                duration: 60,
-                useNativeDriver: true,
-            }).start();
-        };
-    
-        const animRelease = () => {
-            Animated.timing(backgroundColourRef, {
-                toValue: 0,
-                duration : 60,
-                useNativeDriver: true,
-            }).start();
-        };
-    
-        const backgroundColorAnim = backgroundColourRef.interpolate({
-            inputRange: [0,1],
-            outputRange: currentTheme.includes("Light") ? ['#f2f2f2', '#bebebeff'] : ['#3a3a3a', '#202020ff'],
-        })
     
    return (
         <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
