@@ -51,6 +51,7 @@ function Setup() {
         }
         });
         setUsers(usersReVamp);
+        console.log(localUserInfo);
         router.navigate('/home');
     }
 
@@ -70,6 +71,7 @@ function Setup() {
         }
         });
         setUsers(usersReVamp);
+        console.log(localUserInfo);
         router.navigate('/home');
     }
 

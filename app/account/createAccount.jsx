@@ -26,16 +26,14 @@ function CreateAccount() {
 
     //Function called when user creates account. Checks whether all the messages are clear and the data is valid before creating the account
     function createAccount(username, password, email) {
-        if (emailMessage === "" && passwordMessage === "" && chosenEmail !== "" && chosenUsername !== "" && chosenPassword !== "") {
-            const idNum = createID(); //create an ID
+        const idNum = Date.now().toString(36); //create an ID
             if (users.some((user) => user.idnum === idNum)) { //check if ID is unique
                 createAccount(username, password, email)
             }
             else {
                 createUserProfile(username, idNum, password, email);
                 router.navigate('/account/setup');                
-            }            
-        }
+            }
     }
 
     //Checks whether username can be used, or if it has been used before
@@ -65,15 +63,6 @@ function CreateAccount() {
         else {
             setPasswordMessage("Password Does Not Match Parameters.")
         }
-    }
-
-    //Creates unique ID for each user so that account's data can be saved under this number
-    function createID() {
-        let result = '';
-        for (let i = 0; i < 10; i++) {
-            result += Math.floor(Math.random() * 10);
-        }
-        return result;
     }
 
     return (

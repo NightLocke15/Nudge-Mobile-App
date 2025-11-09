@@ -29,7 +29,7 @@ function UserProvider({children}) {
         const User = AsyncStorage.getItem("LocalUser");
         return User;
     });
-    const [localUserInfo, setLocalUserInfo] = useState();
+    const [localUserInfo, setLocalUserInfo] = useState({});
     
     const [weatherData, setWeatherData] = useState({});
     const [city, setCity] = useState("Miami");
@@ -77,7 +77,7 @@ function UserProvider({children}) {
     }, [localUser]);
 
     useEffect(() => {
-        const oneUser = users.map((user) => {
+        const oneUser = users.filter((user) => {
             if (user.idnum === localUser) {
                 return user;
             }
@@ -87,7 +87,21 @@ function UserProvider({children}) {
 
     //Create new account and add it to the list of already existing accounts
     function createUserProfile(username, id, password, email) {
-        setUsers([...users, {username: username, idnum: id, password: password, email: email, lists: [], logs: []}]);
+        setUsers([...users, {
+            username: username, 
+            idnum: id, 
+            password: password,
+            email: email, 
+            lists: [], 
+            logs: [],
+            userType: "",
+            emergencyContact: {name: "", number: ""},
+            emergencyService: {name: "", number: ""},
+            lists: [],
+            logs: [],
+            events: [],
+            alarms: [],
+            preferredTheme: ""}]);
         setAuthenticated(true);
         setLocalUser(id);
     }
