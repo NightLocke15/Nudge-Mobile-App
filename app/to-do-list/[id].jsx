@@ -20,7 +20,7 @@ function MakeList() {
     //Renders the relevent information based on the type of list
     return (
         <SafeAreaView style={styles.container}>
-            <StatusBar barStyle={currentTheme.includes("Light") ? "light-content" : "dark-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
+            <StatusBar barStyle={currentTheme.includes("Light") ? "dark-content" : "light-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
             {localUserInfo[0].lists[index].type === "Normal" ? 
             <NormalList id={index}/> : <TimedList id={index} />}
         </SafeAreaView>

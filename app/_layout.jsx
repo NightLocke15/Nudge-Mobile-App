@@ -37,7 +37,7 @@ function RootLayout() {
             <SafeAreaProvider>
                 <UserProvider>
                     <ThemeProvider>
-                        <Stack screenOptions={{ headerShown: false, headerTitle: "NUDGE", headerStyle: {backgroundColor: "#fff"}, headerShadowVisible: false}}>
+                        <Stack screenOptions={{ headerShown: false, headerTitle: "NUDGE", headerShadowVisible: false}}>
                             <Stack.Screen name="index" />
                             <Stack.Screen name="home" />
                             <Stack.Screen name="account/login" />
