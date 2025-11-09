@@ -17,8 +17,10 @@ function WelcomeScreen() {
     }
 
     return (
-        <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.mainContainer : stylesDark.mainContainer}>  
-        <StatusBar barStyle={currentTheme.includes("Light") ? "dark-content" : "light-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
+        <React.Fragment>
+        <SafeAreaView style={{ flex: 0, backgroundColor: currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b" }} />
+        <SafeAreaView style={[currentTheme.includes("Light") ? stylesLight.container : stylesDark.container, {backgroundColor: currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"}]}>
+            <StatusBar barStyle={currentTheme.includes("Light") ? "dark-content" : "light-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
             <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>
                 <View style={currentTheme.includes("Light") ? stylesLight.logoContainer : stylesDark.logoContainer}>
                     <Text style={currentTheme.includes("Light") ? stylesLight.logo : stylesDark.logo}>NUDGE</Text> 
@@ -30,6 +32,7 @@ function WelcomeScreen() {
                 </View>                       
             </LinearGradient>                   
         </SafeAreaView>
+        </React.Fragment>
     );
 }
 

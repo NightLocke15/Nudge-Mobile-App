@@ -72,7 +72,9 @@ function Setup() {
     }
 
     return (
-        <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
+        <React.Fragment>
+        <SafeAreaView style={{ flex: 0, backgroundColor: currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b" }} />
+        <SafeAreaView style={[currentTheme.includes("Light") ? stylesLight.container : stylesDark.container, {backgroundColor: currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"}]}>
             <StatusBar barStyle={currentTheme.includes("Light") ? "dark-content" : "light-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
             <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>
                 <ScrollView>
@@ -123,6 +125,7 @@ function Setup() {
                 
             </LinearGradient>
         </SafeAreaView>
+        </React.Fragment>
     )
 }
 

@@ -18,12 +18,15 @@ function MakeLog() {
 
     //Return the log dependent on the current log's type
     return (
-        <SafeAreaView style = {styles.container}>
+        <React.Fragment>
+            <SafeAreaView style={{ flex: 0, backgroundColor: currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b" }} />
+            <SafeAreaView style={[styles.container, {backgroundColor: currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"}]}>
             <StatusBar barStyle={currentTheme.includes("Light") ? "dark-content" : "light-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
             {localUserInfo[0].logs[index].type === "Diary" ? 
             <Diary id={index} /> :
             <People id={index} />}
         </SafeAreaView>
+        </React.Fragment>
     )
 }
 

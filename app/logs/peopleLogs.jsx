@@ -150,7 +150,9 @@ function PeopleLogs() {
     }).runOnJS(true);
 
     return (
-        <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
+        <React.Fragment>
+        <SafeAreaView style={{ flex: 0, backgroundColor: currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b" }} />
+        <SafeAreaView style={[currentTheme.includes("Light") ? stylesLight.container : stylesDark.container, {backgroundColor: currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"}]}>
             <StatusBar barStyle={currentTheme.includes("Light") ? "dark-content" : "light-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
             <LinearGradient colors={gradientColours} style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer}>
                 <View style={currentTheme.includes("Light") ? stylesLight.headerContainer : stylesDark.headerContainer}>
@@ -230,6 +232,7 @@ function PeopleLogs() {
                 )}
             </LinearGradient>
         </SafeAreaView>
+        </React.Fragment>
     )
 }
 

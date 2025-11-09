@@ -2,7 +2,7 @@ import { ThemeContext } from "@/AppContexts/ThemeContext";
 import { UserContext } from "@/AppContexts/UserContext";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from "expo-router";
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { StatusBar, StyleSheet, Text, View } from "react-native";
 import { Pressable, TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -77,40 +77,43 @@ function CreateAccount() {
     }
 
     return (
-        <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
-            <StatusBar barStyle={currentTheme.includes("Light") ? "dark-content" : "light-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
-            <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>                
-                <View style={currentTheme.includes("Light") ? stylesLight.headerContainer : stylesDark.headerContainer}>
-                    <Text style={currentTheme.includes("Light") ? stylesLight.header : stylesDark.header}>Welcome!</Text>
-                </View>                
-                <View style={currentTheme.includes("Light") ? stylesLight.formContainer : stylesDark.formContainer}>
-                    <View>
-                        <Text style={currentTheme.includes("Light") ? stylesLight.label : stylesDark.label}>Username</Text>
-                        <TextInput style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} placeholder="Username..." placeholderTextColor="#9e9e9e" onChangeText={(e) => checkUsername(e)}/>
-                    </View>
-                    <View>
-                        <Text style={currentTheme.includes("Light") ? stylesLight.label : stylesDark.label}>Email Address</Text>
-                        <TextInput style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} placeholder="Email Address..." placeholderTextColor="#9e9e9e" onChangeText={(e) => checkEmail(e)}/>
-                        <Text style={currentTheme.includes("Light") ? stylesLight.message : stylesDark.message}>{emailMessage}</Text>
-                    </View>
-                    <View>
-                        <Text style={currentTheme.includes("Light") ? stylesLight.label : stylesDark.label}>Password</Text>
-                        <TextInput style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} placeholder="Password..." secureTextEntry={true} placeholderTextColor="#9e9e9e" onChangeText={(e) => checkPasssword(e)}/>
-                        <Text style={currentTheme.includes("Light") ? stylesLight.passwordMessage : stylesDark.passwordMessage}>Password should contain at least 8 characters, 1 number and 1 special character.</Text>
-                        <Text style={currentTheme.includes("Light") ? stylesLight.message : stylesDark.message}>{passwordMessage}</Text>
-                    </View>
-                </View>     
-                <View style={currentTheme.includes("Light") ? stylesLight.accountContainer : stylesDark.accountContainer}>
-                    <Pressable onPress={() => createAccount(chosenUsername, chosenPassword, chosenEmail)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.clickable : stylesDark.clickable, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
-                        <Text style={currentTheme.includes("Light") ? stylesLight.clickableText : stylesDark.clickableText}>Create Account</Text>
-                    </Pressable>
-                    <Text style={currentTheme.includes("Light") ? stylesLight.loginLabel : stylesDark.loginLabel}>Already have an Account?</Text>
-                    <Pressable onPress={() => router.navigate('/account/login')}>
-                        <Text style={currentTheme.includes("Light") ? stylesLight.loginLink : stylesDark.loginLink}>Log In</Text>
-                    </Pressable>
-                </View>                                     
-            </LinearGradient>            
-        </SafeAreaView>        
+        <React.Fragment>
+            <SafeAreaView style={{ flex: 0, backgroundColor: currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b" }} />
+            <SafeAreaView style={[currentTheme.includes("Light") ? stylesLight.container : stylesDark.container, {backgroundColor: currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"}]}>
+                <StatusBar barStyle={currentTheme.includes("Light") ? "dark-content" : "light-content"} backgroundColor={currentTheme.includes("Light") ? "#e3e3e3" : "#2b2b2b"} />
+                <LinearGradient style={currentTheme.includes("Light") ? stylesLight.contentContainer : stylesDark.contentContainer} colors={gradientColours}>                
+                    <View style={currentTheme.includes("Light") ? stylesLight.headerContainer : stylesDark.headerContainer}>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.header : stylesDark.header}>Welcome!</Text>
+                    </View>                
+                    <View style={currentTheme.includes("Light") ? stylesLight.formContainer : stylesDark.formContainer}>
+                        <View>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.label : stylesDark.label}>Username</Text>
+                            <TextInput style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} placeholder="Username..." placeholderTextColor="#9e9e9e" onChangeText={(e) => checkUsername(e)}/>
+                        </View>
+                        <View>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.label : stylesDark.label}>Email Address</Text>
+                            <TextInput style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} placeholder="Email Address..." placeholderTextColor="#9e9e9e" onChangeText={(e) => checkEmail(e)}/>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.message : stylesDark.message}>{emailMessage}</Text>
+                        </View>
+                        <View>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.label : stylesDark.label}>Password</Text>
+                            <TextInput style={currentTheme.includes("Light") ? stylesLight.input : stylesDark.input} placeholder="Password..." secureTextEntry={true} placeholderTextColor="#9e9e9e" onChangeText={(e) => checkPasssword(e)}/>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.passwordMessage : stylesDark.passwordMessage}>Password should contain at least 8 characters, 1 number and 1 special character.</Text>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.message : stylesDark.message}>{passwordMessage}</Text>
+                        </View>
+                    </View>     
+                    <View style={currentTheme.includes("Light") ? stylesLight.accountContainer : stylesDark.accountContainer}>
+                        <Pressable onPress={() => createAccount(chosenUsername, chosenPassword, chosenEmail)} style={({ pressed }) => [currentTheme.includes("Light") ? stylesLight.clickable : stylesDark.clickable, currentTheme.includes("Light") ? {backgroundColor: pressed ? '#c0c0c0ff' : '#f2f2f2'} : {backgroundColor: pressed ? '#1f1f1fff': '#3a3a3a'}]}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.clickableText : stylesDark.clickableText}>Create Account</Text>
+                        </Pressable>
+                        <Text style={currentTheme.includes("Light") ? stylesLight.loginLabel : stylesDark.loginLabel}>Already have an Account?</Text>
+                        <Pressable onPress={() => router.navigate('/account/login')}>
+                            <Text style={currentTheme.includes("Light") ? stylesLight.loginLink : stylesDark.loginLink}>Log In</Text>
+                        </Pressable>
+                    </View>                                     
+                </LinearGradient>            
+            </SafeAreaView>
+        </React.Fragment>                
     )
 }
 
