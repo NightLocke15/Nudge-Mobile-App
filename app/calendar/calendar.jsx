@@ -10,6 +10,7 @@ import { Calendar } from 'react-native-calendars';
 import { SelectList } from "react-native-dropdown-select-list";
 import { Gesture, GestureDetector, TextInput } from "react-native-gesture-handler";
 import 'react-native-get-random-values';
+import Animated from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { v4 as uuidv4 } from 'uuid';
    
@@ -57,6 +58,8 @@ function CalendarFunc() {
     const arrayRange = (start, end, step = 1) => Array.from({length: end - start / step + 1}, (_, i) => start + i * step);
     const numberRange = arrayRange(0,23);
     const timeSlotNumbers = numberRange.map((number) => number < 10 ? `0${number}:00` : `${number}:00`) 
+
+    const backgroundColourRef = new Animated.Value(0);
 
     //Determinging the height of the event card in the calendar list based on the amount of time the event will be
     const cardHeight = (hours, mins) => {
@@ -314,6 +317,27 @@ function CalendarFunc() {
         setTapPosition({x: event.absoluteX > 260 ? 260 : event.absoluteX, y: event.absoluteY > 530 ? 530 : event.absoluteY})
         setAction(true);
     }).runOnJS(true);
+
+    const animPress = () => {
+            Animated.timing(backgroundColourRef, {
+                toValue: 1,
+                duration: 60,
+                useNativeDriver: true,
+            }).start();
+        };
+    
+        const animRelease = () => {
+            Animated.timing(backgroundColourRef, {
+                toValue: 0,
+                duration : 60,
+                useNativeDriver: true,
+            }).start();
+        };
+    
+        const backgroundColorAnim = backgroundColourRef.interpolate({
+            inputRange: [0,1],
+            outputRange: currentTheme.includes("Light") ? ['#f2f2f2', '#bebebeff'] : ['#3a3a3a', '#202020ff'],
+        })
 
     return (
         <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>

@@ -7,6 +7,7 @@ import { useContext, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { SelectList } from "react-native-dropdown-select-list";
 import { ScrollView } from "react-native-gesture-handler";
+import Animated from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 
@@ -34,6 +35,8 @@ function Setup() {
 
     //Router to navigate the user back to the home page
     const router = useRouter();
+
+    const backgroundColourRef = new Animated.Value(0);
 
     function updateInfo() {
         const usersReVamp = users.map((user, index) => {
@@ -70,6 +73,27 @@ function Setup() {
         setUsers(usersReVamp);
         router.navigate('/home');
     }
+
+    const animPress = () => {
+            Animated.timing(backgroundColourRef, {
+                toValue: 1,
+                duration: 60,
+                useNativeDriver: true,
+            }).start();
+        };
+    
+        const animRelease = () => {
+            Animated.timing(backgroundColourRef, {
+                toValue: 0,
+                duration : 60,
+                useNativeDriver: true,
+            }).start();
+        };
+    
+        const backgroundColorAnim = backgroundColourRef.interpolate({
+            inputRange: [0,1],
+            outputRange: currentTheme.includes("Light") ? ['#f2f2f2', '#bebebeff'] : ['#3a3a3a', '#202020ff'],
+        })
 
     return (
         <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>

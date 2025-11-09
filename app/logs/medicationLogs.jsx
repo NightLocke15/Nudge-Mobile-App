@@ -10,6 +10,7 @@ import { Image, Pressable, StyleSheet, Text, TextInput, View } from "react-nativ
 import { SelectList } from 'react-native-dropdown-select-list';
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import 'react-native-get-random-values';
+import Animated from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -56,6 +57,8 @@ function MedicationLogs() {
     const [image, setImage] = useState("");
     const [warning, setWarning] = useState(false);
     const [editing, setEditing] = useState(false);
+
+    const backgroundColourRef = new Animated.Value(0);
 
     //Use effect that resets the time every minute. This is then used to check whether a new day has started so that the dosages taken can be reset
     useEffect(() => {
@@ -508,6 +511,27 @@ function MedicationLogs() {
         setTapPosition({x: event.absoluteX > 260 ? 260 : event.absoluteX, y: event.absoluteY > 530 ? 530 : event.absoluteY})
         setAction(true);
     }).runOnJS(true);
+
+    const animPress = () => {
+            Animated.timing(backgroundColourRef, {
+                toValue: 1,
+                duration: 60,
+                useNativeDriver: true,
+            }).start();
+        };
+    
+        const animRelease = () => {
+            Animated.timing(backgroundColourRef, {
+                toValue: 0,
+                duration : 60,
+                useNativeDriver: true,
+            }).start();
+        };
+    
+        const backgroundColorAnim = backgroundColourRef.interpolate({
+            inputRange: [0,1],
+            outputRange: currentTheme.includes("Light") ? ['#f2f2f2', '#bebebeff'] : ['#3a3a3a', '#202020ff'],
+        })
 
     return (
         <SafeAreaView style={currentTheme.includes("Light") ? stylesLight.container : stylesDark.container}>
